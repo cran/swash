@@ -1,0 +1,14 @@
+export("hist_ci", "is_balanced", "swash")
+exportMethods(
+    "confint",
+    "plot",
+    "print",
+    "summary" 
+)
+exportClasses(
+    "sbm",
+    "sbm_ci" 
+)
+importFrom("graphics", "abline", "barplot", "hist", "par")
+importFrom("methods", "new")
+importFrom("stats", "aggregate", "quantile")
