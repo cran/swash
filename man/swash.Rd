@@ -9,7 +9,12 @@ Swash-Backwash Model for the Single Epidemic Wave
 Analysis of regional infection/surveillance data using the Swash-Backwash Model for the single epidemic wave by Cliff and Haggett (2006)
 }
 \usage{
-swash(data, col_cases, col_date, col_region)
+swash(
+  data, 
+  col_cases, 
+  col_date, 
+  col_region
+  )
 }
 
 \arguments{
@@ -42,7 +47,6 @@ Smallman-Raynor MR, Cliff AD, The COVID-19 Genomics UK (COG-UK) Consortium (2022
 \author{
 Thomas Wieland
 }
-
 \seealso{
 \code{\link{sbm-class}}
 }

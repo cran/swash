@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{sbm_ci-class}
 \docType{class}
 \alias{sbm_ci-class}
@@ -20,6 +21,7 @@ Objects can be created by the function \code{confint(sbm)}.
     \item{\code{velocity}:}{Object of class \code{"numeric"} Model result: velocity measures \eqn{t_{FE}} and \eqn{t_{LE}} }
     \item{\code{occ_regions}:}{Object of class \code{"data.frame"} Model result: Occurence at regional level }
     \item{\code{cases_by_date}:}{Object of class \code{"data.frame"} Total cases by date }
+    \item{\code{cases_by_region}:}{Object of class \code{"data.frame"} Cumulative cases by region }
     \item{\code{input_data}:}{Object of class \code{"data.frame"} Input data }
     \item{\code{data_statistics}:}{Object of class \code{"numeric"} Diagnostics of input data }
     \item{\code{col_names}:}{Object of class \code{"character"} Column names in input data }
@@ -41,6 +43,22 @@ Objects can be created by the function \code{confint(sbm)}.
 }
 \author{
 Thomas Wieland
+}
+\references{
+
+\emph{Swash-Backwash Model:}
+
+Cliff AD, Haggett P (2006) A swash-backwash model of the single epidemic wave. \emph{Journal of Geographical Systems} 8(3), 227-252. \doi{https://doi.org/10.1007/s10109-006-0027-8}
+
+Smallman-Raynor MR, Cliff AD, Stickler PJ (2022) Meningococcal Meningitis and Coal Mining in Provincial England: Geographical Perspectives on a Major Epidemic, 1929–33. \emph{Geographical Analysis} 54, 197–216. \doi{https://doi.org/10.1111/gean.12272}
+
+Smallman-Raynor MR, Cliff AD, The COVID-19 Genomics UK (COG-UK) Consortium (2022) Spatial growth rate of emerging SARS-CoV-2 lineages in England, September 2020–December 2021. \emph{Epidemiology and Infection} 150, e145. \doi{https://doi.org/10.1017/S0950268822001285}.
+
+\emph{Bootstrapping und bootstrap confidence intervals:}
+
+Efron B, Tibshirani RJ (1993) An Introduction to the Bootstrap.
+
+Ramachandran KM, Tsokos CP (2021) Mathematical Statistics with Applications in R (Third Edition). Ch. 13.3.1 (Bootstrap confidence intervals). \doi{https://doi.org/10.1016/B978-0-12-817815-7.00013-0}
 }
 \examples{
 showClass("sbm_ci")

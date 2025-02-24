@@ -15,5 +15,9 @@ Prints a summary of \code{sbm} objects (results of the Swash-Backwash Model)
 \item{\code{signature(object = "sbm_ci")}}{
 Prints a summary of \code{sbm_ci} objects (bootstrap confidence intervals for Swash-Backwash Model estimates)
 }
+
+\item{\code{signature(object = "countries")}}{
+Prints a summary of a \code{countries} object built with the function \code{\link{compare_countries}}
+}
 }}
 \keyword{methods}

@@ -1,9 +1,9 @@
 \name{COVID19Cases_geoRegion}
 \docType{data}
 \alias{COVID19Cases_geoRegion}
-\title{FOPH Switzerland Daily COVID-19 cases by region}
+\title{Switzerland Daily COVID-19 cases by region}
 \description{
-  A dataset containing COVID-19 cases by region (NUTS 3 = cantons) and time periods (days) for Switzerland (Source: Federal Office of Public Health FOPH). Note that the reporting date equals the date of SARS-CoV-2 testing.
+  A dataset containing COVID-19 cases by region (NUTS 3 = cantons) and time periods (days) for Switzerland (Source: Federal Office of Public Health FOPH).
 }
 \usage{
 data(COVID19Cases_geoRegion)
@@ -49,8 +49,11 @@ data(COVID19Cases_geoRegion)
     \item{entries_diff_last}{(integer) Difference in last entries.}
   }
 }
+\details{
+The data is included as it was published in ??. Note that the reporting date equals the date of SARS-CoV-2 testing.
+}
 \source{
-  Federal Office of Public Health FOPH (2023) COVID-19 Dashboard Source Data. \url{https://www.covid19.admin.ch/api/data/documentation} 
+  Federal Office of Public Health FOPH (2023) COVID-19 Dashboard Source Data. \url{https://www.covid19.admin.ch/api/data/documentation} (retrieved 2023-06-28)
 }
 \examples{
 data(COVID19Cases_geoRegion)

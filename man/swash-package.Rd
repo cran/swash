@@ -39,7 +39,20 @@ Chowell G, Viboud C, Hyman JM, Simonsen L (2015) The Western Africa ebola virus 
 Viboud C, Bjørnstad ON, Smith DL, Simonsen L, Miller MA, Grenfell BT (2006) Synchrony, Waves, and Spatial Hierarchies in the Spread of Influenza. \emph{Science} 312,447-451. \doi{https://doi.org/10.1126/science.1125237}
 
 Wieland T (2020) Flatten the Curve! Modeling SARS-CoV-2/COVID-19 Growth in Germany at the County Level. \emph{REGION} 7(2), 43–83. \doi{https://doi.org/10.18335/region.v7i2.324}
+
+\emph{Panel data:}
+
+Greene, WH (2012) \emph{Econometric Analysis}. Ch. 11.
+
+Wooldridge, JM (2012) \emph{Introductory Econometrics. A Modern Approach}. Ch. 13.
+
+\emph{Bootstrapping und bootstrap confidence intervals:}
+
+Efron B, Tibshirani RJ (1993) An Introduction to the Bootstrap.
+
+Ramachandran KM, Tsokos CP (2021) Mathematical Statistics with Applications in R (Third Edition). Ch. 13.3.1 (Bootstrap confidence intervals). \doi{https://doi.org/10.1016/B978-0-12-817815-7.00013-0}
 }
+
 \keyword{package}
 
 \examples{

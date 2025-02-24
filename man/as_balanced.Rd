@@ -1,19 +1,18 @@
 \encoding{UTF-8}
-\name{is_balanced}
-\alias{is_balanced}
+\name{as_balanced}
+\alias{as_balanced}
 \title{
-Test whether Panel Dataset with Regional Infection Data is Balanced
+Correction of Non-balanced Panel Dataset with Regional Infection Data
 }
 \description{
-The function tests whether the input panel data with regional infections is balanced.
+This function corrects non-balanced input panel data by replacing missing entries with a user-given constant (e.g., 0).
 }
 \usage{
-is_balanced(
+as_balanced(
   data, 
   col_cases, 
   col_date, 
   col_region, 
-  as_balanced = TRUE, 
   fill_missing = 0
   )
 }
@@ -30,20 +29,15 @@ is_balanced(
   \item{col_region}{
      Column containing the unique identifier of the regions (e.g., name, NUTS 3 code)
 }
-  \item{as_balanced}{
-     Boolean argument which indicates whether non-balanced panel data shall be balanced (default: TRUE)
-}
   \item{fill_missing}{
      Constant to fill missing values (default and recommended: 0)
 }
 }
 \details{
-The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data in order for the calculations to be carried out. However, for a correct estimation it is implicitly assumed that the input data is balanced. The function tests whether the panel data is balanced. It is executed automatically whithin the \code{swash()} function (using automatic correction with \code{as_balanced = TRUE}), but can also be used separately.
+The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data in order for the calculations to be carried out. However, for a correct estimation it is implicitly assumed that the input data is balanced. The function corrects non-balanced panel data. It is executed automatically whithin the \code{swash()} function (when using the function \code{is_balanced()}), but can also be used separately.
 }
 \value{
-List with two entries:
-  \item{data_balanced }{Result of test (\code{TRUE} or \code{FALSE})}
-  \item{data }{Input dataset (\code{data.frame})}
+  \item{data }{Corrected input dataset (\code{data.frame})}
 }
 \references{
 
@@ -65,7 +59,7 @@ Wooldridge, JM (2012) \emph{Introductory Econometrics. A Modern Approach}. Ch. 1
 Thomas Wieland
 }
 \seealso{
-\code{\link{as_balanced}}
+\code{\link{is_balanced}}
 }
 \examples{
 data(COVID19Cases_geoRegion)

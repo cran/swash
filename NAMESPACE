@@ -1,14 +1,16 @@
-export("hist_ci", "is_balanced", "swash")
+export("as_balanced", "compare_countries", "hist_ci", "is_balanced", "quantile_ci", "swash")
 exportMethods(
     "confint",
     "plot",
     "print",
-    "summary" 
+    "summary",
+    "plot_regions"
 )
 exportClasses(
     "sbm",
-    "sbm_ci" 
+    "sbm_ci",
+    "countries"
 )
-importFrom("graphics", "abline", "barplot", "hist", "par")
+importFrom("graphics", "abline", "barplot", "hist", "par", "boxplot", "lines")
 importFrom("methods", "new")
-importFrom("stats", "aggregate", "quantile")
+importFrom("stats", "aggregate", "quantile", "median")
