@@ -1,4 +1,13 @@
-export("as_balanced", "compare_countries", "hist_ci", "is_balanced", "quantile_ci", "swash")
+export(
+  "as_balanced", 
+  "compare_countries", 
+  "hist_ci", 
+  "is_balanced",
+  "logistic_growth",
+  "quantile_ci", 
+  "R_t",
+  "swash"
+  )
 exportMethods(
     "confint",
     "plot",
@@ -9,8 +18,24 @@ exportMethods(
 exportClasses(
     "sbm",
     "sbm_ci",
-    "countries"
+    "countries",
+    "loggrowth"
 )
-importFrom("graphics", "abline", "barplot", "hist", "par", "boxplot", "lines")
+importFrom("graphics", 
+           "abline", 
+           "barplot", 
+           "hist", 
+           "par", 
+           "boxplot", 
+           "lines", 
+           "axis", 
+           "grid", 
+           "mtext", 
+           "points", 
+           "rect",
+           "text"
+           )
 importFrom("methods", "new")
-importFrom("stats", "aggregate", "quantile", "median")
+importFrom("stats", "aggregate", "lm", "median", "nls", "quantile")
+importFrom("grDevices", "dev.new")
+importFrom("lubridate", "is.Date")

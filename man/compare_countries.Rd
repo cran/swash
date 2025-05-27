@@ -14,7 +14,7 @@ compare_countries(
   sbm2, 
   country_names = c("Country 1", "Country 2"), 
   indicator = "R_0A", 
-  iterations = 100, 
+  iterations = 20, 
   samples_ratio = 0.8, 
   alpha = 0.05, 
   replace = TRUE
@@ -116,7 +116,7 @@ AT_vs_CH <-
     AT_covidwave1,
     country_names = c("Switzerland", "Austria"))
 # Country comparison Switzerland vs. Austria
-# default config: 100 iterations, alpha = 0.05, sample ratio = 80\%,
+# default config: 20 iterations, alpha = 0.05, sample ratio = 80\%,
 # indicator: R_0A
 
 summary(AT_vs_CH)

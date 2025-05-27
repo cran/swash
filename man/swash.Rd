@@ -32,7 +32,7 @@ swash(
 }
 }
 \details{
-The function performs the analysis of the input panel data using the Swash-Backwash Model. The output is an object of class \code{"sbm"}. The results can be viewed using \code{summary(sbm)}. 
+The function performs the analysis of the input panel data using the Swash-Backwash Model. The output is an object of class \code{"sbm"}. The results can be viewed using \code{summary(sbm)}. The user must state panel data with daily infections.
 }
 \value{
 object of class \code{\link{sbm-class}}

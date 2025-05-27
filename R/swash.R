@@ -1,13 +1,15 @@
 #-------------------------------------------------------------------------------
-# Name:        swash
+# Name:        swash (swash package)
 # Purpose:     Swash-Backwash Model for the Single Epidemic Wave
-# Author:      Thomas Wieland (geowieland@googlemail.com)
-# Version:     1.1.0
-# Last update: 22.02.2025 12:56
+# Author:      Thomas Wieland 
+#              ORCID: 0000-0001-5168-9846
+#              mail: geowieland@googlemail.com
+# Version:     1.2.0
+# Last update: 2025-05-27 07:29
 # Copyright (c) 2025 Thomas Wieland
 #-------------------------------------------------------------------------------
 
-
+ 
 setClass("sbm",
          slots = list(
            R_0A = "numeric",
@@ -21,7 +23,6 @@ setClass("sbm",
            data_statistics = "numeric",
            col_names = "character"
          ))
-
 
 setClass("sbm_ci",
          slots = list(
@@ -41,7 +42,6 @@ setClass("sbm_ci",
            ci = "numeric",
            config = "list"
          ))
-
 
 setClass("countries",
          slots = list(
@@ -63,9 +63,6 @@ swash <-
     col_region
     ) {
     
-    par_old <- par(no.readonly = TRUE)
-    on.exit(par(par_old))
-    
     data <- data[order(data[[col_region]], data[[col_date]]),]
 
     N <- nlevels(as.factor(data[[col_region]]))
@@ -79,7 +76,8 @@ swash <-
         data,
         col_cases = col_cases,
         col_region = col_region,
-        col_date = col_date)
+        col_date = col_date
+        )
     data_balanced <- data_check_balanced$data_balanced
 
     first_occ_regions <- data.frame(matrix(ncol = N+1, nrow = TP))
@@ -92,7 +90,6 @@ swash <-
     colnames(last_occ_regions)[1] <- "date"
     colnames(last_occ_regions)[2:(N+1)] <- N_names
 
-    
     i <- 0
     
     for (i in 1:N) {
@@ -108,7 +105,6 @@ swash <-
         N_withoutcases <- N_withoutcases+1
       }
 
-      
       first_occ <- which(data_n$occurence == 1)[1]
       data_n$LE <- 0
       data_n$LE[first_occ] <- 1
@@ -117,7 +113,6 @@ swash <-
       
       colnames(first_occ_regions)[i+1] <- paste0("Region_", N_names[i])
       
-
       last_occ <- which(data_n$occurence == 1)[length(which(data_n$occurence == 1))]
       data_n$FE <- 0
       data_n$FE[last_occ] <- 1
@@ -125,22 +120,17 @@ swash <-
       last_occ_regions[,i+1] <- data_n$FE
       
       colnames(last_occ_regions)[i+1] <- paste0("Region_", N_names[i])
-      
+
     }
-    
+
     first_occ_regions$no_regions_LE <- rowSums(first_occ_regions[, 2:(N+1)])
-    
     first_occ_regions$t <- seq (1:TP)
-    
     first_occ_regions$t_x_nt <- first_occ_regions$t*first_occ_regions$no_regions_LE
     
     t_LE <- sum(first_occ_regions$t_x_nt)/N
     
-    
     last_occ_regions$no_regions_FE <- rowSums(last_occ_regions[, 2:(N+1)])
-    
     last_occ_regions$t <- seq (1:TP)
-    
     last_occ_regions$t_x_nt <- last_occ_regions$t*last_occ_regions$no_regions_FE
     
     t_FE <- sum(last_occ_regions$t_x_nt)/N
@@ -167,7 +157,6 @@ swash <-
         "susceptible",
         "infected",
         "recovered")
-    
     
     cases_by_date <- aggregate(data[[col_cases]], by = list(data[[col_date]]), FUN = sum)
     colnames(cases_by_date) <- c("date", "cases")
@@ -297,12 +286,12 @@ setMethod(
   ) {
 
     par_old <- par(no.readonly = TRUE)
-    on.exit(par(par_old)) 
+    on.exit(par(par_old))
+    dev.new()
     
     if (separate_plots == FALSE) {
       par(mfrow = c(2,2))
     }
-    
     
     barplot(
       x@occ_regions$LE_FE,
@@ -311,7 +300,6 @@ setMethod(
       ylab = ylab_edges,
       main = main_edges
     )
-    
     
     plot (
       x = as.Date(x@SIR_regions$date), 
@@ -340,7 +328,6 @@ setMethod(
       lwd = lwd_SIR[3]
       )
     
-    
     plot(
       x@cases_by_date$date, 
       x@cases_by_date$cases,
@@ -352,7 +339,6 @@ setMethod(
       ylab = ylab_cases,
       main = main_cases)
     
-    
     x@cases_by_region <- x@cases_by_region[order(x@cases_by_region$cases_cumulative), ]
     barplot(
       height = x@cases_by_region$cases_cumulative,
@@ -363,7 +349,6 @@ setMethod(
       main = main_cum,
       las = 1)
     
-    par(par_old)
   }
 )
 
@@ -390,6 +375,7 @@ setMethod(
 
     par_old <- par(no.readonly = TRUE)
     on.exit(par(par_old))
+    dev.new()
 
     N <- object@data_statistics[1]
 
@@ -405,7 +391,6 @@ setMethod(
     col_region <- col_names[3]
 
     N_names <- levels(as.factor(input_data[[col_region]]))
-
 
     if (!is.null(normalize_by_col)) {
       input_data[[paste0(col_cases, "_normalized")]] <-
@@ -465,7 +450,6 @@ setMethod(
       
     }
     
-    par(par_old) 
   }
 )
 
@@ -576,7 +560,6 @@ setMethod(
   
     cis <- names(object@integrals_ci$S_A_ci)
     
-
     ci_df <- data.frame(matrix(ncol = 2, nrow = 11))
     ci_df[1,] <- cis
     ci_df[2,1] <- round(object@integrals_ci$S_A_ci[1], 3)
@@ -678,6 +661,8 @@ setMethod(
 
     par_old <- par(no.readonly = TRUE)
     on.exit(par(par_old)) 
+    dev.new()
+    
     par (mfrow = c(2,3))
     
     alpha <- x@config$alpha
@@ -739,7 +724,6 @@ setMethod(
       ylab = "Frequency"
     )
     
-    par(par_old)
   }
 )
 
@@ -750,7 +734,7 @@ compare_countries <-
     sbm2,
     country_names = c("Country 1", "Country 2"),
     indicator = "R_0A",
-    iterations = 100,
+    iterations = 20,
     samples_ratio = 0.8,
     alpha = 0.05,
     replace = TRUE
@@ -780,7 +764,6 @@ compare_countries <-
 
     D_ci <- quantile_ci(x = D, alpha = alpha)
 
-    
     bootstrap_config <- list(
       iterations = iterations,
       samples_ratio = samples_ratio,
@@ -810,7 +793,9 @@ setMethod(
   ) {
 
     par_old <- par(no.readonly = TRUE)
-    on.exit(par(par_old)) 
+    on.exit(par(par_old))
+    dev.new()
+    
     par (mfrow = c(2,2))
     
     alpha <- x@config$alpha
@@ -872,7 +857,6 @@ setMethod(
       ylab = "Frequency"
     )
 
-    par(par_old)
   }
 )
 
@@ -889,14 +873,13 @@ setMethod(
     D_mean <- mean(object@D, na.rm = TRUE)
     D_median <- median(object@D, na.rm = TRUE)
     
-    
     ci_df <- data.frame(matrix(ncol = 4, nrow = 1))
     ci_df[1,1] <- round(D_mean, 3)
     ci_df[1,2] <- round(D_median, 3)
     ci_df[1,3:4] <- round(D_ci, 3)
     colnames(ci_df) <- c("Mean", "Median", cis)
     rownames(ci_df) <- paste0("Difference in ", indicator)
-    
+
     cat("Two-country comparison for Swash-Backwash Model", "\n")
     cat("\n")
     
@@ -915,8 +898,6 @@ setMethod(
     
   })
 
-
-
 setMethod(
   "show", 
   "countries", 
@@ -926,6 +907,49 @@ setMethod(
     cat ("Use summary() for results", "\n")
     
   })
+
+
+R_t <- 
+  function (
+    infections, 
+    GP = 4,
+    correction = FALSE
+    ) {
+  
+  i <- 0
+  
+  infections_daily_A <- vector()
+  infections_daily_B <- vector()
+  
+  R_t <- vector()
+  R_t[1:(GP-1)] <- NA
+  
+  for (i in (GP*2):length(infections)) {
+    
+    infections_daily_A[i] <- sum (infections[(i-(GP-1)):i])
+    infections_daily_B[i] <- sum (infections[(i-((GP*2)-1)):(i-GP)]) 
+    
+    if (correction == TRUE) {
+      
+      if (infections_daily_B[i] < 1) {
+        
+        infections_daily_B[i] <- 1
+      
+        }
+    }
+    
+    R_t[i] <- as.numeric(infections_daily_A[i]/infections_daily_B[i])
+    
+  }
+  
+  results <- list (
+    R_t = R_t,
+    infections_data = cbind.data.frame(infections_daily_A, infections_daily_B, R_t)
+    )
+  
+  return(results)
+  
+}
 
 
 quantile_ci <-
@@ -942,7 +966,6 @@ quantile_ci <-
     return(ci)
     
   }
-
 
 
 hist_ci <-
@@ -1063,7 +1086,532 @@ as_balanced <-
     data[[paste0("__", col_region, "_x_", col_date, "__")]] <- NULL
     data[[paste0("__", col_region, "__")]] <- NULL
     data[[paste0("__", col_date, "__")]] <- NULL
-
+    
     return(data)
-
+    
   }
+
+
+setClass("loggrowth",
+         slots = list(
+           LinModel = "list", 
+           GrowthModel_OLS = "list", 
+           GrowthModel_NLS = "list",
+           y = "numeric",
+           t = "numeric",
+           config = "list"
+         ))
+
+setMethod(
+  "summary", 
+  "loggrowth", 
+  function(object) {
+    
+    cat("Logistic Growth Model", "\n")
+    
+    LinModel <- object@LinModel
+    GrowthModel_OLS <- object@GrowthModel_OLS
+    GrowthModel_NLS <- object@GrowthModel_NLS
+    config <- object@config
+    
+    results_df <- data.frame(matrix(ncol = 2, nrow = 6))
+    
+    results_df[1,1] <- round(GrowthModel_OLS$S, 3)
+    results_df[2,1] <- round(GrowthModel_OLS$r, 3)
+    results_df[3,1] <- round(GrowthModel_OLS$y_0, 3)
+    results_df[4,1] <- round(GrowthModel_OLS$ip, 3)
+    results_df[5,1] <- round(GrowthModel_OLS$t_ip, 3)
+    results_df[6,1] <- round(GrowthModel_OLS$sum_of_squares, 3)
+    
+    if (length(GrowthModel_NLS) > 0) {
+      
+      results_df[1,2] <- round(GrowthModel_NLS$S, 3)
+      results_df[2,2] <- round(GrowthModel_NLS$r, 3)
+      results_df[3,2] <- round(GrowthModel_NLS$y_0, 3)
+      results_df[4,2] <- round(GrowthModel_NLS$ip, 3)
+      results_df[5,2] <- round(GrowthModel_NLS$t_ip, 3)
+      results_df[6,2] <- round(GrowthModel_NLS$sum_of_squares, 3)
+      
+    }
+    
+    colnames(results_df) <- 
+      c(
+        "OLS model", 
+        "NLS model"
+      )
+    
+    rownames(results_df) <-
+      c(
+        "Saturation",
+        "Growth rate",
+        "Baseline",
+        "Inflection point",
+        "Time of inflection point",
+        "Sum of squares"
+      )
+    
+    print(results_df)
+    cat("\n")
+    
+    if (config$nls == FALSE) {
+      
+      cat ("NLS estimation was not desired by user.")
+    
+      } else {
+        
+      if (isTRUE(config$nls_estimation)) {
+        
+        if (!is.null(config$S)) {
+          
+          cat (paste0("Nonlinear estimation with saturation set to ", config$S), " using method: ", config$S_start_est_method)  
+        
+          } else {
+          
+            cat (paste0("Nonlinear estimation with saturation start value = ", config$S_start, " and end value = ", config$S_end, " using method: ", config$S_start_est_method))
+        }
+        
+      } else {
+        
+        cat ("Nonlinear estimation failed.")
+        
+      }
+        
+    }
+    
+  }
+  )
+
+
+setMethod(
+  "plot", 
+  "loggrowth", 
+  function(
+    x, 
+    y = NULL,
+    cp_col = "lightblue",
+    cp_pch = 19,
+    cl_col = "red",
+    plot_d = TRUE,
+    dl_col = "blue",
+    x_lab = "Time",
+    y_lab = "Cumulative infections",
+    y2_lab = "dC/dt",
+    plot_title = "Logistic growth model",
+    text_size = 1,
+    anno_size = 0.7,
+    bgrid = TRUE,
+    bgrid_col = "white",
+    bgrid_type = 1,
+    bgrid_size = 1,
+    bg_col = "white"
+  ) {
+    
+    par_old <- par(no.readonly = TRUE)
+    on.exit(par(par_old))
+    dev.new()
+    
+    t <- x@t
+    y <- x@y
+    GrowthModel_NLS <- x@GrowthModel_NLS
+    GrowthModel_OLS <- x@GrowthModel_OLS
+    
+    if (is.null(GrowthModel_NLS)) {
+      
+      y_pred <- GrowthModel_OLS$y_pred
+      dy_dt <- GrowthModel_OLS$dy_dt
+      r <- GrowthModel_OLS$r
+      y_0 <- GrowthModel_OLS$y_0
+      S <- GrowthModel_OLS$S
+      sum_of_squares <- GrowthModel_OLS$sum_of_squares
+      ip <- GrowthModel_OLS$ip
+      t_ip <- GrowthModel_OLS$t_ip
+      
+      model = "OLS"
+      
+    } else {
+      
+      y_pred <- GrowthModel_NLS$y_pred
+      dy_dt <- GrowthModel_NLS$dy_dt
+      r <- GrowthModel_NLS$r
+      y_0 <- GrowthModel_NLS$y_0
+      S <- GrowthModel_NLS$S
+      sum_of_squares <- GrowthModel_NLS$sum_of_squares
+      ip <- GrowthModel_NLS$ip
+      t_ip <- GrowthModel_NLS$t_ip
+      
+      model = "NLS"
+      
+    }
+
+    par(mar=c(5.1, 5, 4.1, 4.1)) 
+        
+    plot(
+      t, 
+      y, 
+      col = cp_col, 
+      "p", 
+      pch = cp_pch, 
+      xlab = x_lab, 
+      ylab = y_lab, 
+      main = plot_title, 
+      cex.axis = text_size, 
+      cex.lab = text_size, 
+      cex.main = text_size
+      )
+    
+    rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = bg_col)
+    
+    if (bgrid == TRUE) {
+      grid(
+        col = bgrid_col, 
+        lty = bgrid_type, 
+        lwd = bgrid_size
+        )
+    }
+    
+    points(
+      t, 
+      y, 
+      col = cp_col, 
+      pch = 19, 
+      xlab = x_lab, 
+      ylab = y_lab, 
+      main = plot_title, 
+      cex.axis = text_size, 
+      cex.lab = text_size, 
+      cex.main = text_size
+    )
+    
+    
+    lines(
+      t, 
+      y_pred, 
+      col = cl_col
+      )
+    
+    text (paste0("r = ", round(r, 5)), x = 0, y = max(y), pos = 4, cex = anno_size)
+    text (paste0("y_0 = ", round(y_0, 5)), x = 0, y = (max(y)-(max(y)*0.04*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("S = ", round(S, 5)), x = 0, y = (max(y)-(max(y)*0.08*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("SSQ = ", round(sum_of_squares, 5)), x = 0, y = (max(y)-(max(y)*0.12*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("ip = ", round(ip, 5)), x = 0, y = (max(y)-(max(y)*0.16*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("t_ip = ", round(t_ip, 5)), x = 0, y = (max(y)-(max(y)*0.20*anno_size)), pos = 4, cex = anno_size)
+    
+    
+    if (isTRUE(plot_d)) {
+      
+      par(new = TRUE)
+      
+      plot (
+        t, 
+        dy_dt, 
+        xaxt = "n", 
+        yaxt = "n",
+        ylab = "", 
+        xlab = "", 
+        col = dl_col, 
+        type = "l",
+        cex.axis = text_size, 
+        cex.lab = text_size
+        )
+      
+      axis(side = 4, cex.axis = text_size)
+      mtext(y2_lab, side = 4, line = 3, cex = text_size)
+      
+    }
+    
+  }
+)
+
+
+logistic_growth <- 
+  function (
+    y, 
+    t, 
+    S = NULL,
+    S_start = NULL, 
+    S_end = NULL, 
+    S_iterations = 10, 
+    S_start_est_method = "bisect", 
+    seq_by = 10,
+    nls = TRUE
+  ) 
+  {
+    
+    loggrowth_saturation <- 
+      function (
+        y, 
+        t, 
+        S_start, 
+        S_end, 
+        S_start_est_method = "bisect", 
+        S_iterations = 10, 
+        seq_by = 10
+      ) {
+        
+        if (S_start_est_method == "trialanderror") {
+          
+          values_seq <- seq (S_start, S_end, by = seq_by)
+          values_no <- length (values_seq)
+          values_ssq <- matrix (ncol = 2, nrow = values_no)
+          values_ssq[,1] <- values_seq
+          
+          i <- 0
+          
+          for (i in 1:values_no) {
+            
+            y_new <- log ((1/y)-(1/values_seq[i]))
+            model_lin <- lm (y_new ~ t)
+            model_lin_summary <- summary(model_lin)
+            sum_of_squares_lin <- sum(model_lin_summary$residuals^2)
+            
+            values_ssq[i,2] <- sum_of_squares_lin 
+            
+          }
+          
+          values_ssq_order <- values_ssq[order(values_ssq[,2])]
+          
+          S_est <- values_ssq_order[1]
+          
+          plot(values_ssq[,1], values_ssq[,2], "l")
+          
+        }
+        
+        else {    
+          
+          i <- 0
+          
+          interval_m <- vector()
+          
+          for (i in 1:S_iterations)
+          {
+            
+            interval_m[i] <- (S_start+S_end)/2
+            
+            y_new_start <- log ((1/y)-(1/S_start))
+            
+            model_lin_start <- lm (y_new_start ~ t)
+            model_lin_start_summary <- summary(model_lin_start)
+            sum_of_squares_lin_start <- sum(model_lin_start_summary$residuals^2)
+            
+            y_new_m <- log ((1/y)-(1/interval_m[i]))
+            model_lin_m <- lm (y_new_m ~ t)
+            model_lin_m_summary <- summary(model_lin_m)
+            sum_of_squares_lin_m <- sum(model_lin_m_summary$residuals^2)
+            
+            y_new_end <- log ((1/y)-(1/S_end))
+            model_lin_end <- lm (y_new_m ~ t)
+            model_lin_end_summary <- summary(model_lin_m)
+            sum_of_squares_lin_end <- sum(model_lin_end_summary$residuals^2)
+            
+            if (sum_of_squares_lin_start < sum_of_squares_lin_end)
+              
+            {
+              
+              S_start <- S_start
+              S_end <- interval_m[i]
+              
+            }
+            
+            else
+            {
+              S_start <- interval_m[i]
+              S_end <- S_end
+            }
+            
+          }
+          S_est <- interval_m[i]
+          
+        } 
+        
+        return(S_est)
+        
+      }
+    
+    
+    if (!is.numeric(y)) {
+      stop ("Cumulative infections vector must be of class 'numeric'.")
+    }
+    
+    if (!is.numeric(y) & !is.Date(t)) {
+      stop ("Time vector must be of class 'numeric' oder 'Date'.")
+    }
+    
+    class_t <- "numeric"
+    
+    if (is.Date(t)) {
+      
+      class_t <- "Date"
+      
+      message ("Time vector is of class 'Date'. Calculating time counter.")
+      
+      start_date <- min(t)
+      
+      time_counter <- as.integer(t-start_date)
+      
+      t <- time_counter
+    }
+    
+    
+    options(scipen = 999)
+    
+    if (is.null(S) & (is.null(S_start) | is.null(S_end))) {
+      stop ("Saturation value or start and end values are required for estimation")
+    }
+    
+    if ((!is.null(S)) && (S < max(y))) {
+      stop (paste0("Saturation value must be above or equal to the the maximum of y (", max(y), ")"))
+    }
+    
+    
+    if ((!is.null(S_start) & (!is.null(S_end)))) {
+      
+      if (S_start < max(y)) {
+        stop (paste0("Minimum of saturation value must be above or equal to the the maximum of y (", max(y), ")"))
+      }
+      
+      S <- 
+        loggrowth_saturation(
+          y = y, 
+          t = t, 
+          S_start = S_start, 
+          S_end = S_end, 
+          S_iterations = S_iterations, 
+          S_start_est_method = S_start_est_method, 
+          seq_by = seq_by
+        )
+      
+    }
+    
+    y_new <- log ((1/y)-(1/S))
+    
+    model_lin <- lm (y_new ~ t)
+    
+    model_lin_summary <- summary(model_lin)
+    
+    b <- model_lin_summary$coefficients[1]
+    m <- model_lin_summary$coefficients[2]
+    
+    sum_of_squares_lin <- sum(model_lin_summary$residuals^2)
+    
+    model_lin_ols_list <- list (b = b, m = m, sum_of_squares = sum_of_squares_lin)
+    
+    
+    r <- -m/S
+    
+    y_0 <- S/(1+S*exp(m*t[1]+b))
+    
+    ip <- S/2
+    c <- -log (y_0/(S-y_0))
+    t_ip <- c/(r*S)
+    
+    y_pred <- S/(1+S*exp(m*t+b))
+    
+    dy_dt <- r*y_pred*(1-(y_pred/S))
+    
+    sum_of_squares_growth <- sum((y-y_pred)^2)
+    
+    model_growth_ols_list <- 
+      list (
+        S = S, 
+        r = r, 
+        y_0 = y_0, 
+        ip = ip, 
+        t_ip = t_ip, 
+        sum_of_squares = sum_of_squares_growth, 
+        y_pred = y_pred,
+        dy_dt = dy_dt
+      )
+    
+    
+    model_growth_nls_list <- list()
+    nls_estimation <- TRUE
+    nls_error_message <- NULL
+    
+    if (nls == TRUE) {
+      
+      tryCatch(
+        {
+          model_nls <- 
+            nls(
+              y ~ y_0 * S / (y_0 + (S - y_0) * exp(-r * S * t)), 
+              start = list (y_0 = y_0, S = S, r = r), 
+              control = list(maxiter = 500)
+            )
+          
+          y_0_nls <-  model_nls$m$getPars()[1]
+          
+          S_nls <- model_nls$m$getPars()[2]
+          
+          r_nls <- model_nls$m$getPars()[3]
+          
+          ip_nls <- S_nls/2
+          c_nls <- -log (y_0_nls/(S_nls-y_0_nls))
+          t_ip_nls <- c_nls/(r_nls*S_nls)
+          
+          y_pred <- model_nls$m$predict()
+          
+          dy_dt <- r_nls*y_pred*(1-(y_pred/S_nls))
+          
+          sum_of_squares_nls <- sum(model_nls$m$resid()^2)
+          
+          model_growth_nls_list <- 
+            list (
+              S = S_nls, 
+              r = r_nls, 
+              y_0 = y_0_nls, 
+              ip = ip_nls, 
+              t_ip = t_ip_nls, 
+              sum_of_squares = sum_of_squares_nls, 
+              y_pred = y_pred, 
+              dy_dt = dy_dt
+            )
+          
+        },
+        
+        error = function(cond) {
+          
+          nls_error_message <- paste0("Nonlinear estimation failed: ", conditionMessage(cond))
+          message(nls_error_message)
+          
+        },
+        
+        finally = function(cond) {
+          
+          nls_error_message <- paste0("Nonlinear estimation failed: ", conditionMessage(cond))
+          
+        }
+        
+      )
+      
+      if (length(model_growth_nls_list) == 0) {
+        
+        nls_estimation <- FALSE
+        
+      }
+    }
+    
+    config <-
+      list (
+        S = S, 
+        S_start = S_start,
+        S_end = S_end,
+        S_iterations = S_iterations,
+        S_start_est_method = S_start_est_method,
+        seq_by = seq_by,
+        nls = nls,
+        class_t = class_t,
+        nls_estimation = nls_estimation,
+        nls_error_message = nls_error_message
+      )
+    
+    new("loggrowth", 
+        LinModel = model_lin_ols_list, 
+        GrowthModel_OLS = model_growth_ols_list, 
+        GrowthModel_NLS = model_growth_nls_list,
+        y = y,
+        t = t,
+        config = config
+    )
+    
+  }
+
