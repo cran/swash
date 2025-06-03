@@ -50,7 +50,7 @@ data(COVID19Cases_geoRegion)
   }
 }
 \details{
-The data is included as it was published in ??. Note that the reporting date equals the date of SARS-CoV-2 testing.
+The data is included as it was published in by the Swiss Federal Office of Public Health (Bundesamt fuer Gesundheit, BAG). Note that the reporting date equals the date of SARS-CoV-2 testing.
 }
 \source{
   Federal Office of Public Health FOPH (2023) COVID-19 Dashboard Source Data. \url{https://www.covid19.admin.ch/api/data/documentation} (retrieved 2023-06-28)

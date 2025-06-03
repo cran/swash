@@ -9,33 +9,51 @@ export(
   "swash"
   )
 exportMethods(
-    "confint",
-    "plot",
-    "print",
-    "summary",
-    "plot_regions"
+  "confint",
+  "plot",
+  "print",
+  "summary",
+  "plot_regions",
+  "growth"
 )
 exportClasses(
-    "sbm",
-    "sbm_ci",
-    "countries",
-    "loggrowth"
+  "sbm",
+  "sbm_ci",
+  "countries",
+  "loggrowth"
 )
-importFrom("graphics", 
-           "abline", 
-           "barplot", 
-           "hist", 
-           "par", 
-           "boxplot", 
-           "lines", 
-           "axis", 
-           "grid", 
-           "mtext", 
-           "points", 
-           "rect",
-           "text"
-           )
-importFrom("methods", "new")
-importFrom("stats", "aggregate", "lm", "median", "nls", "quantile")
-importFrom("grDevices", "dev.new")
-importFrom("lubridate", "is.Date")
+importFrom(
+  "graphics", 
+   "abline", 
+   "barplot", 
+   "hist", 
+   "par", 
+   "boxplot", 
+   "lines", 
+   "axis", 
+   "grid", 
+   "mtext", 
+   "points", 
+   "rect",
+   "text"
+)
+importFrom(
+  "methods", 
+  "new"
+  )
+importFrom(
+  "stats", 
+  "aggregate", 
+  "lm", 
+  "median", 
+  "nls", 
+  "quantile"
+  )
+importFrom(
+  "grDevices", 
+  "dev.new"
+  )
+importFrom(
+  "lubridate", 
+  "is.Date"
+  )

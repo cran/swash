@@ -1,8 +1,8 @@
 Package: swash
 Type: Package
 Title: Swash-Backwash Model for the Single Epidemic Wave
-Version: 1.2.0
-Date: 2025-05-24
+Version: 1.2.1
+Date: 2025-05-29
 Authors@R: person("Thomas", "Wieland", role = c("aut", "cre"),
                      email = "geowieland@googlemail.com",
                      comment = c(ORCID = "0000-0001-5168-9846"))
@@ -14,6 +14,6 @@ Description: The Swash-Backwash Model for the Single Epidemic Wave was developed
 License: GPL (>= 2)
 Imports: methods
 NeedsCompilation: no
-Packaged: 2025-05-27 06:34:35 UTC; thoma
+Packaged: 2025-06-03 06:46:03 UTC; thoma
 Repository: CRAN
-Date/Publication: 2025-05-27 06:50:03 UTC
+Date/Publication: 2025-06-03 07:10:02 UTC

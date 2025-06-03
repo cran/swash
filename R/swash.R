@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.2.0
-# Last update: 2025-05-27 07:29
+# Version:     1.2.1
+# Last update: 2025-06-02 17:37
 # Copyright (c) 2025 Thomas Wieland
 #-------------------------------------------------------------------------------
 
@@ -351,6 +351,139 @@ setMethod(
     
   }
 )
+
+setGeneric("growth", function(
+    object,
+    S_iterations = 10, 
+    S_start_est_method = "bisect", 
+    seq_by = 10,
+    nls = TRUE
+) {
+  standardGeneric("growth")
+})
+
+setMethod(
+  "growth", 
+  "sbm", 
+  function(object,
+           S_iterations = 10, 
+           S_start_est_method = "bisect", 
+           seq_by = 10,
+           nls = TRUE
+  ) {
+    
+    N <- object@data_statistics[1]
+    
+    col_names <- object@col_names
+    col_cases <- col_names[1]
+    col_date <- col_names[2]
+    col_region <- col_names[3]
+    
+    input_data <- object@input_data
+    
+    N_names <- levels(as.factor(input_data[[col_region]]))
+    
+    logistic_growth_models <- list()
+    
+    results <- data.frame(matrix(ncol = 16))
+    
+    for (i in 1:N) {
+      
+      input_data_i <- 
+        input_data[input_data[[col_region]] == N_names[i],]
+      
+      input_data_i <-
+        input_data_i[order(input_data_i[[col_date]]),]
+      
+      input_data_cor <- 
+        data.frame(
+          cumsum(input_data_i[[col_cases]]), 
+          input_data_i[[col_date]]
+          )
+      colnames(input_data_cor) <- c("y", "t")
+      
+      if (any(input_data_cor$y <= 0)) {
+        
+        message(paste0("Infection data of region ", N_names[i], " contains values <= 0. These rows are skipped."))
+        
+        input_data_cor <- input_data_cor[input_data_cor$y > 0,]
+      }
+      
+      min_date <- min(input_data_cor$t)
+      max_date <- max(input_data_cor$t)
+      
+      logistic_growth_i <-
+        logistic_growth(
+          y = input_data_cor$y, 
+          t = input_data_cor$t, 
+          S = max(input_data_cor$y)*1.01,
+          S_start = NULL, 
+          S_end = NULL, 
+          S_iterations = S_iterations, 
+          S_start_est_method = S_start_est_method, 
+          seq_by = seq_by,
+          nls = nls
+        )
+      
+      results[i,1] <- N_names[i]
+      results[i,2] <- min_date
+      results[i,3] <- max_date
+      results[i,4] <- logistic_growth_i@GrowthModel_OLS$S
+      results[i,5] <- logistic_growth_i@GrowthModel_OLS$r
+      results[i,6] <- logistic_growth_i@GrowthModel_OLS$y_0
+      results[i,7] <- logistic_growth_i@GrowthModel_OLS$ip
+      results[i,8] <- logistic_growth_i@GrowthModel_OLS$t_ip
+      results[i,9] <- logistic_growth_i@GrowthModel_OLS$sum_of_squares
+      
+      if (!is.null(logistic_growth_i@GrowthModel_NLS)) {
+        
+        results[i,10] <- logistic_growth_i@GrowthModel_NLS$S
+        results[i,11] <- logistic_growth_i@GrowthModel_NLS$r
+        results[i,12] <- logistic_growth_i@GrowthModel_NLS$y_0
+        results[i,13] <- logistic_growth_i@GrowthModel_NLS$ip
+        results[i,14] <- logistic_growth_i@GrowthModel_NLS$t_ip
+        results[i,15] <- logistic_growth_i@GrowthModel_NLS$sum_of_squares
+        
+      } else {
+        
+        results[i,16] <- logistic_growth_i@GrowthModel_NLS$nls_error_message
+        
+      }
+      
+      logistic_growth_models <- append(logistic_growth_models, logistic_growth_i)
+      
+      names(logistic_growth_models)[i] <- N_names[i]
+      
+    }
+    
+    colnames(results) <-
+      c(
+        "region",
+        "min_date",
+        "max_date",
+        "S_OLS",
+        "r_OLS",
+        "y0_OLS",
+        "ip_OLS",
+        "tip_OLS",
+        "SSQ_OLS",
+        "S_NLS",
+        "r_NLS",
+        "y0_NLS",
+        "ip_NLS",
+        "tip_NLS",
+        "SSQ_NLS",
+        "nls_error_message"
+      )
+      
+    growth_results <-
+      list(
+        results = results,
+        logistic_growth_models = logistic_growth_models
+      )
+    invisible (growth_results)  
+  }
+  )
 
 
 setGeneric("plot_regions", function(
@@ -1163,11 +1296,14 @@ setMethod(
         
         if (!is.null(config$S)) {
           
-          cat (paste0("Nonlinear estimation with saturation set to ", config$S), " using method: ", config$S_start_est_method)  
-        
+          cat (paste0("Nonlinear estimation with saturation set to ", config$S), " using method: ", config$S_start_est_method)
+          cat ("")
+          
           } else {
           
             cat (paste0("Nonlinear estimation with saturation start value = ", config$S_start, " and end value = ", config$S_end, " using method: ", config$S_start_est_method))
+            cat ("")
+            
         }
         
       } else {
@@ -1614,4 +1750,3 @@ logistic_growth <-
     )
     
   }
-
