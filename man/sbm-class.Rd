@@ -37,12 +37,15 @@ Objects can be created by the function \code{swash}.
     \item{show}{\code{signature(object = "sbm")}: Prints an \code{sbm} object; use \code{summary(sbm)} for results }
     \item{summary}{\code{signature(object = "sbm")}: Prints a summary of \code{sbm} objects (results of the Swash-Backwash Model) }
     \item{growth}{\code{signature(object = "sbm")}: Estimates logistic growth models from \code{sbm} objects }
+    \item{growth_initial}{\code{signature(object = "sbm")}: Estimates exponential growth models from \code{sbm} objects for a given time period}
 	 }
 }
 \author{
 Thomas Wieland
 }
 \references{
+Chowell G, Viboud C, Hyman JM, Simonsen L (2015) The Western Africa ebola virus disease epidemic exhibits both global exponential and local polynomial growth rates. \emph{PLOS Currents Outbreaks}, ecurrents.outbreaks.8b55f4bad99ac5c5db3663e916803261. \doi{https://doi.org/10.1371/currents.outbreaks.8b55f4bad99ac5c5db3663e916803261}
+
 Cliff AD, Haggett P (2006) A swash-backwash model of the single epidemic wave. \emph{Journal of Geographical Systems} 8(3), 227-252. \doi{https://doi.org/10.1007/s10109-006-0027-8}
 
 Smallman-Raynor MR, Cliff AD, Stickler PJ (2022) Meningococcal Meningitis and Coal Mining in Provincial England: Geographical Perspectives on a Major Epidemic, 1929–33. \emph{Geographical Analysis} 54, 197–216. \doi{https://doi.org/10.1111/gean.12272}

@@ -4,11 +4,13 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.2.1
-# Last update: 2025-06-02 17:37
+# Version:     1.2.2
+# Last update: 2025-07-06 16:48
 # Copyright (c) 2025 Thomas Wieland
 #-------------------------------------------------------------------------------
 
+library(sf)
+library(spdep)
  
 setClass("sbm",
          slots = list(
@@ -486,6 +488,124 @@ setMethod(
   )
 
 
+setGeneric("growth_initial", function(
+    object,
+    time_units = 10,
+    GI = 4
+) {
+  standardGeneric("growth_initial")
+})
+
+setMethod(
+  "growth_initial", 
+  "sbm", 
+  function(
+    object,
+    time_units = 10,
+    GI = 4
+  ) {
+    
+    N <- object@data_statistics[1]
+    
+    col_names <- object@col_names
+    col_cases <- col_names[1]
+    col_date <- col_names[2]
+    col_region <- col_names[3]
+    
+    input_data <- object@input_data
+    
+    N_names <- levels(as.factor(input_data[[col_region]]))
+    
+    exponential_growth_models <- list()
+    
+    results <- data.frame(matrix(ncol = 6))
+    
+    for (i in 1:N) {
+   
+      input_data_i <- 
+        input_data[input_data[[col_region]] == N_names[i],]
+      
+      if (time_units > nrow(input_data_i)) {
+        stop(paste0("Dataset of region ", N_names[i], " contains ", nrow(input_data_i), " time units but ", time_units, " were stated."))  
+      }
+      
+      input_data_i <-
+        input_data_i[order(input_data_i[[col_date]]),]
+      
+      input_data_cor <- 
+        data.frame(
+          input_data_i[[col_cases]], 
+          input_data_i[[col_date]]
+        )
+      
+      input_data_cor <- input_data_cor[1:time_units,]
+      colnames(input_data_cor) <- c("y", "t")
+      
+      if (any(input_data_cor$y <= 0)) {
+        
+        message(paste0("NOTE: Infection data of region ", N_names[i], " contains values <= 0. These rows are skipped."))
+        
+        input_data_cor <- input_data_cor[input_data_cor$y > 0,]
+      }
+      
+      if (nrow(input_data_cor) > 1) {
+        
+        min_date <- min(input_data_cor$t)
+        max_date <- max(input_data_cor$t)
+        
+        exponential_growth_i <-
+          exponential_growth(
+            y = input_data_cor$y, 
+            t = input_data_cor$t, 
+            GI = GI
+          )
+        
+        results[i,1] <- N_names[i]
+        results[i,2] <- min_date
+        results[i,3] <- max_date
+        results[i,4] <- exponential_growth_i$exp_gr
+        results[i,5] <- exponential_growth_i$R0
+        results[i,6] <- exponential_growth_i$doubling
+        
+        exponential_growth_models <- append(exponential_growth_models, exponential_growth_i)
+        
+        names(exponential_growth_models)[i] <- N_names[i]
+        
+      } else {
+        
+        message(paste0("WARNING: No cases for region ", N_names[i], ". No exponential growth model built."))
+        
+        results[i,1] <- N_names[i]
+        results[i,2] <- NA
+        results[i,3] <- NA
+        results[i,4] <- NA
+        results[i,5] <- NA
+        results[i,6] <- NA
+        
+        
+      }
+      
+    }
+    
+    colnames(results) <-
+      c(
+        "region",
+        "min_date",
+        "max_date",
+        "exp_growth_rate",
+        "R_0",
+        "doubling_rate"
+      )
+    
+    growth_initial_results <-
+      list(
+        results = results,
+        exponential_growth_models = exponential_growth_models
+      )
+    invisible (growth_initial_results)  
+  }
+)
+
 setGeneric("plot_regions", function(
     object,
     col = "red",
@@ -495,6 +615,7 @@ setGeneric("plot_regions", function(
     ) {
     standardGeneric("plot_regions")
   })
+
 
 setMethod(
   "plot_regions", 
@@ -1459,6 +1580,59 @@ setMethod(
 )
 
 
+exponential_growth <-
+  function(
+    y, 
+    t,
+    GI = 4
+  ) {
+    
+    if (!is.numeric(y)) {
+      stop ("Infections vector must be of class 'numeric'.")
+    }
+    
+    if (!is.numeric(y) & !is.Date(t)) {
+      stop ("Time vector must be of class 'numeric' oder 'Date'.")
+    }
+    
+    class_t <- "numeric"
+    
+    if (is.Date(t)) {
+      
+      class_t <- "Date"
+      
+      message ("NOTE: Time vector is of class 'Date'. Calculating time counter.")
+      
+      start_date <- min(t)
+      
+      time_counter <- as.integer(t-start_date)
+      
+      t <- time_counter
+    }
+    
+    
+    log_y <- log(y)
+    
+    linexpmodel <- lm (log_y ~ t)
+    
+    exp_gr <- linexpmodel$coefficients[2]
+    
+    R0 <- exp (exp_gr*GI)
+    
+    doubling <- log(2)/exp_gr
+    
+    return(
+      list(
+        exp_gr = exp_gr, 
+        R0 = R0, 
+        doubling = doubling, 
+        model_data = linexpmodel
+        )
+      )
+    
+  }
+
+
 logistic_growth <- 
   function (
     y, 
@@ -1563,7 +1737,6 @@ logistic_growth <-
         
       }
     
-    
     if (!is.numeric(y)) {
       stop ("Cumulative infections vector must be of class 'numeric'.")
     }
@@ -1578,7 +1751,7 @@ logistic_growth <-
       
       class_t <- "Date"
       
-      message ("Time vector is of class 'Date'. Calculating time counter.")
+      message ("NOTE: Time vector is of class 'Date'. Calculating time counter.")
       
       start_date <- min(t)
       
@@ -1586,9 +1759,6 @@ logistic_growth <-
       
       t <- time_counter
     }
-    
-    
-    options(scipen = 999)
     
     if (is.null(S) & (is.null(S_start) | is.null(S_end))) {
       stop ("Saturation value or start and end values are required for estimation")
@@ -1631,7 +1801,6 @@ logistic_growth <-
     
     model_lin_ols_list <- list (b = b, m = m, sum_of_squares = sum_of_squares_lin)
     
-    
     r <- -m/S
     
     y_0 <- S/(1+S*exp(m*t[1]+b))
@@ -1657,7 +1826,6 @@ logistic_growth <-
         y_pred = y_pred,
         dy_dt = dy_dt
       )
-    
     
     model_growth_nls_list <- list()
     nls_estimation <- TRUE
@@ -1748,5 +1916,125 @@ logistic_growth <-
         t = t,
         config = config
     )
+    
+  }
+
+
+nbmatrix <- 
+  function(
+    polygon_sf, 
+    ID_col,
+    row.names = NULL
+    ) {
+  
+  nb <- spdep::poly2nb(
+    polygon_sf, 
+    row.names = row.names
+    )
+    
+  polygon_sf$ID <- rownames(polygon_sf)
+  
+  poly_no <- nrow(polygon_sf)
+  
+  polys_nb <- data.frame(matrix(ncol = 3))
+  colnames(polys_nb) <- c("ID", "ID_nb", "nb")
+  
+  i <- 0
+  
+  for (i in 1:poly_no) {
+    
+    neighbors <- nb[[i]]
+    
+    poly_id <- polygon_sf$ID[i]
+    
+    poly_nb <- data.frame(rep(poly_id, length(neighbors)), neighbors)
+    colnames (poly_nb) <- c("ID", "ID_nb")
+    poly_nb$nb <- 1
+    
+    polys_nb <- rbind(polys_nb, poly_nb)
+    
+  }
+  
+  polys_nb <- polys_nb[!is.na(polys_nb$ID),]
+  
+  polygon_sf_IDs <- cbind(polygon_sf$ID, polygon_sf[[ID_col]])
+  colnames(polygon_sf_IDs) <- c("ID", "ID2")
+  
+  polys_nb <- 
+    merge (
+      polys_nb, 
+      polygon_sf_IDs, 
+      by.x = "ID", 
+      by.y = "ID"
+      )
+  
+  polys_nb <- 
+    merge (
+      polys_nb, 
+      polygon_sf_IDs, 
+      by.x = "ID_nb", 
+      by.y = "ID"
+      )
+  
+  polys_nb <- polys_nb[c(2,4, 1, 5, 3)]  
+  
+  colnames(polys_nb) <- c("ID", "ID2", "ID_nb", "ID2_nb", "nb")
+  
+  nbmat_results <-
+    list(
+      nb = nb,
+      nbmat = polys_nb
+    )
+  
+  return(nbmat_results)
+  
+  }
+
+
+nbstat <-
+  function(
+    polygon_sf, 
+    ID_col, 
+    link_data, 
+    data_ID_col, 
+    data_col, 
+    func = "sum",
+    row.names = NULL
+  ) { 
+    
+    nbmat <- nbmatrix(
+      polygon_sf, 
+      ID_col,
+      row.names = row.names
+    )
+    
+    nbmat <- nbmat[[2]]
+    
+    nbmat_data <- 
+      merge (
+        nbmat, 
+        link_data,
+        by.x = "ID2_nb", 
+        by.y = data_ID_col
+      )
+    
+    nbmat_data_aggregate <- 
+      aggregate(
+        nbmat_data[[data_col]],
+        by = list(nbmat_data$ID2),
+        FUN = func,
+        na.rm = TRUE
+      )
+    
+    colnames(nbmat_data_aggregate) <- c("ID2", paste0(data_col, "_", func))
+    
+    nbstat_results <- 
+      list(
+        nbmat = nbmat,
+        nbmat_data = nbmat_data, 
+        nbmat_data_aggregate = nbmat_data_aggregate
+      )
+    
+    return(nbstat_results)
     
   }

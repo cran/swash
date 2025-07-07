@@ -35,20 +35,33 @@ growth(
      Nonlinear estimation? \code{TRUE} or \code{FALSE}
 }
 }
+
 \details{
 The function estimates logistic growth models for regional infections based on a \code{sbm} object. See \code{\link{logistic_growth}} for further details.
 }
+
 \value{
 \code{list} with two entries:
     \item{\code{results}:}{Object of class \code{"data.frame"} Results of the logistic growth models (coefficients and derivates)}
     \item{\code{logistic_growth_models}:}{Object of class \code{"list"} List with \eqn{N} entries for \eqn{N} growth models resp. \code{loggrowth} objects }
 }
+
 \references{
+Chowell G, Simonsen L, Viboud C, Yang K (2014) Is West Africa Approaching a Catastrophic Phase or is the 2014 Ebola Epidemic Slowing Down? Different Models Yield Different Answers for Liberia. \emph{PLoS currents 6}. \doi{https://dx.doi.org/10.1371/currents.outbreaks.b4690859d91684da963dc40e00f3da81}
+
+Pell B, Kuang Y, Viboud C, Chowell G (2018) Using phenomenological models for forecasting the 2015 ebola challenge. \emph{Epidemics 22}, 62–70. \doi{https://doi.org/10.1016/j.epidem.2016.11.002}
+
 Wieland T (2020) Flatten the Curve! Modeling SARS-CoV-2/COVID-19 Growth in Germany at the County Level. \emph{REGION} 7(2), 43–83. \doi{https://doi.org/10.18335/region.v7i2.324}
 }
+
 \author{
 Thomas Wieland
 }
+
+\seealso{
+\code{\link{logistic_growth}, \link{exponential_growth}}
+}
+
 \examples{
 data(COVID19Cases_geoRegion)
 # Get SWISS COVID19 cases at NUTS 3 level

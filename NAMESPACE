@@ -1,9 +1,12 @@
 export(
   "as_balanced", 
-  "compare_countries", 
+  "compare_countries",
+  "exponential_growth",
   "hist_ci", 
   "is_balanced",
   "logistic_growth",
+  "nbmatrix",
+  "nbstat",
   "quantile_ci", 
   "R_t",
   "swash"
@@ -14,7 +17,8 @@ exportMethods(
   "print",
   "summary",
   "plot_regions",
-  "growth"
+  "growth",
+  "growth_initial"
 )
 exportClasses(
   "sbm",
@@ -22,6 +26,7 @@ exportClasses(
   "countries",
   "loggrowth"
 )
+
 importFrom(
   "graphics", 
    "abline", 
@@ -57,3 +62,8 @@ importFrom(
   "lubridate", 
   "is.Date"
   )
+importFrom(
+  "spdep",
+  "poly2nb"
+)
+import("sf")
