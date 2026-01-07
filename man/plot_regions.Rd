@@ -4,16 +4,28 @@
 \title{
 Plots of Regional Infections Over Time
 }
+
 \description{
 Plots regional infection curves in \eqn{N} plots for \eqn{N} regions.
 }
+
 \usage{
 plot_regions(
   object, 
-  col = "red", 
+  col = "red",
+  lty = "solid",
   scale = FALSE, 
   normalize_by_col = NULL, 
-  normalize_factor = 1
+  normalize_factor = 1,
+  plot_rollmean = FALSE,
+  rollmean_col = "blue",
+  rollmean_lty = "solid",
+  rollmean_k = 7,
+  rollmean_align = "center",
+  rollmean_fill = NA,
+  growth_col = "orange",
+  growth_lty = "solid", 
+  growth_per_time_unit = 1
   )
 }
 
@@ -24,6 +36,9 @@ plot_regions(
   \item{col}{
      Color of line plot
 }
+\item{lty}{
+     Type of line plot
+}
   \item{scale}{
      Set y axis of the plots uniformly based on the maximum value across all regions? (boolean, default: \code{FALSE})
 }
@@ -33,16 +48,47 @@ plot_regions(
   \item{normalize_factor}{
      Multiply density/incidence with a factor (say, 100,000 inhabitants)
 }
+ \item{plot_rollmean}{
+     Plot rolling mean?
 }
+ \item{rollmean_col}{
+     Color of rolling mean line
+}
+ \item{rollmean_lty}{
+     Type of rolling mean line
+}
+\item{rollmean_k}{
+     integer width of the rolling window (see \code{zoo::rollmean})
+}
+\item{rollmean_align}{
+     specifying whether the index of the result should be left- or right-aligned or centered (default) compared to the rolling window of observations (see \code{zoo::rollmean})
+}
+\item{rollmean_fill}{
+      filling values at the left/within/to the right of the data range (see \code{zoo::rollmean})
+}
+\item{growth_col}{
+      Color of growth line
+}
+\item{growth_lty}{
+      Line type of growth line
+}
+\item{growth_per_time_unit}{
+      Time unit for growth rates
+}
+}
+
 \details{
 Plots regional infection curves in \eqn{N} plots for \eqn{N} regions, with the number of columns equals 4 and the number of rows is calculated based the size of \eqn{N}.
 }
+
 \value{
-Plot, only no returned value
+Plot only, no returned value
 }
+
 \author{
 Thomas Wieland
 }
+
 \examples{
 data(COVID19Cases_geoRegion)
 # Get SWISS COVID19 cases at NUTS 3 level

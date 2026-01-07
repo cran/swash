@@ -1,12 +1,17 @@
 export(
-  "as_balanced", 
+  "as_balanced",
+  "binary_metrics",
+  "binary_metrics_glm",
   "compare_countries",
   "exponential_growth",
   "hist_ci", 
   "is_balanced",
   "logistic_growth",
+  "metrics",
   "nbmatrix",
   "nbstat",
+  "plot_breakpoints",
+  "plot_coef_ci",
   "quantile_ci", 
   "R_t",
   "swash"
@@ -40,7 +45,9 @@ importFrom(
    "mtext", 
    "points", 
    "rect",
-   "text"
+   "text",
+   "legend", 
+  "polygon"
 )
 importFrom(
   "methods", 
@@ -52,11 +59,14 @@ importFrom(
   "lm", 
   "median", 
   "nls", 
-  "quantile"
+  "quantile",
+  "coef",
+  "predict"
   )
 importFrom(
   "grDevices", 
-  "dev.new"
+  "dev.new",
+  "rgb"
   )
 importFrom(
   "lubridate", 
@@ -67,3 +77,11 @@ importFrom(
   "poly2nb"
 )
 import("sf")
+importFrom(
+  "zoo",
+  "rollmean"
+)
+importFrom(
+  "strucchange",
+  "breakpoints"
+)

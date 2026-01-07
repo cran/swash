@@ -33,12 +33,9 @@ This function allows the estimation of an exponential growth model. The user mus
 }
 
 \value{
-\code{list} with four entries:
-    \item{\code{exp_gr}:}{\code{numeric} value of exponential growth rate}
-    \item{\code{R0}:}{\code{numeric} value of basic reproduction number}
-    \item{\code{doubling}:}{\code{numeric} value of doubling rate}
-    \item{\code{model_data}:}{\code{lm} object of regression model}
+object of class \code{\link{expgrowth-class}}
 }
+
 
 \references{
 Bonifazi G et al. (2021) A simplified estimate of the effective reproduction number Rt using its relation with the doubling time and application to Italian COVID-19 data. \emph{The European Physical Journal Plus} 136, 386. \doi{https://doi.org/10.1140/epjp/s13360-021-01339-6}
@@ -63,8 +60,10 @@ data(COVID19Cases_geoRegion)
 # Get SWISS COVID19 cases at NUTS 3 level
 
 COVID19Cases_ZH <-
-  COVID19Cases_geoRegion[(COVID19Cases_geoRegion$geoRegion == "ZH")
-                         & (COVID19Cases_geoRegion$sumTotal > 0),]
+  COVID19Cases_geoRegion[
+  (COVID19Cases_geoRegion$geoRegion == "ZH")
+  & (COVID19Cases_geoRegion$sumTotal > 0)
+  ,]
 # COVID cases for Zurich
 
 expgrowth_BS <- exponential_growth (
@@ -73,6 +72,9 @@ expgrowth_BS <- exponential_growth (
 )
 # Exponential growth model for the first 4 weeks
 
-expgrowth_BS$doubling
+summary(expgrowth_BS)
+# Summary of exponential growth model
+
+expgrowth_BS@doubling
 # Doubling rate
 }

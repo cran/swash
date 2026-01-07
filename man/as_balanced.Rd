@@ -39,22 +39,7 @@ The Swash-Backwash Model for the Single Epidemic Wave does not necessarily requi
 \value{
   \item{data }{Corrected input dataset (\code{data.frame})}
 }
-\references{
 
-\emph{Swash-Backwash Model:}
-
-Cliff AD, Haggett P (2006) A swash-backwash model of the single epidemic wave. \emph{Journal of Geographical Systems} 8(3), 227-252. \doi{https://doi.org/10.1007/s10109-006-0027-8}
-
-Smallman-Raynor MR, Cliff AD, Stickler PJ (2022) Meningococcal Meningitis and Coal Mining in Provincial England: Geographical Perspectives on a Major Epidemic, 1929–33. \emph{Geographical Analysis} 54, 197–216. \doi{https://doi.org/10.1111/gean.12272}
-
-Smallman-Raynor MR, Cliff AD, The COVID-19 Genomics UK (COG-UK) Consortium (2022) Spatial growth rate of emerging SARS-CoV-2 lineages in England, September 2020–December 2021. \emph{Epidemiology and Infection} 150, e145. \doi{https://doi.org/10.1017/S0950268822001285}.
-
-\emph{Panel data:}
-
-Greene, WH (2012) \emph{Econometric Analysis}. Ch. 11.
-
-Wooldridge, JM (2012) \emph{Introductory Econometrics. A Modern Approach}. Ch. 13.
-}
 \author{
 Thomas Wieland
 }

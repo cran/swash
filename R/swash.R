@@ -1,60 +1,69 @@
 #-------------------------------------------------------------------------------
 # Name:        swash (swash package)
-# Purpose:     Swash-Backwash Model for the Single Epidemic Wave
+# Purpose:     Swash-Backwash Model for the Single Epidemic Wave and other tools
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.2.2
-# Last update: 2025-07-06 16:48
+# Version:     1.3.0
+# Last update: 2025-12-30 13:31
 # Copyright (c) 2025 Thomas Wieland
 #-------------------------------------------------------------------------------
 
 library(sf)
 library(spdep)
- 
-setClass("sbm",
-         slots = list(
-           R_0A = "numeric",
-           integrals = "numeric",
-           velocity = "numeric",
-           occ_regions = "data.frame",
-           SIR_regions = "data.frame",
-           cases_by_date = "data.frame",
-           cases_by_region = "data.frame",
-           input_data = "data.frame",
-           data_statistics = "numeric",
-           col_names = "character"
-         ))
+library(zoo)
+library(strucchange)
 
-setClass("sbm_ci",
-         slots = list(
-           R_0A = "numeric",
-           integrals = "numeric",
-           velocity = "numeric",
-           occ_regions = "data.frame",
-           cases_by_date = "data.frame",
-           cases_by_region = "data.frame",
-           input_data = "data.frame",
-           data_statistics = "numeric",
-           col_names = "character",
-           integrals_ci = "list", 
-           velocity_ci = "list", 
-           R_0A_ci = "numeric", 
-           iterations = "data.frame",
-           ci = "numeric",
-           config = "list"
-         ))
 
-setClass("countries",
-         slots = list(
-           sbm_ci1 = "sbm_ci",
-           sbm_ci2 = "sbm_ci",
-           D = "numeric",
-           D_ci = "numeric",
-           config = "list",
-           country_names = "character",
-           indicator = "character"
-         ))
+setClass(
+  "sbm",
+  slots = list(
+    R_0A = "numeric",
+    integrals = "numeric",
+    velocity = "numeric",
+    occ_regions = "data.frame",
+    SIR_regions = "data.frame",
+    cases_by_date = "data.frame",
+    cases_by_region = "data.frame",
+    input_data = "data.frame",
+    data_statistics = "numeric",
+    col_names = "character"
+  )
+  )
+
+setClass(
+  "sbm_ci",
+  slots = list(
+    R_0A = "numeric",
+    integrals = "numeric",
+    velocity = "numeric",
+    occ_regions = "data.frame",
+    cases_by_date = "data.frame",
+    cases_by_region = "data.frame",
+    input_data = "data.frame",
+    data_statistics = "numeric",
+    col_names = "character",
+    integrals_ci = "list", 
+    velocity_ci = "list", 
+    R_0A_ci = "numeric", 
+    iterations = "data.frame",
+    ci = "numeric",
+    config = "list"
+  )
+)
+
+setClass(
+  "countries",
+  slots = list(
+    sbm_ci1 = "sbm_ci",
+    sbm_ci2 = "sbm_ci",
+    D = "numeric",
+    D_ci = "numeric",
+    config = "list",
+    country_names = "character",
+    indicator = "character"
+  )
+)
 
 
 swash <- 
@@ -187,55 +196,33 @@ swash <-
 
 
 setMethod(
-  "summary", 
-  "sbm", 
+  "summary",
+  "sbm",
   function(object) {
     
-    cat("Swash-Backwash Model", "\n")
+    cat("Swash-Backwash Model\n\n")
     
-    results_df <- data.frame(matrix(ncol = 1, nrow = 10))
-    results_df[1,1] <- ""
-    results_df[2,1] <- round (object@integrals[1], 3)
-    results_df[3,1] <- round (object@integrals[2], 3)
-    results_df[4,1] <- round (object@integrals[3], 3)
-    results_df[5,1] <- ""
+    cat("Integrals\n")
+    cat(sprintf("  Susceptible areas : %.3f\n", object@integrals[1]))
+    cat(sprintf("  Infected areas    : %.3f\n", object@integrals[2]))
+    cat(sprintf("  Recovered areas   : %.3f\n\n", object@integrals[3]))
     
-    results_df[6,1] <- ""
-    results_df[7,1] <- round (object@velocity[1], 3)
-    results_df[8,1] <- round (object@velocity[2], 3)
-    results_df[9,1] <- ""
+    cat("Velocity\n")
+    cat(sprintf("  Leading edge      : %.3f\n", object@velocity[1]))
+    cat(sprintf("  Following edge    : %.3f\n\n", object@velocity[2]))
     
-    results_df[10,1] <- round (object@R_0A, 3)
+    cat(sprintf("Spatial reproduction number : %.3f\n\n", object@R_0A))
     
-    rownames(results_df) <- c(
-      "Integrals",
-      "Susceptible areas", 
-      "Infected areas", 
-      "Recovered areas",
-      "",
-      "Velocity",
-      "Leading edge",
-      "Following edge",
-      " ",
-      "Spatial reproduction number"
-    )
-    
-    colnames(results_df) <- " "
-
-    print(results_df)
-    cat("\n")
-    
-    cat ("Input data", "\n")
-    cat (paste0("Units       ", object@data_statistics[1]), "\n")
-    cat (paste0("No-case     ", object@data_statistics[3]), "\n")
-    cat (paste0("Time points ", object@data_statistics[2], "\n"))
-    if (object@data_statistics[4] == TRUE) {
-      cat("Balanced    YES", "\n")
-    } else {
-      cat("Balanced    NOPE", "\n")
-    }
-    
-  })
+    cat("Input data\n")
+    cat(sprintf("  Units       : %s\n", object@data_statistics[1]))
+    cat(sprintf("  No-case     : %s\n", object@data_statistics[3]))
+    cat(sprintf("  Time points : %s\n", object@data_statistics[2]))
+    cat(sprintf(
+      "  Balanced    : %s\n",
+      ifelse(object@data_statistics[4], "YES", "NO")
+    ))
+  }
+)
 
 
 setMethod(
@@ -246,7 +233,8 @@ setMethod(
     cat(paste0("Swash-Backwash Model with ", x@data_statistics[1], " spatial units and ", x@data_statistics[2], " time points"), "\n")
     cat ("Use summary() for results")
 
-})
+}
+)
 
 
 setMethod(
@@ -257,34 +245,37 @@ setMethod(
     cat(paste0("Swash-Backwash Model with ", object@data_statistics[1], " spatial units and ", object@data_statistics[2], " time points"), "\n")
     cat ("Use summary() for results")
     
-  })
+  }
+)
 
 
 setMethod(
   "plot", 
   "sbm", 
-  function(x, y = NULL, 
-           col_edges = "blue",
-           xlab_edges = "Time", 
-           ylab_edges = "Regions",
-           main_edges = "Edges",
-           col_SIR = c("blue", "red", "green"),
-           lty_SIR = c("solid", "solid", "solid"),
-           lwd_SIR = c(1,1,1),
-           xlab_SIR = "Time", 
-           ylab_SIR = "Regions",
-           main_SIR = "SIR integrals",
-           col_cases = "red",
-           lty_cases = "solid",
-           lwd_cases = 1,
-           xlab_cases = "Time", 
-           ylab_cases = "Infections",
-           main_cases = "Daily infections",
-           xlab_cum = "Cases",
-           ylab_cum = "Regions",
-           main_cum = "Cumulative infections per region",
-           horiz_cum = TRUE,
-           separate_plots = FALSE
+  function(
+    x, 
+    y = NULL, 
+    col_edges = "blue",
+    xlab_edges = "Time", 
+    ylab_edges = "Regions",
+    main_edges = "Edges",
+    col_SIR = c("blue", "red", "green"),
+    lty_SIR = c("solid", "solid", "solid"),
+    lwd_SIR = c(1,1,1),
+    xlab_SIR = "Time", 
+    ylab_SIR = "Regions",
+    main_SIR = "SIR integrals",
+    col_cases = "red",
+    lty_cases = "solid",
+    lwd_cases = 1,
+    xlab_cases = "Time", 
+    ylab_cases = "Infections",
+    main_cases = "Daily infections",
+    xlab_cum = "Cases",
+    ylab_cum = "Regions",
+    main_cum = "Cumulative infections per region",
+    horiz_cum = TRUE,
+    separate_plots = FALSE
   ) {
 
     par_old <- par(no.readonly = TRUE)
@@ -367,11 +358,12 @@ setGeneric("growth", function(
 setMethod(
   "growth", 
   "sbm", 
-  function(object,
-           S_iterations = 10, 
-           S_start_est_method = "bisect", 
-           seq_by = 10,
-           nls = TRUE
+  function(
+    object,
+    S_iterations = 10, 
+    S_start_est_method = "bisect", 
+    seq_by = 10,
+    nls = TRUE
   ) {
     
     N <- object@data_statistics[1]
@@ -563,13 +555,17 @@ setMethod(
         results[i,1] <- N_names[i]
         results[i,2] <- min_date
         results[i,3] <- max_date
-        results[i,4] <- exponential_growth_i$exp_gr
-        results[i,5] <- exponential_growth_i$R0
-        results[i,6] <- exponential_growth_i$doubling
+        results[i,4] <- exponential_growth_i@exp_gr
+        results[i,5] <- exponential_growth_i@R0
+        results[i,6] <- exponential_growth_i@doubling
         
-        exponential_growth_models <- append(exponential_growth_models, exponential_growth_i)
+        exponential_growth_models <- 
+          append(
+            exponential_growth_models, 
+            exponential_growth_i
+            )
         
-        names(exponential_growth_models)[i] <- N_names[i]
+        exponential_growth_models[[N_names[i]]] <- exponential_growth_i
         
       } else {
         
@@ -581,7 +577,6 @@ setMethod(
         results[i,4] <- NA
         results[i,5] <- NA
         results[i,6] <- NA
-        
         
       }
       
@@ -609,9 +604,19 @@ setMethod(
 setGeneric("plot_regions", function(
     object,
     col = "red",
+    lty = "solid",
     scale = FALSE,
     normalize_by_col = NULL,
-    normalize_factor = 1
+    normalize_factor = 1,
+    plot_rollmean = FALSE,
+    rollmean_col = "blue",
+    rollmean_lty = "solid",
+    rollmean_k = 7,
+    rollmean_align = "center",
+    rollmean_fill = NA,
+    growth_col = "orange",
+    growth_lty = "solid",
+    growth_per_time_unit = 1
     ) {
     standardGeneric("plot_regions")
   })
@@ -620,13 +625,24 @@ setGeneric("plot_regions", function(
 setMethod(
   "plot_regions", 
   "sbm", 
-  function(object,
-           col = "red",
-           scale = FALSE,
-           normalize_by_col = NULL,
-           normalize_factor = 1
-           ) {
-
+  function(
+    object,
+    col = "red",
+    lty = "solid",
+    scale = FALSE,
+    normalize_by_col = NULL,
+    normalize_factor = 1,
+    plot_rollmean = FALSE,
+    rollmean_col = "blue",
+    rollmean_lty = "solid",
+    rollmean_k = 7,
+    rollmean_align = "center",
+    rollmean_fill = NA,
+    growth_col = "orange",
+    growth_lty = "solid",
+    growth_per_time_unit = 1
+  ) {
+    
     par_old <- par(no.readonly = TRUE)
     on.exit(par(par_old))
     dev.new()
@@ -647,15 +663,17 @@ setMethod(
     N_names <- levels(as.factor(input_data[[col_region]]))
 
     if (!is.null(normalize_by_col)) {
+      
       input_data[[paste0(col_cases, "_normalized")]] <-
         input_data[[col_cases]]/input_data[[normalize_by_col]]*normalize_factor
       
       y_max <- max(input_data[[paste0(col_cases, "_normalized")]])*1.05
 
     } else {
+      
       y_max <- max(input_data[[col_cases]])*1.05
+      
     }
-    
     
     i <- 0
     
@@ -677,11 +695,31 @@ setMethod(
         plot(
           input_data_i[[col_date]], 
           input_data_i[[paste0(col_cases, "_normalized")]],
-          col = col, 
-          main = N_names[i],
           type = "l",
+          col = col,
+          lty = lty,
+          main = N_names[i],
           ylim = c(0, y_max)
         )
+        
+        if (isTRUE(plot_rollmean)) {
+          
+          input_data_i[[paste0(col_cases, "_normalized_rm")]] <- 
+            rollmean(
+              input_data_i[[paste0(col_cases, "_normalized")]],
+              k = rollmean_k, 
+              fill = rollmean_fill,
+              align = rollmean_align
+              )
+          
+          lines (
+            input_data_i[[col_date]],
+            input_data_i[[paste0(col_cases, "_normalized_rm")]], 
+            col = rollmean_col, 
+            lty = rollmean_lty
+            )
+          
+        }
         
       }
       
@@ -700,6 +738,25 @@ setMethod(
           ylim = c(0, y_max)
         )
         
+        if (isTRUE(plot_rollmean)) {
+          
+          input_data_i[[paste0(col_cases, "_rm")]] <- 
+            rollmean(
+              input_data_i[[col_cases]],
+              k = rollmean_k, 
+              fill = rollmean_fill,
+              align = rollmean_align
+            )
+          
+          lines (
+            input_data_i[[col_date]],
+            input_data_i[[paste0(col_cases, "_rm")]], 
+            col = rollmean_col, 
+            lty = rollmean_lty
+          )
+          
+        }
+        
       }
       
     }
@@ -709,13 +766,15 @@ setMethod(
 
 
 setMethod(
-  "confint", 
-  "sbm", 
-  function(object,
-           iterations = 100,
-           samples_ratio = 0.8,
-           alpha = 0.05,
-           replace = TRUE) {
+    "confint", 
+    "sbm", 
+    function(
+    object,
+    iterations = 100,
+    samples_ratio = 0.8,
+    alpha = 0.05,
+    replace = TRUE
+    ) {
 
     N = object@data_statistics[1]
     TP = object@data_statistics[2]
@@ -769,7 +828,17 @@ setMethod(
     }
     
     colnames(swash_bootstrap) <-
-      c("iteration", "S_A", "I_A", "R_A", "t_LE", "t_FE", "t_FE-t_LE", "R_0A", "sample_size")
+      c(
+        "iteration", 
+        "S_A", 
+        "I_A", 
+        "R_A", 
+        "t_LE", 
+        "t_FE", 
+        "t_FE-t_LE", 
+        "R_0A", 
+        "sample_size"
+        )
     
     ci_lower <- alpha/2
     ci_upper <- 1-(alpha/2)
@@ -811,74 +880,75 @@ setMethod(
   "summary", 
   "sbm_ci", 
   function(object) {
-  
-    cis <- names(object@integrals_ci$S_A_ci)
     
-    ci_df <- data.frame(matrix(ncol = 2, nrow = 11))
-    ci_df[1,] <- cis
-    ci_df[2,1] <- round(object@integrals_ci$S_A_ci[1], 3)
-    ci_df[2,2] <- round(object@integrals_ci$S_A_ci[2], 3)
-    ci_df[3,1] <- round(object@integrals_ci$I_A_ci[1], 3)
-    ci_df[3,2] <- round(object@integrals_ci$I_A_ci[2], 3)
-    ci_df[4,1] <- round(object@integrals_ci$R_A_ci[1], 3)
-    ci_df[4,2] <- round(object@integrals_ci$R_A_ci[2], 3)
-    ci_df[5,1:2] <- " "
+    cat("Confidence Intervals for Swash-Backwash Model\n\n")
     
-    ci_df[6,] <- cis
-    ci_df[7,1] <- round(object@velocity_ci$t_LE_ci[1], 3)
-    ci_df[7,2] <- round(object@velocity_ci$t_LE_ci[2], 3)
-    ci_df[8,1] <- round(object@velocity_ci$t_FE_ci[1], 3)
-    ci_df[8,2] <- round(object@velocity_ci$t_FE_ci[2], 3)
-    ci_df[9,1:2] <- " "
-
-    ci_df[10,] <- cis
-    ci_df[11,1] <- round(object@R_0A_ci[1], 3)
-    ci_df[11,2] <- round(object@R_0A_ci[2], 3)
-
-    rownames(ci_df) <- c(
-      "Integrals",
-      "Susceptible areas", 
-      "Infected areas", 
-      "Recovered areas",
-      "",
-      "Velocity",
-      "Leading edge",
-      "Following edge",
-      " ",
-      "   ",
-      "Spatial reproduction number"
+    cat("Integrals\n")
+    cat(
+      sprintf(
+        "  Susceptible areas : [%.3f, %.3f]\n",
+        object@integrals_ci$S_A_ci[1],
+        object@integrals_ci$S_A_ci[2])
+      )
+    cat(
+      sprintf(
+        "  Infected areas    : [%.3f, %.3f]\n",
+        object@integrals_ci$I_A_ci[1], 
+        object@integrals_ci$I_A_ci[2]
+        )
+      )
+    cat(
+      sprintf(
+        "  Recovered areas   : [%.3f, %.3f]\n\n",
+        object@integrals_ci$R_A_ci[1], 
+        object@integrals_ci$R_A_ci[2]
+        )
       )
     
-    colnames(ci_df) <- c(" "," ")
-
-    ci_df <- format(ci_df, justify = "right")
-
-    cat("Confidence Intervals for Swash-Backwash Model", "\n")
+    cat("Velocity\n")
+    cat(
+      sprintf(
+        "  Leading edge      : [%.3f, %.3f]\n", 
+        object@velocity_ci$t_LE_ci[1], 
+        object@velocity_ci$t_LE_ci[2]
+        )
+      )
+    cat(
+      sprintf(
+        "  Following edge    : [%.3f, %.3f]\n\n", 
+        object@velocity_ci$t_FE_ci[1], 
+        object@velocity_ci$t_FE_ci[2]
+        )
+      )
     
-    print(as.matrix(ci_df), quote = FALSE, colnames = FALSE)
+    cat(
+      sprintf(
+        "Spatial reproduction number : [%.3f, %.3f]\n\n",
+        object@R_0A_ci[1], 
+        object@R_0A_ci[2]
+        )
+      )
+    
+    cat("Configuration for confidence intervals\n")
+    cat(
+      sprintf(
+        "  CI alpha    : %s\n", 
+        object@config$alpha
+        )
+      )
+    cat(sprintf("  Sample      : %s %% (%s units)\n", 
+                object@config$samples_ratio*100, object@config$regions_to_sample))
+    cat(sprintf("  Iterations  : %s\n", object@config$iterations))
+    cat(sprintf("  Bootstrap   : %s\n", ifelse(object@config$replace, "YES", "NO")))
+    
+    cat("\nInput data\n")
+    cat(sprintf("  Units       : %s\n", object@data_statistics[1]))
+    cat(sprintf("  No-case     : %s\n", object@data_statistics[3]))
+    cat(sprintf("  Time points : %s\n", object@data_statistics[2]))
+    cat(sprintf("  Balanced    : %s\n", ifelse(object@data_statistics[4], "YES", "NO")))
+  }
+)
 
-    cat ("\n")
-    cat ("Configuration for confidence intervals", "\n")
-    cat (paste0("CI alpha    ", object@config$alpha), "\n")
-    cat (paste0("Sample      ", object@config$samples_ratio*100, " % (", object@config$regions_to_sample, " units)"), "\n")
-    cat (paste0("Iterations  ", object@config$iterations, "\n"))
-    if (object@config$replace == TRUE) {
-      cat ("Bootstrap   YES", "\n")
-    } else {
-      cat ("Bootstrap   NO", "\n")
-    }
-
-    cat ("\n")
-    cat ("Input data", "\n")
-    cat (paste0("Units       ", object@data_statistics[1]), "\n")
-    cat (paste0("No-case     ", object@data_statistics[3]), "\n")
-    cat (paste0("Time points ", object@data_statistics[2], "\n"))
-    if (object@data_statistics[4] == TRUE) {
-      cat("Balanced    YES", "\n")
-    } else {
-      cat("Balanced    NO", "\n")
-    } 
-  })
 
 
 setMethod(
@@ -908,9 +978,11 @@ setMethod(
 setMethod(
   "plot", 
   "sbm_ci", 
-  function(x, y = NULL, 
-           col_bars = "grey",
-           col_ci = "red"
+  function(
+    x, 
+    y = NULL, 
+    col_bars = "grey",
+    col_ci = "red"
   ) {
 
     par_old <- par(no.readonly = TRUE)
@@ -1016,7 +1088,10 @@ compare_countries <-
     
     D <- sbm1_confint@iterations[[indicator]]-sbm2_confint@iterations[[indicator]]
 
-    D_ci <- quantile_ci(x = D, alpha = alpha)
+    D_ci <- quantile_ci(
+      x = D, 
+      alpha = alpha
+      )
 
     bootstrap_config <- list(
       iterations = iterations,
@@ -1041,9 +1116,11 @@ compare_countries <-
 setMethod(
   "plot", 
   "countries", 
-  function(x, y = NULL, 
-           col_bars = "grey",
-           col_ci = "red"
+  function(
+    x, 
+    y = NULL, 
+    col_bars = "grey",
+    col_ci = "red"
   ) {
 
     par_old <- par(no.readonly = TRUE)
@@ -1121,36 +1198,68 @@ setMethod(
   function(object) {
     
     D_ci <- object@D_ci
-    cis <- names(D_ci)
     indicator <- object@indicator
     
     D_mean <- mean(object@D, na.rm = TRUE)
     D_median <- median(object@D, na.rm = TRUE)
     
-    ci_df <- data.frame(matrix(ncol = 4, nrow = 1))
-    ci_df[1,1] <- round(D_mean, 3)
-    ci_df[1,2] <- round(D_median, 3)
-    ci_df[1,3:4] <- round(D_ci, 3)
-    colnames(ci_df) <- c("Mean", "Median", cis)
-    rownames(ci_df) <- paste0("Difference in ", indicator)
-
-    cat("Two-country comparison for Swash-Backwash Model", "\n")
-    cat("\n")
+    cat("Two-country comparison for Swash-Backwash Model\n\n")
     
-    print(ci_df)
+    cat(
+      sprintf(
+        "Difference in %s\n", 
+        indicator
+        )
+      )
+    cat(
+      sprintf(
+        "  Mean   : %.3f\n", 
+        D_mean
+        )
+      )
+    cat(
+      sprintf(
+        "  Median : %.3f\n", 
+        D_median
+        )
+      )
+    cat(
+      sprintf(
+        "  Confidence interval : [%.3f, %.3f]\n\n", 
+        D_ci[1], 
+        D_ci[2]
+        )
+      )
     
-    cat ("\n")
-    cat ("Configuration for confidence intervals", "\n")
-    cat (paste0("CI alpha    ", object@config$alpha), "\n")
-    cat (paste0("Sample      ", object@config$samples_ratio*100, " % "), "\n")
-    cat (paste0("Iterations  ", object@config$iterations), "\n")
-    if (object@config$replace == TRUE) {
-      cat ("Bootstrap   YES", "\n")
-    } else {
-      cat ("Bootstrap   NO", "\n")
+    cat("Configuration for confidence intervals\n")
+    cat(
+      sprintf(
+        "  CI alpha    : %s\n", 
+        object@config$alpha
+        )
+      )
+    cat(
+      sprintf(
+        "  Sample      : %s %%\n", 
+        object@config$samples_ratio*100
+        )
+      )
+    cat(
+      sprintf(
+        "  Iterations  : %s\n", 
+        object@config$iterations
+        )
+      )
+    cat(
+      sprintf(
+        "  Bootstrap   : %s\n", 
+        ifelse(object@config$replace, "YES", "NO")
+        )
+      )
+  
     }
-    
-  })
+)
+
 
 setMethod(
   "show", 
@@ -1215,7 +1324,11 @@ quantile_ci <-
     ci_lower <- alpha/2
     ci_upper <- 1-(alpha/2)
 
-    ci <- quantile(x, probs = c(ci_lower, ci_upper))
+    ci <- 
+      quantile(
+        x, 
+        probs = c(ci_lower, ci_upper)
+        )
     
     return(ci)
     
@@ -1223,16 +1336,18 @@ quantile_ci <-
 
 
 hist_ci <-
-  function(x,
-           alpha = 0.05,
-           col_bars = "grey",
-           col_ci = "red",
-           ...) {
+  function(
+    x,
+    alpha = 0.05,
+    col_bars = "grey",
+    col_ci = "red",
+    ...
+    ) {
     
     ci <- quantile_ci(
       x = x, 
       alpha = alpha
-      )
+    )
     
     hist(x, col = col_bars, ...)
     abline(v = ci[1], col = col_ci)
@@ -1308,7 +1423,8 @@ as_balanced <-
     col_cases, 
     col_date, 
     col_region,
-    fill_missing = 0) {
+    fill_missing = 0
+    ) {
     
     N <- nlevels(as.factor(data[[col_region]]))
     TP <- nlevels(as.factor(data[[col_date]]))
@@ -1346,97 +1462,125 @@ as_balanced <-
   }
 
 
-setClass("loggrowth",
-         slots = list(
-           LinModel = "list", 
-           GrowthModel_OLS = "list", 
-           GrowthModel_NLS = "list",
-           y = "numeric",
-           t = "numeric",
-           config = "list"
-         ))
+setClass(
+  "expgrowth",
+  slots = list(
+    exp_gr = "numeric",
+    y_0 = "numeric",
+    R0 = "numeric", 
+    doubling = "numeric",
+    model_data = "lm",
+    config = "list"
+  )
+)
+
+setMethod(
+  "summary", 
+  "expgrowth", 
+  function(object) {
+    
+    cat("Exponential Growth Model\n\n")
+
+    exp_gr <- object@exp_gr
+    y_0 <- object@y_0
+    R0 <- object@R0 
+    doubling <- object@doubling 
+    model_data <- object@model_data
+    config <- object@config
+    
+    cat("OLS model\n")
+    cat(sprintf("  Growth rate              : %.3f\n", exp_gr))
+    cat(sprintf("  Baseline                 : %.3f\n", y_0))
+    cat(sprintf("  Basic reproduction number: %.3f\n", R0))
+    cat(sprintf("  Doubling rate            : %.3f\n", doubling))
+    
+  }
+)
+
+setMethod(
+  "print", 
+  "expgrowth", 
+  function(x) {
+    
+    cat(paste0("Exponential Growth Model for infections"), "\n")
+    cat ("Use summary() for results", "\n")
+    
+  }
+)
+
+
+setMethod(
+  "show", 
+  "expgrowth", 
+  function(object) {
+    
+    cat(paste0("Exponential Growth Model for infections"), "\n")
+    cat ("Use summary() for results", "\n")
+    
+  }
+)
+
+
+setClass(
+  "loggrowth",
+  slots = list(
+    LinModel = "list", 
+    GrowthModel_OLS = "list", 
+    GrowthModel_NLS = "list",
+    y = "numeric",
+    t = "numeric",
+    config = "list"
+  )
+)
 
 setMethod(
   "summary", 
   "loggrowth", 
   function(object) {
     
-    cat("Logistic Growth Model", "\n")
+    cat("Logistic Growth Model\n\n")
     
     LinModel <- object@LinModel
     GrowthModel_OLS <- object@GrowthModel_OLS
     GrowthModel_NLS <- object@GrowthModel_NLS
     config <- object@config
     
-    results_df <- data.frame(matrix(ncol = 2, nrow = 6))
-    
-    results_df[1,1] <- round(GrowthModel_OLS$S, 3)
-    results_df[2,1] <- round(GrowthModel_OLS$r, 3)
-    results_df[3,1] <- round(GrowthModel_OLS$y_0, 3)
-    results_df[4,1] <- round(GrowthModel_OLS$ip, 3)
-    results_df[5,1] <- round(GrowthModel_OLS$t_ip, 3)
-    results_df[6,1] <- round(GrowthModel_OLS$sum_of_squares, 3)
+    cat("OLS model\n")
+    cat(sprintf("  Saturation               : %.3f\n", GrowthModel_OLS$S))
+    cat(sprintf("  Growth rate              : %.3f\n", GrowthModel_OLS$r))
+    cat(sprintf("  Baseline                 : %.3f\n", GrowthModel_OLS$y_0))
+    cat(sprintf("  Inflection point         : %.3f\n", GrowthModel_OLS$ip))
+    cat(sprintf("  Time of inflection point : %.3f\n", GrowthModel_OLS$t_ip))
+    cat(sprintf("  Sum of squares           : %.3f\n\n", GrowthModel_OLS$sum_of_squares))
     
     if (length(GrowthModel_NLS) > 0) {
-      
-      results_df[1,2] <- round(GrowthModel_NLS$S, 3)
-      results_df[2,2] <- round(GrowthModel_NLS$r, 3)
-      results_df[3,2] <- round(GrowthModel_NLS$y_0, 3)
-      results_df[4,2] <- round(GrowthModel_NLS$ip, 3)
-      results_df[5,2] <- round(GrowthModel_NLS$t_ip, 3)
-      results_df[6,2] <- round(GrowthModel_NLS$sum_of_squares, 3)
-      
+      cat("NLS model\n")
+      cat(sprintf("  Saturation               : %.3f\n", GrowthModel_NLS$S))
+      cat(sprintf("  Growth rate              : %.3f\n", GrowthModel_NLS$r))
+      cat(sprintf("  Baseline                 : %.3f\n", GrowthModel_NLS$y_0))
+      cat(sprintf("  Inflection point         : %.3f\n", GrowthModel_NLS$ip))
+      cat(sprintf("  Time of inflection point : %.3f\n", GrowthModel_NLS$t_ip))
+      cat(sprintf("  Sum of squares           : %.3f\n\n", GrowthModel_NLS$sum_of_squares))
     }
-    
-    colnames(results_df) <- 
-      c(
-        "OLS model", 
-        "NLS model"
-      )
-    
-    rownames(results_df) <-
-      c(
-        "Saturation",
-        "Growth rate",
-        "Baseline",
-        "Inflection point",
-        "Time of inflection point",
-        "Sum of squares"
-      )
-    
-    print(results_df)
-    cat("\n")
     
     if (config$nls == FALSE) {
-      
-      cat ("NLS estimation was not desired by user.")
-    
-      } else {
-        
+      cat("NLS estimation was not desired by user.\n")
+    } else {
       if (isTRUE(config$nls_estimation)) {
-        
         if (!is.null(config$S)) {
-          
-          cat (paste0("Nonlinear estimation with saturation set to ", config$S), " using method: ", config$S_start_est_method)
-          cat ("")
-          
-          } else {
-          
-            cat (paste0("Nonlinear estimation with saturation start value = ", config$S_start, " and end value = ", config$S_end, " using method: ", config$S_start_est_method))
-            cat ("")
-            
+          cat(sprintf("Nonlinear estimation with saturation set to %.3f using method: %s\n", 
+                      config$S, config$S_start_est_method))
+        } else {
+          cat(sprintf("Nonlinear estimation with saturation start value = %.3f and end value = %.3f using method: %s\n", 
+                      config$S_start, config$S_end, config$S_start_est_method))
         }
-        
       } else {
-        
-        cat ("Nonlinear estimation failed.")
-        
+        cat("Nonlinear estimation failed.\n")
       }
-        
     }
-    
   }
-  )
+)
+
 
 
 setMethod(
@@ -1579,6 +1723,29 @@ setMethod(
   }
 )
 
+setMethod(
+  "print", 
+  "loggrowth", 
+  function(x) {
+    
+    cat(paste0("Logistic Growth Model for infections"), "\n")
+    cat ("Use summary() for results", "\n")
+    
+  }
+)
+
+
+setMethod(
+  "show", 
+  "loggrowth", 
+  function(object) {
+    
+    cat(paste0("Logistic Growth Model for infections"), "\n")
+    cat ("Use summary() for results", "\n")
+    
+  }
+)
+
 
 exponential_growth <-
   function(
@@ -1615,21 +1782,28 @@ exponential_growth <-
     
     linexpmodel <- lm (log_y ~ t)
     
+    y_0 <- linexpmodel$coefficients[1]
+      
     exp_gr <- linexpmodel$coefficients[2]
     
     R0 <- exp (exp_gr*GI)
     
     doubling <- log(2)/exp_gr
     
-    return(
-      list(
-        exp_gr = exp_gr, 
-        R0 = R0, 
-        doubling = doubling, 
-        model_data = linexpmodel
-        )
+    config <-
+      list (
+        GI = GI
       )
     
+    new("expgrowth", 
+        exp_gr = exp_gr,
+        y_0 = y_0,
+        R0 = R0, 
+        doubling = doubling, 
+        model_data = linexpmodel,
+        config = config
+    )
+
   }
 
 
@@ -2036,5 +2210,844 @@ nbstat <-
       )
     
     return(nbstat_results)
+    
+  }
+
+
+plot_coef_ci <- function(
+  point_estimates,
+  confint_lower,
+  confint_upper,
+  coef_names,
+  p = NULL,
+  estimate_colors = NULL,
+  confint_colors = NULL,
+  auto_color = FALSE,
+  alpha = 0.05,
+  set_estimate_colors = c("red", "grey", "green"),
+  set_confint_colors = c("#ffcccb", "lightgray", "#CCFFCC"),
+  skipvars = NULL,
+  plot.xlab = "Independent variables",
+  plot.main = "Point estimates with CI",
+  axis.at = seq(-30, 40, by = 5),
+  pch = 15,
+  cex = 2,
+  lwd = 5,
+  y.cex = 0.8
+) {
+  
+  if (
+    length(coef_names) == length(point_estimates) &&
+    length(point_estimates) == length(confint_lower) &&
+    length(confint_lower) == length(confint_upper)
+    ) {
+    
+    data_plot <- 
+      data.frame(
+        coef_names, 
+        point_estimates,
+        confint_lower,
+        confint_upper
+      )
+    
+  } else {
+    
+    stop("Vectors coef_names, point_estimates, confint_lower, and confint_upper differ in length.")
+    
+  }
+  
+  if (!is.null(p)) {
+    
+    if (length(p) == nrow(data_plot)) {
+      
+      data_plot$p <- p
+      
+    } else {
+      
+      stop("Vector p differs in length from coef_names, point_estimates, confint_lower, and confint_upper")
+      
+    }
+    
+  }
+  
+  if (!is.null(estimate_colors) & !is.null(confint_colors)) {
+    
+    data_plot$col_point <- estimate_colors
+    data_plot$col_confint <- confint_colors
+    
+  } else {
+    
+    if (is.null(p)) {
+      
+      if (auto_color == FALSE) {
+        
+        stop("If estimate_colors and confint_colors are NULL and auto_color is FALSE, then p must be stated as numeric vector")
+        
+      } else {
+        
+        data_plot$col_point <- set_estimate_colors[2]
+        data_plot$col_confint <- set_confint_colors[2]
+        
+        data_plot[
+          (data_plot$point_estimates < 0)
+          & (data_plot$confint_lower < 0)
+          & (data_plot$confint_upper < 0)
+          ,]$col_point <- set_estimate_colors[1]
+        data_plot[
+          (data_plot$point_estimates < 0)
+          & (data_plot$confint_lower < 0)
+          & (data_plot$confint_upper < 0)
+          ,]$col_confint <- set_confint_colors[1]
+        
+        data_plot[
+          (data_plot$point_estimates > 0)
+          & (data_plot$confint_lower > 0)
+          & (data_plot$confint_upper > 0)
+          ,]$col_point <- set_estimate_colors[3]
+        data_plot[
+          (data_plot$point_estimates > 0)
+          & (data_plot$confint_lower > 0)
+          & (data_plot$confint_upper > 0)
+          ,]$col_confint <- set_confint_colors[3]
+        
+      }
+      
+    }
+    
+  }
+  
+  if (!is.null(skipvars)) {
+    data_plot <- data_plot[!data_plot$coef_names %in% skipvars,]
+  }
+  
+  if (!is.null(p)) {
+    
+    data_plot$col_point <- set_estimate_colors[2]
+    data_plot$col_confint <- set_confint_colors[2]
+    
+    if (nrow(data_plot[(data_plot$point_estimates < 0) & (data_plot$p < alpha),]) > 0) {
+      data_plot[(data_plot$point_estimates < 0) & (data_plot$p < alpha),]$col_point <- set_estimate_colors[1]
+    }
+    if (nrow(data_plot[(data_plot$point_estimates > 0) & (data_plot$p < alpha),]) > 0) {
+      data_plot[(data_plot$point_estimates > 0) & (data_plot$p < alpha),]$col_point <- set_estimate_colors[3]
+    }
+    
+    if (nrow(data_plot[data_plot$col_point == set_estimate_colors[1],]) > 0) {
+      data_plot[data_plot$col_point == set_estimate_colors[1],]$col_confint <- set_confint_colors[1]
+    }
+    if (nrow(data_plot[data_plot$col_point == set_estimate_colors[3],]) > 0) {
+      data_plot[data_plot$col_point == set_estimate_colors[3],]$col_confint <- set_confint_colors[3]
+    }
+    
+  } 
+  
+  data_plot$order <- 1:nrow(data_plot)
+  data_plot <- data_plot[order(-data_plot$order),]
+  
+  par(mar=c(4,15,2,1))
+  
+  plot(
+    x = data_plot$point_estimates, 
+    y = (1:nrow(data_plot)), 
+    xlim = c(
+      -max(abs(data_plot$confint_lower)), 
+      max(abs(data_plot$confint_upper))
+    ), 
+    yaxt = "n", 
+    ylab = "", 
+    xaxt = "n", 
+    cex = 0.1, 
+    xlab = plot.xlab, 
+    main = plot.main
+  )
+  
+  axis(
+    1, 
+    at = axis.at, 
+    tck = 1, 
+    lty = 2, 
+    col = "gray"
+  )
+  
+  par(las=1)
+  
+  axis (
+    side = 2, 
+    at = 1:nrow(data_plot), 
+    labels = data_plot$coef_names, 
+    cex.axis = y.cex, 
+    tick = FALSE
+  )
+  
+  abline(h = 0)
+  abline(v = 0)
+  
+  i <- 0
+  
+  for (i in 1:nrow(data_plot)) {
+    
+    lines (
+      x = c(
+        data_plot$confint_lower[i], 
+        data_plot$confint_upper[i]
+      ), 
+      y = c(i,i), 
+      lwd = lwd,
+      col = data_plot$col_confint[i]
+    )
+    
+  }
+  
+  points (
+    x = data_plot$point_estimates, 
+    y = 1:nrow(data_plot), 
+    pch = pch, 
+    cex = cex, 
+    col = data_plot$col_point
+  )
+  
+}
+
+
+metrics <- 
+  function(
+    observed,
+    expected,
+    plot = TRUE,
+    plot.main = "Observed vs. expected",
+    xlab = "Observed",
+    ylab = "Expected",
+    point.col = "blue",
+    point.pch = 19,
+    line.col = "red",
+    plot_residuals.main = "Residuals",
+    legend.cex = 0.7
+  ) {
+    
+    if (length(observed) != length(expected)) {
+      stop("Vectors 'observed' and 'expected' differ in length")
+    }
+    
+    observed_expected <- data.frame(observed, expected)
+
+    observed_expected$residuals <- observed_expected$expected-observed_expected$observed
+    observed_expected$residuals_abs <- abs(observed_expected$expected-observed_expected$observed)
+    observed_expected$residuals_sq <- (observed_expected$expected-observed_expected$observed)^2
+    observed_expected$residuals_rel <- observed_expected$residuals/observed_expected$observed*100
+    observed_expected$residuals_rel_abs <- abs(observed_expected$residuals_rel)
+    
+    SQR <- sum(observed_expected$residuals_sq)
+    SAR <- sum(observed_expected$residuals_abs)
+    SQT <- sum(observed_expected$observed-mean(observed_expected$observed)^2)
+    R2 <- (1-(SQR/SQT))
+    MSE <- sum((observed_expected$observed-observed_expected$expected)^2)
+    RMSE <- sqrt(MSE)
+    MAE <- sum(observed_expected$observed-observed_expected$expected)
+    MAPE <- mean(observed_expected$residuals_rel_abs)
+
+    if (plot == TRUE) {
+      
+      min = min(observed_expected$observed)
+      max = max(observed_expected$observed)
+      
+      plot(
+        observed_expected$observed, 
+        observed_expected$expected, 
+        xlab = xlab,
+        ylab = ylab,
+        pch = point.pch, 
+        col = point.col,
+        main = plot.main,
+        xlim = c((min-min*0.1), (max*1.1)),
+        ylim = c((min-min*0.1), (max*1.1))
+      )
+      
+      legend(
+        "topleft", 
+        legend = c(
+          bquote(R^2 == .(round(R2, 2))),
+          paste0("MSE = ", round(MSE, 2)), 
+          paste0("RMSE = ", round(RMSE, 2)), 
+          paste0("MAE = ", round(MAE, 2)),
+          paste0("MAPE = ", round(MAPE, 2))
+          ), 
+        cex = legend.cex
+        )
+      
+      abline(coef = c(0,1), col = line.col)
+      
+      Y_residuals_stat <- 
+        data.frame(
+          table(
+            cut(
+              observed_expected$residuals_rel, 
+              breaks = c(-Inf, seq(-90, 90, 10), Inf)
+              )
+            )
+          )
+      colnames(Y_residuals_stat) <- c("Range", "Freq")
+      
+      Y_residuals_stat$Freq_rel <- round(Y_residuals_stat$Freq/sum(Y_residuals_stat$Freq)*100, 2)
+      
+      barplot (
+        Y_residuals_stat$Freq_rel, 
+        names.arg = Y_residuals_stat$Range, 
+        ylim = c(0, max(Y_residuals_stat$Freq_rel)*1.5),
+        main = plot_residuals.main
+        )
+      
+      legend(
+        "topleft", 
+        legend = c(
+          paste0("+/- 30 %: ", round(sum(Y_residuals_stat[8:13,]$Freq_rel), 1), " %"),
+          paste0("+/- 20 %: ", round(sum(Y_residuals_stat[9:12,]$Freq_rel), 1), " %"),
+          paste0("+/- 10 %: ", round(sum(Y_residuals_stat[10:11,]$Freq_rel), 1), " %")
+        ),
+        cex = legend.cex
+      )
+      
+    }
+    
+    fit_metrics <- list(
+      SQR = SQR,
+      SAR = SAR,
+      SQT = SQT,
+      R2 = R2,
+      MSE = MSE,
+      RMSE = RMSE,
+      MAE = MAE,
+      MAPE = MAPE
+    )
+    
+    return(
+      list(
+        fit_metrics = fit_metrics, 
+        observed_expected = observed_expected
+        )
+      )
+    
+  }
+
+
+binary_metrics <- function(
+    observed, 
+    expected,
+    no_information_rate = "negative"
+) {
+  
+  if (length(observed) != length(expected)) {
+    stop("Vectors 'observed' and 'expected' differ in length")
+  }
+  
+  if (!all(observed %in% c(0,1)) || !all(expected %in% c(0,1))) {
+    stop("Observed and/or expected values are not binary")
+  }
+  
+  observed_expected <- data.frame(observed, expected)
+  observed_expected$hit <- 0
+  observed_expected[observed_expected$observed == observed_expected$expected,]$hit <- 1
+  
+  tab <- table(observed, expected)
+  
+  sens <- tab[2,2] / sum(tab[2,])
+  spec <- tab[1,1] / sum(tab[1,])
+  acc  <- sum(diag(tab)) / sum(tab)
+  
+  if (no_information_rate == "positive") {
+    nir <- length(observed[observed == 1])/length(observed)
+  } else {
+    nir <- length(observed[observed == 0])/length(observed)
+  }
+  
+  fit_metrics <- 
+    list(
+      sens = sens,
+      spec = spec,
+      acc = acc,
+      nir = nir
+    )
+  
+  return (
+    list(
+      fit_metrics = fit_metrics,
+      observed_expected = observed_expected
+    )
+  )
+  
+}
+
+
+binary_metrics_glm <- function(
+    logit_model, 
+    threshold = 0.5
+) {
+  
+  y_pred <- 
+    ifelse(
+      predict(
+        logit_model, 
+        type = "response"
+        ) > threshold, 1, 0
+    )
+  
+  logit_metrics <- binary_metrics(
+    observed = logit_model$y,
+    expected = y_pred
+  )
+  
+  return(logit_metrics)
+  
+}
+
+
+plot_breakpoints <- 
+  function (
+    dataset, 
+    formula,
+    alpha = 0.05,
+    line.col = "chocolate",
+    ci.col = c(
+      rgb(0, 0, 255, maxColorValue = 255, alpha = 0.5),
+      rgb(0, 255, 0, maxColorValue = 255, alpha = 0.5),
+      rgb(255, 0, 0, maxColorValue = 255, alpha = 0.5)
+    ),
+    legend.show = TRUE, 
+    legend.pos = c(
+      "topright", 
+      "topright", 
+      "topright", 
+      "topright"
+      ),
+    xlab = "Time", 
+    ylab = "Y", 
+    ylim = NULL,
+    plot.main = c(
+      "Breakpoints", 
+      "Segment model fits", 
+      "BIC and Residual Sum of Squares", 
+      "Model without breaks (one segment)"
+    ),
+    output.full = TRUE,
+    separate_plots = FALSE,
+    ...
+  ) { 
+    
+    par_old <- par(no.readonly = TRUE)
+    on.exit(par(par_old))
+    dev.new()
+    
+    
+    ci_lower <- round((alpha/2)*100, 1)
+    ci_upper <- round((1-(alpha/2))*100, 1)
+    CI <- paste0("CI (", ci_lower, ";", ci_upper, ")")
+    
+    
+    model_nobp <- lm(
+      formula, 
+      data = dataset
+      )
+    
+    bpobj <- 
+      breakpoints(
+        formula, 
+        data = dataset, 
+        ...
+        )
+    
+    bpobj_coef <- coef(bpobj)
+    bpobj_breakpoints <- bpobj$breakpoints
+    bpobj_breakpoints_no <- length(bpobj_breakpoints)
+    bpobj_segments_no <- bpobj_breakpoints_no+1 
+    
+    if (bpobj_breakpoints_no > 0) {
+      bpobj_breakpoints_ci <- confint(
+        bpobj, 
+        level = 1-alpha
+        )  
+    }
+    
+    bpobj_segments <- 
+      matrix(
+        ncol = 2, 
+        nrow = bpobj_segments_no
+        )
+    
+    bpobj_segments[1,] <- c(1, bpobj_breakpoints[1])
+    
+    
+    i <- 0
+    
+    for (i in 2:(bpobj_segments_no-1)) {
+      bpobj_segments[i,] <- 
+        c(
+          (bpobj_breakpoints[i-1]+1), 
+          bpobj_breakpoints[i]
+          )
+    }
+    
+    bpobj_segments[bpobj_segments_no,] <- 
+      c(
+        bpobj_breakpoints[bpobj_breakpoints_no], 
+        nrow(dataset)
+        )
+    
+
+    i <- 0
+    
+    slopes <- matrix(ncol = 3, nrow = bpobj_segments_no)
+    slopes_p <- vector()
+    intercepts <- matrix(ncol = 3, nrow = bpobj_segments_no)
+    intercepts_p <- vector()
+    segment_model_R2 <- vector ()
+    segment_model_ci_points <- list()
+    
+    for (i in 1:bpobj_segments_no) {
+      
+      segment_model <- 
+        lm(
+          formula, 
+          data = dataset[bpobj_segments[i,1]:bpobj_segments[i,2],]
+          )
+
+      slopes[i, 1] <- segment_model$coefficients[2]
+      intercepts[i, 1] <- segment_model$coefficients[1]
+      
+      segment_model_ci_est <- 
+        confint(
+          segment_model,
+          level = 1-alpha
+          )
+      slopes[i, 2] <- segment_model_ci_est[2]
+      slopes[i, 3] <- segment_model_ci_est[4]
+      intercepts[i, 2] <- segment_model_ci_est[1]
+      intercepts[i, 3] <- segment_model_ci_est[3]
+      
+      segment_model_summary <- summary(segment_model)
+      
+      intercepts_p[i] <- segment_model_summary$coefficients[7]
+      slopes_p[i] <- segment_model_summary$coefficients[8]
+      
+      segment_model_R2[i] <- segment_model_summary$r.squared
+      
+      segment_model_ci_points[[i]] <- 
+        predict(
+          segment_model, 
+          interval = "confidence", 
+          level = 1-alpha
+          )
+      
+    }
+    
+    SegmentModels <- 
+      cbind(
+        bpobj_segments, 
+        intercepts, 
+        intercepts_p, 
+        slopes, 
+        slopes_p, 
+        segment_model_R2
+        )
+    
+    colnames(SegmentModels) <- 
+      c(
+        "first", 
+        "last", 
+        "intercept", 
+        "intercept_CI25", 
+        "intercept_CI975", 
+        "intercept_p", 
+        "slope", 
+        "slope_CI25", 
+        "slope_CI975", 
+        "slope_p", 
+        "R2"
+        )
+    
+    
+    if ((output.full == TRUE) & (separate_plots == FALSE)) {
+      par (mfrow = c(2, 2))
+    }
+
+
+    col_ci <- ci.col[1]
+
+    if (is.null(ylim)) {
+      
+      plot(
+        model_nobp$model[order(model_nobp$model[,2]),][,2], 
+        model_nobp$model[order(model_nobp$model[,2]),][,1], 
+        lwd = 1.5, 
+        type = "l", 
+        col = line.col, 
+        xlab = xlab, 
+        ylab = ylab,
+        main = plot.main[1]
+        )
+      
+    } else {
+      
+      plot(
+        model_nobp$model[order(model_nobp$model[,2]),][,2], 
+        model_nobp$model[order(model_nobp$model[,2]),][,1], 
+        lwd = 1.5, 
+        type = "l", 
+        col = line.col, 
+        xlab = xlab, 
+        ylab = ylab,
+        main = plot.main[1], 
+        ylim = ylim
+        )
+      
+    }
+    
+    if (bpobj_breakpoints_no > 0) {
+
+      i <- 0
+      
+      for (i in 1:bpobj_breakpoints_no) {
+        
+        rect(
+          bpobj_breakpoints_ci[[1]][i], 
+          par("usr")[3], 
+          bpobj_breakpoints_ci[[1]][i+((2/3)*length(bpobj_breakpoints_ci[[1]]))], 
+          par("usr")[4], 
+          col = col_ci, 
+          lty = 0
+          )
+        
+        abline (
+          v = bpobj_breakpoints_ci[[1]][i+((1/3)*length(bpobj_breakpoints_ci[[1]]))], 
+          col = "blue", 
+          lty = 1, 
+          lwd = 1.5
+          )
+        
+      }
+      
+      i <- 0
+      
+      for (i in 1:bpobj_segments_no) {
+        
+        text (
+          x = mean(c(SegmentModels[i,1], SegmentModels[i,2])), 
+          y = min(model_nobp$model[,1]),
+          (round(SegmentModels[i, 7], 3)), 
+          cex = 1, 
+          col = "black"
+          )    
+        
+      }
+
+            
+      if (legend.show == TRUE) {
+        
+        legend(
+          legend.pos[1], 
+          legend = c("Breakpoint", CI), 
+          col = c("blue", col_ci),
+          lty = c(1, NA), 
+          pch = c(NA, 15), 
+          lwd = 1.5, 
+          bty = "n", 
+          bg = "white"
+          )
+        
+        text(
+          min(model_nobp$model[,2])-max(model_nobp$model[,2])*0.1, 
+          min(model_nobp$model[,1]), 
+          "Slope", 
+          xpd = NA
+          )
+        
+      }
+      
+    }
+    
+    
+    if (output.full == TRUE) {
+      
+      col_ci <- ci.col[2]
+      
+      if (is.null(ylim)) {
+        
+        plot(
+          model_nobp$model[,2], 
+          model_nobp$model[,1], 
+          pch = 19, 
+          col = line.col, 
+          cex = 0.8,
+          xlab = xlab, 
+          ylab = ylab,
+          main = plot.main[2]
+          )
+        
+      }
+      
+      else {
+        
+        plot(
+          model_nobp$model[,2], 
+          model_nobp$model[,1], 
+          pch = 19, 
+          col = line.col, 
+          cex = 0.8,
+          xlab = xlab, 
+          ylab = ylab, 
+          main = plot.main[2], ylim = ylim)
+        
+      }
+      
+      i <- 0
+      
+      for (i in 1:bpobj_segments_no) {
+        
+        pol_coords <- 
+          data.frame(
+            cbind(
+              model_nobp$model[(SegmentModels[i,1]):(SegmentModels[i,2]), 2],
+              rev(model_nobp$model[(SegmentModels[i,1]):(SegmentModels[i,2]), 2]),
+              segment_model_ci_points[[i]][,2]), 
+            rev(segment_model_ci_points[[i]][,3]
+                )
+        )
+        colnames(pol_coords) <- c("x1", "x2", "y1", "y2")
+        
+        polygon(
+          c(pol_coords$x1, pol_coords$x2), 
+          c(pol_coords$y1, pol_coords$y2),
+          col = col_ci, 
+          border = NA
+          )
+        
+        lines (
+          x = (model_nobp$model[(SegmentModels[i,1]):(SegmentModels[i,2]), 2]),
+          y = (segment_model_ci_points[[i]][,1]), col = "darkgreen", 
+          lty = 2, 
+          lwd = 1.5
+          )
+        
+        text (
+          x = mean(c(SegmentModels[i,1], SegmentModels[i,2])), 
+          y = min(model_nobp$model[,1]),
+          (round(SegmentModels[i, 11], 3)), 
+          cex = 1, 
+          col = "black"
+          )
+        
+      }
+      
+      if (legend.show == TRUE) {
+        
+        legend(
+          legend.pos[2], 
+          legend = c("Model fit", CI), 
+          col = c("darkgreen", col_ci),
+          lty = c(2, NA), 
+          pch = c(NA, 15), 
+          lwd = 1.5, 
+          bty = "n", 
+          bg = "white"
+          )
+        
+        text(
+          min(model_nobp$model[,2])-max(model_nobp$model[,2])*0.1, 
+          min(model_nobp$model[,1]), 
+          expression(R^2), 
+          xpd=NA
+          )
+        
+      }
+      
+
+      plot(bpobj, lwd = 1.5, main = plot.main[3])
+      
+      
+      if (is.null(ylim)) {
+        
+        plot(
+          model_nobp$model[,2], 
+          model_nobp$model[,1], 
+          pch = 19, 
+          col = line.col, 
+          cex = 0.8,
+          xlab = xlab, 
+          ylab = ylab,
+          main = plot.main[4]
+          )
+      }
+      
+      else {
+        
+        plot(
+          model_nobp$model[,2], 
+          model_nobp$model[,1], 
+          pch = 19, 
+          col = line.col, 
+          cex = 0.8,
+          xlab = xlab, 
+          ylab = ylab,
+          main = plot.main[4], 
+          ylim = ylim
+          )
+        
+      }
+      
+      
+      model_nobp_ci_points <- 
+        predict(
+          model_nobp, 
+          interval = "confidence", 
+          level = 1-alpha
+          )
+      
+      col_ci <- ci.col[3]
+      
+      pol_coords <- 
+        data.frame(
+          cbind(
+            model_nobp$model[,2],
+            rev(model_nobp$model[,2]),
+            model_nobp_ci_points[,2], 
+            rev(model_nobp_ci_points[,3])
+            )
+          )
+      
+      colnames(pol_coords) <- c("x1", "x2", "y1", "y2")
+      
+      polygon(
+        c(pol_coords$x1, pol_coords$x2), 
+        c(pol_coords$y1, pol_coords$y2),
+        col = col_ci, 
+        border = NA
+        )
+      
+      lines (
+        x = model_nobp$model[,2], 
+        y = model_nobp$fitted.values, 
+        lwd = 1.5, 
+        lty = 2, 
+        col = "red"
+        )
+      
+      if (legend.show == TRUE) {
+        
+        legend(
+          legend.pos[4], 
+          legend = c("Model fit", CI),
+          col = c("red", col_ci), 
+          lty = c(2, NA), 
+          pch = c(NA, 15), 
+          lwd = 1.5, 
+          bty = "n", 
+          bg = "white"
+          )
+        
+      }
+      
+    }
+    
+    par(mfrow=c(1,1))
+    
+    return(as.data.frame(SegmentModels))
     
   }

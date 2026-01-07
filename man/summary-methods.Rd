@@ -19,5 +19,14 @@ Prints a summary of \code{sbm_ci} objects (bootstrap confidence intervals for Sw
 \item{\code{signature(object = "countries")}}{
 Prints a summary of a \code{countries} object built with the function \code{\link{compare_countries}}
 }
+
+\item{\code{signature(object = "loggrowth")}}{
+Prints a summary of a \code{loggrowth} object built with the function \code{\link{logistic_growth}}
+}
+
+\item{\code{signature(object = "expgrowth")}}{
+Prints a summary of a \code{expgrowth} object built with the function \code{\link{exponential_growth}}
+}
+
 }}
 \keyword{methods}

@@ -34,9 +34,11 @@ swash(
 \details{
 The function performs the analysis of the input panel data using the Swash-Backwash Model. The output is an object of class \code{"sbm"}. The results can be viewed using \code{summary(sbm)}. The user must state panel data with daily infections.
 }
+
 \value{
 object of class \code{\link{sbm-class}}
 }
+
 \references{
 Cliff AD, Haggett P (2006) A swash-backwash model of the single epidemic wave. \emph{Journal of Geographical Systems} 8(3), 227-252. \doi{https://doi.org/10.1007/s10109-006-0027-8}
 
@@ -44,9 +46,11 @@ Smallman-Raynor MR, Cliff AD, Stickler PJ (2022) Meningococcal Meningitis and Co
 
 Smallman-Raynor MR, Cliff AD, The COVID-19 Genomics UK (COG-UK) Consortium (2022) Spatial growth rate of emerging SARS-CoV-2 lineages in England, September 2020–December 2021. \emph{Epidemiology and Infection} 150, e145. \doi{https://doi.org/10.1017/S0950268822001285}.
 }
+
 \author{
 Thomas Wieland
 }
+
 \seealso{
 \code{\link{sbm-class}}
 }
