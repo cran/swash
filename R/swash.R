@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.3.0
-# Last update: 2025-12-30 13:31
+# Version:     1.3.1
+# Last update: 2026-01-14 18:12
 # Copyright (c) 2025 Thomas Wieland
 #-------------------------------------------------------------------------------
 
@@ -2549,6 +2549,24 @@ binary_metrics <- function(
   
   tab <- table(observed, expected)
   
+  expected_required <- c("0", "1")
+  expected_NA <- setdiff(expected_required, colnames(tab))
+  
+  if (length(expected_NA) > 0) {
+    
+    cat(paste0("WARNING: No expected category for ", expected_NA), "\n")
+    
+    for (col in expected_NA) {
+      
+      tab <- cbind(tab, rep(0, nrow(tab)))
+      
+      colnames(tab)[ncol(tab)] <- col
+      
+    }
+    
+    tab <- tab[, expected_required]
+  }
+  
   sens <- tab[2,2] / sum(tab[2,])
   spec <- tab[1,1] / sum(tab[1,])
   acc  <- sum(diag(tab)) / sum(tab)
@@ -2587,7 +2605,7 @@ binary_metrics_glm <- function(
       predict(
         logit_model, 
         type = "response"
-        ) > threshold, 1, 0
+      ) > threshold, 1, 0
     )
   
   logit_metrics <- binary_metrics(

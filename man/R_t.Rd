@@ -28,7 +28,7 @@ R_t(
 }
 }
 \details{
-The function calculates the effective reproduction number (=growth factor), \eqn{R_t}, of an infections time series.
+The function calculates the effective reproduction number, \eqn{R_t}, of an infections time series.
 }
 \value{
 \code{list} with two entries:
