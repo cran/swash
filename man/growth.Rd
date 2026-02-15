@@ -14,7 +14,8 @@ growth(
   S_iterations = 10, 
   S_start_est_method = "bisect", 
   seq_by = 10, 
-  nls = TRUE
+  nls = TRUE,
+  verbose = FALSE
   )
 }
 
@@ -33,6 +34,9 @@ growth(
 }
   \item{nls}{
      Nonlinear estimation? \code{TRUE} or \code{FALSE}
+}
+  \item{verbose}{
+     \code{bool} argument which indicates whether progress messages are displayed
 }
 }
 

@@ -12,7 +12,8 @@ Estimates \eqn{N} exponential growth models for a given time period in \eqn{N} r
 growth_initial(
   object, 
   time_units = 10,
-  GI = 4
+  GI = 4,
+  verbose = FALSE
   )
 }
 
@@ -25,6 +26,9 @@ growth_initial(
 }
   \item{GI}{
      Generation interval for computing \eqn{R_0}
+}
+  \item{verbose}{
+     \code{bool} argument which indicates whether progress messages are displayed
 }
 }
 

@@ -9,7 +9,7 @@
 \section{Methods}{
 \describe{
 
-\item{\code{signature(object = "sbm", time_units = 10, GI = 4)}}{
+\item{\code{signature(object = "sbm", time_units = 10, GI = 4, verbose = FALSE)}}{
 Estimation of \eqn{N} exponential growth models for the initial phase of an epidemic spread for \eqn{N} regions. Set argument \code{GI} for the calculation of the basic reproduction number(see \code{\link{exponential_growth}}).
 }
 }}

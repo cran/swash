@@ -4,9 +4,9 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.3.1
-# Last update: 2026-01-14 18:12
-# Copyright (c) 2025 Thomas Wieland
+# Version:     1.3.2
+# Last update: 2026-02-15 10:31
+# Copyright (c) 2020-2026 Thomas Wieland
 #-------------------------------------------------------------------------------
 
 library(sf)
@@ -71,8 +71,13 @@ swash <-
     data,
     col_cases, 
     col_date, 
-    col_region
+    col_region,
+    verbose = FALSE
     ) {
+    
+    if(isTRUE(verbose)) {
+      cat("Reading and diagnosing infections panel data ... ")
+    }
     
     data <- data[order(data[[col_region]], data[[col_date]]),]
 
@@ -90,6 +95,11 @@ swash <-
         col_date = col_date
         )
     data_balanced <- data_check_balanced$data_balanced
+    
+    if(isTRUE(verbose)) {
+      cat("OK", "\n")
+      cat(paste0("Calculating Swash-Backwash Model for ", N, " regions and ", TP, " time points ... "))
+    }
 
     first_occ_regions <- data.frame(matrix(ncol = N+1, nrow = TP))
     first_occ_regions[,1] <- TP_t
@@ -178,6 +188,10 @@ swash <-
     data_statistics <- c(N, TP, N_withoutcases, data_balanced)
 
     col_names = c(col_cases, col_date, col_region)
+    
+    if(isTRUE(verbose)) {
+      cat("OK", "\n")
+    }
 
     new("sbm", 
         R_0A = R_0A, 
@@ -350,7 +364,8 @@ setGeneric("growth", function(
     S_iterations = 10, 
     S_start_est_method = "bisect", 
     seq_by = 10,
-    nls = TRUE
+    nls = TRUE,
+    verbose = FALSE
 ) {
   standardGeneric("growth")
 })
@@ -363,8 +378,16 @@ setMethod(
     S_iterations = 10, 
     S_start_est_method = "bisect", 
     seq_by = 10,
-    nls = TRUE
+    nls = TRUE,
+    verbose = FALSE
   ) {
+    
+    .Deprecated(
+      msg = paste(
+        "The method growth() for class 'sbm' is deprecated.",
+        "In swash version >=2.0.0 it will be replaced by the method growth() for class 'infpan'."
+      )
+    )
     
     N <- object@data_statistics[1]
     
@@ -416,7 +439,8 @@ setMethod(
           S_iterations = S_iterations, 
           S_start_est_method = S_start_est_method, 
           seq_by = seq_by,
-          nls = nls
+          nls = nls,
+          verbose = verbose
         )
       
       results[i,1] <- N_names[i]
@@ -483,7 +507,8 @@ setMethod(
 setGeneric("growth_initial", function(
     object,
     time_units = 10,
-    GI = 4
+    GI = 4,
+    verbose = FALSE
 ) {
   standardGeneric("growth_initial")
 })
@@ -494,8 +519,16 @@ setMethod(
   function(
     object,
     time_units = 10,
-    GI = 4
+    GI = 4,
+    verbose = FALSE
   ) {
+    
+    .Deprecated(
+      msg = paste(
+        "The method growth_initial() for class 'sbm' is deprecated.",
+        "In swash version >=2.0.0 it will be replaced by the method growth_initial() for class 'infpan'."
+      )
+    )
     
     N <- object@data_statistics[1]
     
@@ -549,7 +582,8 @@ setMethod(
           exponential_growth(
             y = input_data_cor$y, 
             t = input_data_cor$t, 
-            GI = GI
+            GI = GI,
+            verbose = verbose
           )
         
         results[i,1] <- N_names[i]
@@ -1751,7 +1785,8 @@ exponential_growth <-
   function(
     y, 
     t,
-    GI = 4
+    GI = 4,
+    verbose = FALSE
   ) {
     
     if (!is.numeric(y)) {
@@ -1768,7 +1803,7 @@ exponential_growth <-
       
       class_t <- "Date"
       
-      message ("NOTE: Time vector is of class 'Date'. Calculating time counter.")
+      message("Time vector is of class 'Date'. Calculating time counter.")
       
       start_date <- min(t)
       
@@ -1777,6 +1812,9 @@ exponential_growth <-
       t <- time_counter
     }
     
+    if (isTRUE(verbose)) {
+      cat(paste0("Calculating exponential growth model for ", length(y), " observations and R_0 with generation period = ", GI, " ... "))
+    }
     
     log_y <- log(y)
     
@@ -1794,6 +1832,10 @@ exponential_growth <-
       list (
         GI = GI
       )
+    
+    if(isTRUE(verbose)) {
+      cat("OK", "\n")
+    }
     
     new("expgrowth", 
         exp_gr = exp_gr,
@@ -1817,7 +1859,8 @@ logistic_growth <-
     S_iterations = 10, 
     S_start_est_method = "bisect", 
     seq_by = 10,
-    nls = TRUE
+    nls = TRUE,
+    verbose = FALSE
   ) 
   {
     
@@ -1829,8 +1872,13 @@ logistic_growth <-
         S_end, 
         S_start_est_method = "bisect", 
         S_iterations = 10, 
-        seq_by = 10
+        seq_by = 10,
+        verbose = FALSE
       ) {
+        
+        if(isTRUE(verbose)) {
+          cat(paste0("Estimating saturation value via method: ", S_start_est_method, " ... "))
+        }
         
         if (S_start_est_method == "trialanderror") {
           
@@ -1907,6 +1955,10 @@ logistic_growth <-
           
         } 
         
+        if(isTRUE(verbose)) {
+          cat("OK", "\n")
+        }
+        
         return(S_est)
         
       }
@@ -1925,7 +1977,7 @@ logistic_growth <-
       
       class_t <- "Date"
       
-      message ("NOTE: Time vector is of class 'Date'. Calculating time counter.")
+      message("Time vector is of class 'Date'. Calculating time counter.")
       
       start_date <- min(t)
       
@@ -1957,7 +2009,8 @@ logistic_growth <-
           S_end = S_end, 
           S_iterations = S_iterations, 
           S_start_est_method = S_start_est_method, 
-          seq_by = seq_by
+          seq_by = seq_by,
+          verbose = verbose
         )
       
     }
@@ -2007,6 +2060,10 @@ logistic_growth <-
     
     if (nls == TRUE) {
       
+      if(isTRUE(verbose)) {
+        cat("Trying nonlinear estimation ... ")
+      }
+      
       tryCatch(
         {
           model_nls <- 
@@ -2043,6 +2100,10 @@ logistic_growth <-
               y_pred = y_pred, 
               dy_dt = dy_dt
             )
+          
+          if(isTRUE(verbose)) {
+            cat("OK", "\n")
+          }
           
         },
         

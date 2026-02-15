@@ -12,7 +12,8 @@ Estimation of exponential growth models from daily infections data
 exponential_growth(
   y, 
   t, 
-  GI = 4
+  GI = 4,
+  verbose = FALSE
   )
 }
 
@@ -25,6 +26,9 @@ exponential_growth(
 }
   \item{GI}{
      Generation interval for computing \eqn{R_0}
+}
+  \item{verbose}{
+     \code{bool} argument which indicates whether progress messages are displayed
 }
 }
 

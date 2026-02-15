@@ -13,7 +13,8 @@ swash(
   data, 
   col_cases, 
   col_date, 
-  col_region
+  col_region,
+  verbose = FALSE
   )
 }
 
@@ -30,7 +31,11 @@ swash(
   \item{col_region}{
      Column containing the unique identifier of the regions (e.g., name, NUTS 3 code)
 }
+  \item{verbose}{
+     \code{bool} argument which indicates whether progress messages are displayed
 }
+}
+
 \details{
 The function performs the analysis of the input panel data using the Swash-Backwash Model. The output is an object of class \code{"sbm"}. The results can be viewed using \code{summary(sbm)}. The user must state panel data with daily infections.
 }
