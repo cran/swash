@@ -78,6 +78,8 @@ plot_regions(
 }
 
 \details{
+Please note: The method plot_regions() for class 'sbm' is deprecated. In swash version >=2.0.0 it will be replaced by the method plot() for the new class 'infpan'.
+
 Plots regional infection curves in \eqn{N} plots for \eqn{N} regions, with the number of columns equals 4 and the number of rows is calculated based the size of \eqn{N}.
 }
 

@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.3.2
-# Last update: 2026-02-15 10:31
+# Version:     1.3.3
+# Last update: 2026-02-20 21:34
 # Copyright (c) 2020-2026 Thomas Wieland
 #-------------------------------------------------------------------------------
 
@@ -13,6 +13,7 @@ library(sf)
 library(spdep)
 library(zoo)
 library(strucchange)
+library(lubridate)
 
 
 setClass(
@@ -385,7 +386,7 @@ setMethod(
     .Deprecated(
       msg = paste(
         "The method growth() for class 'sbm' is deprecated.",
-        "In swash version >=2.0.0 it will be replaced by the method growth() for class 'infpan'."
+        "In swash version >=2.0.0 it will be replaced by the method growth() for the new class 'infpan'."
       )
     )
     
@@ -402,7 +403,7 @@ setMethod(
     
     logistic_growth_models <- list()
     
-    results <- data.frame(matrix(ncol = 16))
+    results <- data.frame(matrix(ncol = 20))
     
     for (i in 1:N) {
       
@@ -451,20 +452,24 @@ setMethod(
       results[i,6] <- logistic_growth_i@GrowthModel_OLS$y_0
       results[i,7] <- logistic_growth_i@GrowthModel_OLS$ip
       results[i,8] <- logistic_growth_i@GrowthModel_OLS$t_ip
-      results[i,9] <- logistic_growth_i@GrowthModel_OLS$sum_of_squares
+      results[i,9] <- logistic_growth_i@GrowthModel_OLS$fit_metrics$SQR
+      results[i,10] <- logistic_growth_i@GrowthModel_OLS$fit_metrics$R2
+      results[i,11] <- logistic_growth_i@GrowthModel_OLS$fit_metrics$MAPE
       
       if (!is.null(logistic_growth_i@GrowthModel_NLS)) {
         
-        results[i,10] <- logistic_growth_i@GrowthModel_NLS$S
-        results[i,11] <- logistic_growth_i@GrowthModel_NLS$r
-        results[i,12] <- logistic_growth_i@GrowthModel_NLS$y_0
-        results[i,13] <- logistic_growth_i@GrowthModel_NLS$ip
-        results[i,14] <- logistic_growth_i@GrowthModel_NLS$t_ip
-        results[i,15] <- logistic_growth_i@GrowthModel_NLS$sum_of_squares
+        results[i,12] <- logistic_growth_i@GrowthModel_NLS$S
+        results[i,13] <- logistic_growth_i@GrowthModel_NLS$r
+        results[i,14] <- logistic_growth_i@GrowthModel_NLS$y_0
+        results[i,15] <- logistic_growth_i@GrowthModel_NLS$ip
+        results[i,16] <- logistic_growth_i@GrowthModel_NLS$t_ip
+        results[i,17] <- logistic_growth_i@GrowthModel_NLS$fit_metrics$SQR
+        results[i,18] <- logistic_growth_i@GrowthModel_NLS$fit_metrics$R2
+        results[i,19] <- logistic_growth_i@GrowthModel_NLS$fit_metrics$MAPE
         
       } else {
         
-        results[i,16] <- logistic_growth_i@GrowthModel_NLS$nls_error_message
+        results[i,20] <- logistic_growth_i@GrowthModel_NLS$nls_error_message
         
       }
       
@@ -485,12 +490,16 @@ setMethod(
         "ip_OLS",
         "tip_OLS",
         "SSQ_OLS",
+        "R2_OLS",
+        "MAPE_OLS",
         "S_NLS",
         "r_NLS",
         "y0_NLS",
         "ip_NLS",
         "tip_NLS",
         "SSQ_NLS",
+        "R2_NLS",
+        "MAPE_NLS",
         "nls_error_message"
       )
       
@@ -499,7 +508,9 @@ setMethod(
         results = results,
         logistic_growth_models = logistic_growth_models
       )
-    invisible (growth_results)  
+    
+    invisible (growth_results)
+    
   }
   )
 
@@ -526,7 +537,7 @@ setMethod(
     .Deprecated(
       msg = paste(
         "The method growth_initial() for class 'sbm' is deprecated.",
-        "In swash version >=2.0.0 it will be replaced by the method growth_initial() for class 'infpan'."
+        "In swash version >=2.0.0 it will be replaced by the method growth_initial() for the new class 'infpan'."
       )
     )
     
@@ -676,6 +687,13 @@ setMethod(
     growth_lty = "solid",
     growth_per_time_unit = 1
   ) {
+    
+    .Deprecated(
+      msg = paste(
+        "The method plot_regions() for class 'sbm' is deprecated.",
+        "In swash version >=2.0.0 it will be replaced by the method plot() for the new class 'infpan'."
+      )
+    )
     
     par_old <- par(no.readonly = TRUE)
     on.exit(par(par_old))
@@ -1504,6 +1522,7 @@ setClass(
     R0 = "numeric", 
     doubling = "numeric",
     model_data = "lm",
+    fit_metrics = "list",
     config = "list"
   )
 )
@@ -1520,13 +1539,17 @@ setMethod(
     R0 <- object@R0 
     doubling <- object@doubling 
     model_data <- object@model_data
+    fit_metrics <- object@fit_metrics
     config <- object@config
     
     cat("OLS model\n")
     cat(sprintf("  Growth rate              : %.3f\n", exp_gr))
     cat(sprintf("  Baseline                 : %.3f\n", y_0))
     cat(sprintf("  Basic reproduction number: %.3f\n", R0))
-    cat(sprintf("  Doubling rate            : %.3f\n", doubling))
+    cat(sprintf("  Doubling rate            : %.3f\n\n", doubling))
+    cat(sprintf("  Sum of squares           : %.3f\n", fit_metrics$SQR))
+    cat(sprintf("  R-squared                : %.3f\n", fit_metrics$R2))
+    cat(sprintf("  MAPE                     : %.3f\n\n", fit_metrics$MAPE))
     
   }
 )
@@ -1584,17 +1607,22 @@ setMethod(
     cat(sprintf("  Growth rate              : %.3f\n", GrowthModel_OLS$r))
     cat(sprintf("  Baseline                 : %.3f\n", GrowthModel_OLS$y_0))
     cat(sprintf("  Inflection point         : %.3f\n", GrowthModel_OLS$ip))
-    cat(sprintf("  Time of inflection point : %.3f\n", GrowthModel_OLS$t_ip))
-    cat(sprintf("  Sum of squares           : %.3f\n\n", GrowthModel_OLS$sum_of_squares))
+    cat(sprintf("  Time of inflection point : %.3f\n\n", GrowthModel_OLS$t_ip))
+    cat(sprintf("  Sum of squares           : %.3f\n", GrowthModel_OLS$fit_metrics$SQR))
+    cat(sprintf("  R-squared                : %.3f\n", GrowthModel_OLS$fit_metrics$R2))
+    cat(sprintf("  MAPE                     : %.3f\n\n", GrowthModel_OLS$fit_metrics$MAPE))
     
     if (length(GrowthModel_NLS) > 0) {
+      
       cat("NLS model\n")
       cat(sprintf("  Saturation               : %.3f\n", GrowthModel_NLS$S))
       cat(sprintf("  Growth rate              : %.3f\n", GrowthModel_NLS$r))
       cat(sprintf("  Baseline                 : %.3f\n", GrowthModel_NLS$y_0))
       cat(sprintf("  Inflection point         : %.3f\n", GrowthModel_NLS$ip))
-      cat(sprintf("  Time of inflection point : %.3f\n", GrowthModel_NLS$t_ip))
-      cat(sprintf("  Sum of squares           : %.3f\n\n", GrowthModel_NLS$sum_of_squares))
+      cat(sprintf("  Time of inflection point : %.3f\n\n", GrowthModel_NLS$t_ip))
+      cat(sprintf("  Sum of squares           : %.3f\n", GrowthModel_NLS$fit_metrics$SQR))
+      cat(sprintf("  R-squared                : %.3f\n", GrowthModel_NLS$fit_metrics$R2))
+      cat(sprintf("  MAPE                     : %.3f\n\n", GrowthModel_NLS$fit_metrics$MAPE))
     }
     
     if (config$nls == FALSE) {
@@ -1612,10 +1640,12 @@ setMethod(
         cat("Nonlinear estimation failed.\n")
       }
     }
+    
+    invisible(object)
+    
   }
+  
 )
-
-
 
 setMethod(
   "plot", 
@@ -1657,9 +1687,11 @@ setMethod(
       r <- GrowthModel_OLS$r
       y_0 <- GrowthModel_OLS$y_0
       S <- GrowthModel_OLS$S
-      sum_of_squares <- GrowthModel_OLS$sum_of_squares
       ip <- GrowthModel_OLS$ip
       t_ip <- GrowthModel_OLS$t_ip
+      sum_of_squares <- GrowthModel_OLS$fit_metrics$SQT
+      R2 <- GrowthModel_OLS$fit_metrics$R2
+      MAPE <- GrowthModel_OLS$fit_metrics$MAPE
       
       model = "OLS"
       
@@ -1670,9 +1702,11 @@ setMethod(
       r <- GrowthModel_NLS$r
       y_0 <- GrowthModel_NLS$y_0
       S <- GrowthModel_NLS$S
-      sum_of_squares <- GrowthModel_NLS$sum_of_squares
       ip <- GrowthModel_NLS$ip
       t_ip <- GrowthModel_NLS$t_ip
+      sum_of_squares <- GrowthModel_NLS$fit_metrics$SQT
+      R2 <- GrowthModel_NLS$fit_metrics$R2
+      MAPE <- GrowthModel_NLS$fit_metrics$MAPE
       
       model = "NLS"
       
@@ -1725,12 +1759,13 @@ setMethod(
       )
     
     text (paste0("r = ", round(r, 5)), x = 0, y = max(y), pos = 4, cex = anno_size)
-    text (paste0("y_0 = ", round(y_0, 5)), x = 0, y = (max(y)-(max(y)*0.04*anno_size)), pos = 4, cex = anno_size)
-    text (paste0("S = ", round(S, 5)), x = 0, y = (max(y)-(max(y)*0.08*anno_size)), pos = 4, cex = anno_size)
-    text (paste0("SSQ = ", round(sum_of_squares, 5)), x = 0, y = (max(y)-(max(y)*0.12*anno_size)), pos = 4, cex = anno_size)
-    text (paste0("ip = ", round(ip, 5)), x = 0, y = (max(y)-(max(y)*0.16*anno_size)), pos = 4, cex = anno_size)
-    text (paste0("t_ip = ", round(t_ip, 5)), x = 0, y = (max(y)-(max(y)*0.20*anno_size)), pos = 4, cex = anno_size)
-    
+    text (paste0("y_0 = ", round(y_0, 3)), x = 0, y = (max(y)-(max(y)*0.04*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("S = ", round(S, 3)), x = 0, y = (max(y)-(max(y)*0.08*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("ip = ", round(ip, 3)), x = 0, y = (max(y)-(max(y)*0.12*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("t_ip = ", round(t_ip, 3)), x = 0, y = (max(y)-(max(y)*0.16*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("SSQ = ", round(sum_of_squares, 3)), x = 0, y = (max(y)-(max(y)*0.20*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("R^2 = ", round(R2, 3)), x = 0, y = (max(y)-(max(y)*0.24*anno_size)), pos = 4, cex = anno_size)
+    text (paste0("MAPE = ", round(MAPE, 3)), x = 0, y = (max(y)-(max(y)*0.28*anno_size)), pos = 4, cex = anno_size)
     
     if (isTRUE(plot_d)) {
       
@@ -1794,7 +1829,11 @@ exponential_growth <-
     }
     
     if (!is.numeric(y) & !is.Date(t)) {
-      stop ("Time vector must be of class 'numeric' oder 'Date'.")
+      stop ("Time vector must be of class 'numeric' or 'Date'.")
+    }
+    
+    if (length(y) != length(t)) {
+      stop (paste0("Vectors 'y' and 't' differ in length: ", length(y), ", ", length(t)))
     }
     
     class_t <- "numeric"
@@ -1828,6 +1867,16 @@ exponential_growth <-
     
     doubling <- log(2)/exp_gr
     
+    y_pred <- exp(predict(linexpmodel))
+    
+    fit_metrics <- metrics(
+      observed = y,
+      expected = y_pred,
+      plot = FALSE
+    )
+    
+    fit_metrics <- fit_metrics[[1]]
+    
     config <-
       list (
         GI = GI
@@ -1837,13 +1886,15 @@ exponential_growth <-
       cat("OK", "\n")
     }
     
-    new("expgrowth", 
-        exp_gr = exp_gr,
-        y_0 = y_0,
-        R0 = R0, 
-        doubling = doubling, 
-        model_data = linexpmodel,
-        config = config
+    new(
+      "expgrowth", 
+      exp_gr = exp_gr,
+      y_0 = y_0,
+      R0 = R0, 
+      doubling = doubling, 
+      model_data = linexpmodel,
+      fit_metrics = fit_metrics,
+      config = config
     )
 
   }
@@ -1874,101 +1925,105 @@ logistic_growth <-
         S_iterations = 10, 
         seq_by = 10,
         verbose = FALSE
-      ) {
-        
-        if(isTRUE(verbose)) {
-          cat(paste0("Estimating saturation value via method: ", S_start_est_method, " ... "))
-        }
-        
-        if (S_start_est_method == "trialanderror") {
-          
-          values_seq <- seq (S_start, S_end, by = seq_by)
-          values_no <- length (values_seq)
-          values_ssq <- matrix (ncol = 2, nrow = values_no)
-          values_ssq[,1] <- values_seq
-          
-          i <- 0
-          
-          for (i in 1:values_no) {
+          ) {
             
-            y_new <- log ((1/y)-(1/values_seq[i]))
-            model_lin <- lm (y_new ~ t)
-            model_lin_summary <- summary(model_lin)
-            sum_of_squares_lin <- sum(model_lin_summary$residuals^2)
+            if(isTRUE(verbose)) {
+              cat(paste0("Estimating saturation value via method: ", S_start_est_method, " ... "))
+            }
             
-            values_ssq[i,2] <- sum_of_squares_lin 
-            
-          }
-          
-          values_ssq_order <- values_ssq[order(values_ssq[,2])]
-          
-          S_est <- values_ssq_order[1]
-          
-          plot(values_ssq[,1], values_ssq[,2], "l")
-          
-        }
-        
-        else {    
-          
-          i <- 0
-          
-          interval_m <- vector()
-          
-          for (i in 1:S_iterations)
-          {
-            
-            interval_m[i] <- (S_start+S_end)/2
-            
-            y_new_start <- log ((1/y)-(1/S_start))
-            
-            model_lin_start <- lm (y_new_start ~ t)
-            model_lin_start_summary <- summary(model_lin_start)
-            sum_of_squares_lin_start <- sum(model_lin_start_summary$residuals^2)
-            
-            y_new_m <- log ((1/y)-(1/interval_m[i]))
-            model_lin_m <- lm (y_new_m ~ t)
-            model_lin_m_summary <- summary(model_lin_m)
-            sum_of_squares_lin_m <- sum(model_lin_m_summary$residuals^2)
-            
-            y_new_end <- log ((1/y)-(1/S_end))
-            model_lin_end <- lm (y_new_m ~ t)
-            model_lin_end_summary <- summary(model_lin_m)
-            sum_of_squares_lin_end <- sum(model_lin_end_summary$residuals^2)
-            
-            if (sum_of_squares_lin_start < sum_of_squares_lin_end)
+            if (S_start_est_method == "trialanderror") {
               
-            {
+              values_seq <- seq (S_start, S_end, by = seq_by)
+              values_no <- length (values_seq)
+              values_ssq <- matrix (ncol = 2, nrow = values_no)
+              values_ssq[,1] <- values_seq
               
-              S_start <- S_start
-              S_end <- interval_m[i]
+              i <- 0
+              
+              for (i in 1:values_no) {
+                
+                y_new <- log ((1/y)-(1/values_seq[i]))
+                model_lin <- lm (y_new ~ t)
+                model_lin_summary <- summary(model_lin)
+                sum_of_squares_lin <- sum(model_lin_summary$residuals^2)
+                
+                values_ssq[i,2] <- sum_of_squares_lin 
+                
+              }
+              
+              values_ssq_order <- values_ssq[order(values_ssq[,2])]
+              
+              S_est <- values_ssq_order[1]
+              
+              plot(values_ssq[,1], values_ssq[,2], "l")
               
             }
             
-            else
-            {
-              S_start <- interval_m[i]
-              S_end <- S_end
+            else {    
+              
+              i <- 0
+              
+              interval_m <- vector()
+              
+              for (i in 1:S_iterations)
+              {
+                
+                interval_m[i] <- (S_start+S_end)/2
+                
+                y_new_start <- log ((1/y)-(1/S_start))
+                
+                model_lin_start <- lm (y_new_start ~ t)
+                model_lin_start_summary <- summary(model_lin_start)
+                sum_of_squares_lin_start <- sum(model_lin_start_summary$residuals^2)
+                
+                y_new_m <- log ((1/y)-(1/interval_m[i]))
+                model_lin_m <- lm (y_new_m ~ t)
+                model_lin_m_summary <- summary(model_lin_m)
+                sum_of_squares_lin_m <- sum(model_lin_m_summary$residuals^2)
+                
+                y_new_end <- log ((1/y)-(1/S_end))
+                model_lin_end <- lm (y_new_m ~ t)
+                model_lin_end_summary <- summary(model_lin_m)
+                sum_of_squares_lin_end <- sum(model_lin_end_summary$residuals^2)
+                
+                if (sum_of_squares_lin_start < sum_of_squares_lin_end)
+                  
+                {
+                  
+                  S_start <- S_start
+                  S_end <- interval_m[i]
+                  
+                }
+                
+                else
+                {
+                  S_start <- interval_m[i]
+                  S_end <- S_end
+                }
+                
+              }
+              S_est <- interval_m[i]
+              
+            } 
+            
+            if(isTRUE(verbose)) {
+              cat("OK", "\n")
             }
             
+            return(S_est)
+            
           }
-          S_est <- interval_m[i]
-          
-        } 
-        
-        if(isTRUE(verbose)) {
-          cat("OK", "\n")
-        }
-        
-        return(S_est)
-        
-      }
     
     if (!is.numeric(y)) {
       stop ("Cumulative infections vector must be of class 'numeric'.")
     }
     
     if (!is.numeric(y) & !is.Date(t)) {
-      stop ("Time vector must be of class 'numeric' oder 'Date'.")
+      stop ("Time vector must be of class 'numeric' or 'Date'.")
+    }
+    
+    if (!is.numeric(y) & !is.Date(t)) {
+      stop ("Time vector must be of class 'numeric' or 'Date'.")
     }
     
     class_t <- "numeric"
@@ -2015,6 +2070,10 @@ logistic_growth <-
       
     }
     
+    if(isTRUE(verbose)) {
+      cat("Performing OLS estimation ... ")
+    }
+    
     y_new <- log ((1/y)-(1/S))
     
     model_lin <- lm (y_new ~ t)
@@ -2040,8 +2099,16 @@ logistic_growth <-
     
     dy_dt <- r*y_pred*(1-(y_pred/S))
     
-    sum_of_squares_growth <- sum((y-y_pred)^2)
+    d2y_dt2 <- r*dy_dt*(1-((2*y_pred)/S))
     
+    fit_metrics_ols <- metrics(
+      observed = y,
+      expected = y_pred,
+      plot = FALSE
+    )
+    
+    fit_metrics_ols <- fit_metrics_ols[[1]]
+
     model_growth_ols_list <- 
       list (
         S = S, 
@@ -2049,10 +2116,15 @@ logistic_growth <-
         y_0 = y_0, 
         ip = ip, 
         t_ip = t_ip, 
-        sum_of_squares = sum_of_squares_growth, 
         y_pred = y_pred,
-        dy_dt = dy_dt
+        fit_metrics = fit_metrics_ols,
+        dy_dt = dy_dt,
+        d2y_dt2 = d2y_dt2
       )
+    
+    if(isTRUE(verbose)) {
+      cat("OK", "\n")
+    }
     
     model_growth_nls_list <- list()
     nls_estimation <- TRUE
@@ -2087,8 +2159,16 @@ logistic_growth <-
           
           dy_dt <- r_nls*y_pred*(1-(y_pred/S_nls))
           
-          sum_of_squares_nls <- sum(model_nls$m$resid()^2)
+          d2y_dt2 <- r_nls*dy_dt*(1-((2*y_pred)/S_nls))
           
+          fit_metrics_nls <- metrics(
+            observed = y,
+            expected = y_pred,
+            plot = FALSE
+          )
+          
+          fit_metrics_nls <- fit_metrics_nls[[1]]
+
           model_growth_nls_list <- 
             list (
               S = S_nls, 
@@ -2096,9 +2176,10 @@ logistic_growth <-
               y_0 = y_0_nls, 
               ip = ip_nls, 
               t_ip = t_ip_nls, 
-              sum_of_squares = sum_of_squares_nls, 
-              y_pred = y_pred, 
-              dy_dt = dy_dt
+              y_pred = y_pred,
+              fit_metrics = fit_metrics_nls,
+              dy_dt = dy_dt,
+              d2y_dt2 = d2y_dt2
             )
           
           if(isTRUE(verbose)) {
@@ -2143,13 +2224,14 @@ logistic_growth <-
         nls_error_message = nls_error_message
       )
     
-    new("loggrowth", 
-        LinModel = model_lin_ols_list, 
-        GrowthModel_OLS = model_growth_ols_list, 
-        GrowthModel_NLS = model_growth_nls_list,
-        y = y,
-        t = t,
-        config = config
+    new(
+      "loggrowth", 
+      LinModel = model_lin_ols_list, 
+      GrowthModel_OLS = model_growth_ols_list, 
+      GrowthModel_NLS = model_growth_nls_list,
+      y = y,
+      t = t,
+      config = config
     )
     
   }
@@ -2499,17 +2581,17 @@ metrics <-
     
     SQR <- sum(observed_expected$residuals_sq)
     SAR <- sum(observed_expected$residuals_abs)
-    SQT <- sum(observed_expected$observed-mean(observed_expected$observed)^2)
+    SQT <- sum((observed_expected$observed - mean(observed_expected$observed))^2)
     R2 <- (1-(SQR/SQT))
-    MSE <- sum((observed_expected$observed-observed_expected$expected)^2)
+    MSE <- mean((observed_expected$observed - observed_expected$expected)^2)
     RMSE <- sqrt(MSE)
-    MAE <- sum(observed_expected$observed-observed_expected$expected)
+    MAE <- mean(observed_expected$residuals_abs)
     MAPE <- mean(observed_expected$residuals_rel_abs)
 
     if (plot == TRUE) {
       
-      min = min(observed_expected$observed)
-      max = max(observed_expected$observed)
+      min <- min(observed_expected$observed)
+      max <- max(observed_expected$observed)
       
       plot(
         observed_expected$observed, 

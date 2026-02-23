@@ -9,6 +9,8 @@
 \section{Methods}{
 \describe{
 
+Please note: The method plot_regions() for class 'sbm' is deprecated. In swash version >=2.0.0 it will be replaced by the method plot() for the new class 'infpan'.
+
 \item{\code{signature(
     object = "sbm", 
     col = "red",

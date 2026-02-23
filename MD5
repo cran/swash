@@ -1,7 +1,7 @@
-19761bde689eb9491a390f1af2059c45 *DESCRIPTION
+bb2b6b4454aebcc7c60c7e23b173ef83 *DESCRIPTION
 0af2e53e58de8f460a8ca4d24e7aff6e *NAMESPACE
-d7aa54202c34070479b799cc4895e23a *NEWS.md
-6f2254007dc3526635165534e32b4653 *R/swash.R
+07264065fa2a802aff6bd4f9f8342942 *NEWS.md
+aed894758bc9509598970ef2dc134a22 *R/swash.R
 cb3b20077bebc5da31fc1b46c657c0ff *build/partial.rdb
 4ef34a6c9bfa0538e3cf9858a5f89e5c *data/C19dNUTSdata.rda
 330cc1a33ae103c9ba8fb27ec1d6f523 *data/COVID19Cases_geoRegion.rda
@@ -26,9 +26,9 @@ cb30220f1c29b2726e267a87f4800d65 *man/did_fatalities_splm_coef.Rd
 5013866b5d1ad2ea99e7fdd534ff0b26 *man/expgrowth-class.Rd
 5ec26ca8d1df88879e48632bc12be8db *man/exponential_growth.Rd
 53ef4482050cdd51d714dc6264804064 *man/growth-methods.Rd
-35555ff6830b55a23d38eb8d79742225 *man/growth.Rd
+0d166cb40d3dde007050d1f844edd428 *man/growth.Rd
 b48284559f989c7a36d5b00794b39a2e *man/growth_initial-methods.Rd
-38ffe23074e59bd456879663e83d5a11 *man/growth_initial.Rd
+97f4593830eefdc37b6580cd833dd06f *man/growth_initial.Rd
 b982dfd2e112ff87f1215e52e802dd22 *man/hist_ci.Rd
 60c30bdab144efcba6694589e20c0651 *man/is_balanced.Rd
 3a8165dec3213016565137541f6c8fac *man/loggrowth-class.Rd
@@ -39,8 +39,8 @@ fcc5b12b2a4aebb94d50280ccea9f617 *man/nbmatrix.Rd
 64d8955889d50640fac16b71a0e07466 *man/plot-methods.Rd
 f04984eaabc34968265cc45016fde185 *man/plot_breakpoints.Rd
 971d5421e487d9aacd66cf5f1a63c78a *man/plot_coef_ci.Rd
-ea73013c5cf8082b6cdda79cf614e972 *man/plot_regions-methods.Rd
-0978b427530ff3bbb529891213851841 *man/plot_regions.Rd
+1a6782335e9fa4a43ef2bc1b89a981c6 *man/plot_regions-methods.Rd
+04be6f35ea569dad4be1f54370bd19c8 *man/plot_regions.Rd
 b1d77581a28dbe557d5606f10e81aa19 *man/print-methods.Rd
 798345252b9a4198b764437abdda59d0 *man/quantile_ci.Rd
 0a675bf02ed72602de3651853cd8be83 *man/sbm-class.Rd

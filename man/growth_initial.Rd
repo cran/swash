@@ -33,6 +33,8 @@ growth_initial(
 }
 
 \details{
+Please note: The method growth_initial() for class 'sbm' is deprecated. In swash version >=2.0.0 it will be replaced by the method growth_initial() for the new class 'infpan'.
+
 The function estimates exponential growth models for regional infections based on a \code{sbm} object. Such models are design for the analysis of the \emph{initial} phase of an epidemic spread. The user must state how much time units (from start) are included. See \code{\link{exponential_growth}} for further details of the estimation.
 }
 

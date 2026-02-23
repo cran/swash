@@ -41,6 +41,8 @@ growth(
 }
 
 \details{
+Please note: The method growth() for class 'sbm' is deprecated. In swash version >=2.0.0 it will be replaced by the method growth() for the new class 'infpan'.
+
 The function estimates logistic growth models for regional infections based on a \code{sbm} object. See \code{\link{logistic_growth}} for further details.
 }
 
