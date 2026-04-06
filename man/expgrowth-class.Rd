@@ -8,7 +8,8 @@
 
 \title{Class \code{"expgrowth"}}
 \description{
-The class \code{"expgrowth"} contains the results of the exponential_growth() function. Use \code{summary(expgrowth)} for results summary.
+The class \code{"expgrowth"} contains the results of the exponential_growth() function. 
+Use \code{summary(expgrowth)} for results summary.
 }
 
 \section{Objects from the Class}{
@@ -17,11 +18,10 @@ Objects can be created by the function \code{exponential_growth}.
 
 \section{Slots}{
   \describe{
-  \item{\code{exp_gr}:}{Object of class \code{numeric} Exponential growth rate}
-    \item{\code{y_0}:}{Object of class \code{numeric} Baseline}
-    \item{\code{R0}:}{Object of class \code{numeric} Basic reproduction number, derived from exponential growth model}
-    \item{\code{doubling}:}{Object of class \code{numeric} Doubling rate, derived from exponential growth model}
-    \item{\code{model_data}:}{Object of class \code{lm} OLS model}
+  \item{\code{GrowthModel_OLS}:}{Object of class \code{list} Results of the OLS fit (predicted, parameters)}
+  \item{\code{GrowthModel_NLS}:}{Object of class \code{list} Results of the NLS fit (predicted, parameters)}
+  \item{\code{t}:}{Object of class \code{numeric} Input time points data}
+  \item{\code{y}:}{Object of class \code{numeric} Input infections data}
   \item{\code{config}:}{Object of class \code{list} Model fit configurations}
   }
 }
@@ -29,6 +29,7 @@ Objects can be created by the function \code{exponential_growth}.
 \section{Methods}{
   \describe{
     \item{summary}{\code{signature(object = "expgrowth")}: Prints a summary of \code{expgrowth} objects}
+    \item{plot}{\code{signature(x = "expgrowth")}: Plots the results of the exponential growth model (observed, predicted) }
     \item{print}{\code{signature(x = "expgrowth")}: Prints an \code{expgrowth} object; use \code{summary(expgrowth)} for results }
 	 }
 }

@@ -93,7 +93,10 @@ plot_coef_ci(
 }
 
 \details{
-The function checks whether the input vectors have the same length. If \code{auto_color} is \code{TRUE}, the colors from \code{set_estimate_colors} and \code{set_confint_colors} are used, and the significance level is determined based on the coefficient and confidence interval values (all three below 0 = significant negative, all three above 0 = significant positive).
+The function checks whether the input vectors have the same length. 
+If \code{auto_color} is \code{TRUE}, the colors from \code{set_estimate_colors} and \code{set_confint_colors} are used, 
+and the significance level is determined based on the coefficient and confidence interval values 
+(all three below 0 = significant negative, all three above 0 = significant positive).
 }
 
 \value{

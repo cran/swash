@@ -8,12 +8,20 @@ Methods for function \code{show}
 \section{Methods}{
 \describe{
 
+\item{\code{signature(object = "infpan")}}{
+Prints an \code{infpan} object; use \code{summary(infpan)} for results
+}
+
 \item{\code{signature(object = "sbm")}}{
 Prints an \code{sbm} object; use \code{summary(sbm)} for results
 }
 
 \item{\code{signature(object = "sbm_ci")}}{
 Prints an \code{sbm_ci} object; use \code{summary(sbm_ci)} for results
+}
+
+\item{\code{signature(object = "countries")}}{
+Prints an \code{countries} object; use \code{summary(countries)} for results
 }
 
 \item{\code{signature(object = "loggrowth")}}{

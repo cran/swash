@@ -5,9 +5,11 @@
 \title{
 Logistic Growth Models for Regional Infections
 }
+
 \description{
 Estimates \eqn{N} logistic growth models for \eqn{N} regions.
 }
+
 \usage{
 growth(
   object, 
@@ -15,13 +17,15 @@ growth(
   S_start_est_method = "bisect", 
   seq_by = 10, 
   nls = TRUE,
+  add_constant = 1,
+  overwrite = FALSE,
   verbose = FALSE
   )
 }
 
 \arguments{
   \item{object}{
-     object of class \code{sbm}
+     object of class \code{infpan}
 }
   \item{S_iterations}{
      Number of iterations for saturation value search
@@ -35,21 +39,24 @@ growth(
   \item{nls}{
      Nonlinear estimation? \code{TRUE} or \code{FALSE}
 }
+  \item{add_constant}{
+     Numeric constant to be added to y if zero values occur (only relevant for OLS estimation)
+}
+  \item{overwrite}{
+     \code{bool} argument which indicates whether the column containing cumulative cases should be overwritten if already existing
+} 
   \item{verbose}{
      \code{bool} argument which indicates whether progress messages are displayed
 }
 }
 
 \details{
-Please note: The method growth() for class 'sbm' is deprecated. In swash version >=2.0.0 it will be replaced by the method growth() for the new class 'infpan'.
-
-The function estimates logistic growth models for regional infections based on a \code{sbm} object. See \code{\link{logistic_growth}} for further details.
+The function estimates logistic growth models for regional infections based on a \code{infpan} object. 
+See \code{\link{logistic_growth}} for further details.
 }
 
 \value{
-\code{list} with two entries:
-    \item{\code{results}:}{Object of class \code{"data.frame"} Results of the logistic growth models (coefficients and derivates)}
-    \item{\code{logistic_growth_models}:}{Object of class \code{"list"} List with \eqn{N} entries for \eqn{N} growth models resp. \code{loggrowth} objects }
+object of class \code{\link{growthmodels-class}}
 }
 
 \references{
@@ -80,17 +87,18 @@ COVID19Cases_geoRegion <-
   COVID19Cases_geoRegion[COVID19Cases_geoRegion$datum <= "2020-05-31",]
 # Extract first COVID-19 wave
 
-CH_covidwave1 <- 
-  swash (
-    data = COVID19Cases_geoRegion, 
-    col_cases = "entries", 
-    col_date = "datum", 
-    col_region = "geoRegion"
-    )
-# Swash-Backwash Model for Swiss COVID19 cases
-# Spatial aggregate: NUTS 3 (cantons)
+infpan_CH <- load_infections_paneldata(
+    data = COVID19Cases_geoRegion,
+    col_cases = "entries",
+    col_date = "datum",
+    col_region = "geoRegion",
+    other_cols = c("Population" = "pop"), 
+    verbose = TRUE
+  )
+# Import as infections panel data set (class infpan)
 
-CH_covidwave1_growth <- growth(CH_covidwave1)
-CH_covidwave1_growth
-# Logistic growth models for sbm object CH_covidwave1
+CH_covidwave1_growth <- 
+  growth(infpan_CH)
+summary(CH_covidwave1_growth)
+# Logistic growth models for infpan object infpan_CH
 }

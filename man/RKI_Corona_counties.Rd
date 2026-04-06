@@ -56,7 +56,7 @@ data(RKI_Corona_counties)
 The data is included as it was published in by the Robert Koch Institute (Robert Koch-Institut, RKI) but extended by the geometry column (Original data: shapefile).
 }
 \source{
-  RKI (2020) RKI Corona Landkreise. Robert Koch-Institut (RKI), dl-de/by-2-0. Attribution: Robert Koch-Institut, Bundesamt für Kartographie und Geodäsie. \url{https://npgeo-corona-npgeo-de.hub.arcgis.com/datasets/917fc37a7095} (retrieved 2020-03-30)
+RKI (2020) RKI Corona Landkreise. Robert Koch-Institut (RKI), dl-de/by-2-0. Attribution: Robert Koch-Institut, Bundesamt für Kartographie und Geodäsie. \url{https://npgeo-corona-npgeo-de.hub.arcgis.com/datasets/917fc37a7095} (retrieved 2020-03-30)
 }
 \examples{
 data(RKI_Corona_counties)

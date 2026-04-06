@@ -2,34 +2,49 @@ export(
   "as_balanced",
   "binary_metrics",
   "binary_metrics_glm",
+  "breaks_growth",
   "compare_countries",
   "exponential_growth",
+  "hawkes_growth",
   "hist_ci", 
   "is_balanced",
+  "load_infections_paneldata",
   "logistic_growth",
   "metrics",
   "nbmatrix",
   "nbstat",
-  "plot_breakpoints",
   "plot_coef_ci",
   "quantile_ci", 
   "R_t",
-  "swash"
+  "swash_backwash"
   )
 exportMethods(
+  "calculate_cum",
+  "calculate_incidence",
+  "calculate_rollmean",
+  "calculate_rollsum",
+  "calculate_Rt",
   "confint",
   "plot",
   "print",
   "summary",
-  "plot_regions",
+  "swash",
   "growth",
-  "growth_initial"
+  "growth_breaks",
+  "growth_hawkes",
+  "growth_initial",
+  "timestamps"
 )
 exportClasses(
-  "sbm",
-  "sbm_ci",
+  "breaksgrowth",
   "countries",
-  "loggrowth"
+  "expgrowth",
+  "growthmodels",
+  "hawkes",
+  "infpan",
+  "loggrowth",
+  "sbm",
+  "sbm_ci"
 )
 
 importFrom(
@@ -47,18 +62,23 @@ importFrom(
    "rect",
    "text",
    "legend", 
-  "polygon"
+   "polygon"
 )
 importFrom(
   "methods", 
-  "new"
+  "new",
+  "validObject"
   )
 importFrom(
   "stats", 
-  "aggregate", 
+  "aggregate",
+  "as.formula",
+  "complete.cases",
+  "dpois",
   "lm", 
   "median", 
   "nls", 
+  "optim",
   "quantile",
   "coef",
   "predict"
@@ -79,9 +99,15 @@ importFrom(
 import("sf")
 importFrom(
   "zoo",
-  "rollmean"
+  "rollmean",
+  "rollsum"
 )
 importFrom(
   "strucchange",
   "breakpoints"
 )
+importFrom(
+  "utils", 
+  "head", 
+  "tail"
+  )

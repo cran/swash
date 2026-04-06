@@ -28,5 +28,13 @@ Prints a summary of a \code{loggrowth} object built with the function \code{\lin
 Prints a summary of a \code{expgrowth} object built with the function \code{\link{exponential_growth}}
 }
 
+\item{\code{signature(object = "hawkes")}}{
+Prints a summary of a \code{hawkes} object built with the function \code{\link{hawkes_growth}}
+}
+
+\item{\code{signature(object = "breaksgrowth")}}{
+Prints a summary of a \code{breaksgrowth} object built with the function \code{\link{breaks_growth}}
+}
+
 }}
 \keyword{methods}

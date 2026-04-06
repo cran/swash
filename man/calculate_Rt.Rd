@@ -1,24 +1,29 @@
 \encoding{UTF-8}
-\name{R_t}
-\alias{R_t}
+\name{calculate_Rt}
+\alias{calculate_Rt}
 
 \title{
-Effective Reproduction Number for Epidemic Data
+Effective Reproduction Number
 }
+
 \description{
-Calculation of the effective reproduction number for infection/surveillance data
+Calculation of the effective reproduction number for infections panel data.
 }
+
 \usage{
-R_t(
-  infections, 
+calculate_Rt(
+  object,
   GP = 4,
-  correction = FALSE
+  correction = FALSE,
+  col_name = NULL,
+  overwrite = FALSE,
+  verbose = FALSE
   )
 }
 
 \arguments{
-  \item{infections}{
-     \code{numeric vector} with infection data
+  \item{object}{
+     object of class \code{infpan}
 }
   \item{GP}{
      Generation period, in time units (typically days)
@@ -26,18 +31,26 @@ R_t(
   \item{correction}{
      Correction of values equal to zero? (Recommended)
 }
+  \item{col_name}{
+     \code{character} value specifying the column name of the computed rolling means
+}
+  \item{overwrite}{
+     \code{bool} argument which indicates whether the column should be overwritten if already existing
+}  
+  \item{verbose}{
+     \code{bool} argument which indicates whether progress messages are displayed
+}
 }
 
 \details{
-The function calculates the effective reproduction number, \eqn{R_t}, of an infections time series. 
+Calculates the effective reproduction number \eqn{R_t} for all time points for each region in the infections panel data.
 Set the generation period by the parameter \code{GP} (default: 4). 
 If \code{correction} is TRUE, values equal to zero are increased by one.
+The method uses the built-in function \code{R_t()}.
 }
 
 \value{
-\code{list} with two entries:
-    \item{\code{R_t}:}{Object of class \code{"numeric"} \eqn{R_t} values}
-    \item{\code{infections_data}:}{Object of class \code{"data.frame"} Dataset with infections data and \eqn{R_t} }
+\code{infpan} object including \eqn{R_t} column in the infections panel data
 }
 
 \references{
@@ -52,10 +65,6 @@ Wieland T (2020) A phenomenological approach to assessing the effectiveness of C
 Thomas Wieland
 }
 
-\seealso{
-\code{\link{logistic_growth}}, \code{\link{exponential_growth}}
-}
-
 \examples{
 data(COVID19Cases_geoRegion)
 # Get SWISS COVID19 cases at NUTS 3 level
@@ -68,13 +77,22 @@ COVID19Cases_geoRegion <-
   COVID19Cases_geoRegion[COVID19Cases_geoRegion$datum <= "2020-05-31",]
 # Extract first COVID-19 wave
 
-COVID19Cases_BS <-
-  COVID19Cases_geoRegion[(COVID19Cases_geoRegion$geoRegion == "ZH")
-                         & (COVID19Cases_geoRegion$sumTotal > 0),]
-# COVID cases for Zurich
+infpan_CH <- load_infections_paneldata(
+    data = COVID19Cases_geoRegion,
+    col_cases = "entries",
+    col_date = "datum",
+    col_region = "geoRegion",
+    other_cols = c("Population" = "pop"), 
+    verbose = TRUE
+  )
+# Import as infections panel data set (class infpan)
 
-Rt_BS <- R_t(infections = COVID19Cases_BS$entries)
-# Effective reproduction number
+infpan_CH <- calculate_Rt(
+  infpan_CH,
+  verbose = TRUE
+  )
+# Calculate effective reproduction number
 
-Rt_BS
+summary(infpan_CH)
+# Summary of infpan object
 }

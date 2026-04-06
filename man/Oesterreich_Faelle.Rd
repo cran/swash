@@ -33,7 +33,7 @@ data(Oesterreich_Faelle)
 # (first wave, same final date as in Swiss data: 2020-05-31)
 
 AT_covidwave1 <- 
-  swash (
+  swash_backwash(
     data = Oesterreich_Faelle,
     col_cases = "Faelle",
     col_date = "Datum",

@@ -10,7 +10,9 @@
 
 \title{Class \code{"sbm"}}
 \description{
-The class \code{"sbm"} contains the results of the Swash-Backwash Model and the related input data as well as additional information. Use \code{summary(sbm)} and \code{plot(sbm)} for results summary and plotting, respectively.
+The class \code{"sbm"} contains the results of the Swash-Backwash Model 
+and the related input data as well as additional information. 
+Use \code{summary(sbm)} and \code{plot(sbm)} for results summary and plotting, respectively.
 }
 \section{Objects from the Class}{
 Objects can be created by the function \code{swash}.
@@ -27,6 +29,7 @@ Objects can be created by the function \code{swash}.
     \item{\code{input_data}:}{Object of class \code{"data.frame"} Input data }
     \item{\code{data_statistics}:}{Object of class \code{"numeric"} Diagnostics of input data }
     \item{\code{col_names}:}{Object of class \code{"character"} Original column names in input data }
+    \item{\code{timestamp}:}{Object of class \code{"list"} Time stamps of any update of the instance }
   }
 }
 \section{Methods}{
@@ -36,8 +39,6 @@ Objects can be created by the function \code{swash}.
     \item{print}{\code{signature(x = "sbm")}: Prints an \code{sbm} object; use \code{summary(sbm)} for results }
     \item{show}{\code{signature(object = "sbm")}: Prints an \code{sbm} object; use \code{summary(sbm)} for results }
     \item{summary}{\code{signature(object = "sbm")}: Prints a summary of \code{sbm} objects (results of the Swash-Backwash Model) }
-    \item{growth}{\code{signature(object = "sbm")}: Estimates logistic growth models from \code{sbm} objects }
-    \item{growth_initial}{\code{signature(object = "sbm")}: Estimates exponential growth models from \code{sbm} objects for a given time period}
 	 }
 }
 

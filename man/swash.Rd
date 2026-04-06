@@ -5,31 +5,22 @@
 \title{
 Swash-Backwash Model for the Single Epidemic Wave
 }
+
 \description{
-Analysis of regional infection/surveillance data using the Swash-Backwash Model for the single epidemic wave by Cliff and Haggett (2006)
+Analysis of regional infection/surveillance data stored in \code{infpan} object 
+using the Swash-Backwash Model for the single epidemic wave by Cliff and Haggett (2006).
 }
+
 \usage{
 swash(
-  data, 
-  col_cases, 
-  col_date, 
-  col_region,
+  object, 
   verbose = FALSE
   )
 }
 
 \arguments{
-  \item{data}{
-     \code{data.frame} with regional infection data
-}
-  \item{col_cases}{
-     Column containing the cases (numeric)
-}
-  \item{col_date}{
-     Column containing the time points (e.g., days)
-}
-  \item{col_region}{
-     Column containing the unique identifier of the regions (e.g., name, NUTS 3 code)
+  \item{object}{
+     object of class \code{infpan}
 }
   \item{verbose}{
      \code{bool} argument which indicates whether progress messages are displayed
@@ -37,7 +28,12 @@ swash(
 }
 
 \details{
-The function performs the analysis of the input panel data using the Swash-Backwash Model. The output is an object of class \code{"sbm"}. The results can be viewed using \code{summary(sbm)}. The user must state panel data with daily infections.
+The method performs the analysis of the input panel data with \eqn{N} regions and \eqn{T} time points
+using the Swash-Backwash Model based on an \code{infpan} object.
+The output is an object of class \code{sbm}. 
+The results can be viewed using \code{summary(sbm)}.
+The built-in function \code{swash_backwash} is used for the analysis. 
+See \code{\link{swash_backwash}} for further details.
 }
 
 \value{
@@ -57,7 +53,7 @@ Thomas Wieland
 }
 
 \seealso{
-\code{\link{sbm-class}}
+\code{\link{sbm-class}}, \code{\link{swash_backwash}}
 }
 
 \examples{
@@ -72,19 +68,24 @@ COVID19Cases_geoRegion <-
   COVID19Cases_geoRegion[COVID19Cases_geoRegion$datum <= "2020-05-31",]
 # Extract first COVID-19 wave
 
-CH_covidwave1 <- 
-  swash (
-    data = COVID19Cases_geoRegion, 
-    col_cases = "entries", 
-    col_date = "datum", 
-    col_region = "geoRegion"
+infpan_CH <- load_infections_paneldata(
+    data = COVID19Cases_geoRegion,
+    col_cases = "entries",
+    col_date = "datum",
+    col_region = "geoRegion",
+    other_cols = c("Population" = "pop"), 
+    verbose = TRUE
+  )
+# Import as infections panel data set (class infpan)
+
+CH_covidwave1 <-
+  swash(
+    infpan_CH,
+    verbose = TRUE
     )
 # Swash-Backwash Model for Swiss COVID19 cases
 # Spatial aggregate: NUTS 3 (cantons)
 
 summary(CH_covidwave1)
 # Summary of Swash-Backwash Model
-
-plot(CH_covidwave1)
-# Plot of Swash-Backwash Model edges and total epidemic curve
 }

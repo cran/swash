@@ -13,6 +13,9 @@ exponential_growth(
   y, 
   t, 
   GI = 4,
+  nls = TRUE,
+  nls_start = list(a = 1, b = 0.1),
+  add_constant = 1,
   verbose = FALSE
   )
 }
@@ -27,13 +30,25 @@ exponential_growth(
   \item{GI}{
      Generation interval for computing \eqn{R_0}
 }
+ \item{nls}{
+     Nonlinear estimation? \code{TRUE} or \code{FALSE}
+}
+ \item{nls_start}{
+     A \code{list} with start values for the two parameters to be estimated
+}
+  \item{add_constant}{
+     Numeric constant to be added to y if zero values occur (only relevant for OLS estimation)
+}
   \item{verbose}{
      \code{bool} argument which indicates whether progress messages are displayed
 }
 }
 
 \details{
-This function allows the estimation of an exponential growth model. The user must specify the dependent variable (daily infections) and the time variable (time counter or date values). The estimation is performed using a linearized model as an OLS estimator. The results are the exponential growth rate \eqn{r}, basic reproduction number \eqn{R_0}, and the doubling rate.
+This function allows the estimation of an exponential growth model. 
+The user must specify the dependent variable (daily infections) and the time variable (time counter or date values). 
+The estimation is performed using a linearized model as an OLS estimator, and, if \code{nls=TRUE}, also by NLS. 
+The results are the exponential growth rate \eqn{r}, basic reproduction number \eqn{R_0}, and the doubling rate.
 }
 
 \value{
@@ -70,15 +85,19 @@ COVID19Cases_ZH <-
   ,]
 # COVID cases for Zurich
 
-expgrowth_BS <- exponential_growth (
+expgrowth_ZH <- exponential_growth(
   y = COVID19Cases_ZH$sumTotal[1:28], 
   t = COVID19Cases_ZH$datum[1:28] 
 )
 # Exponential growth model for the first 4 weeks
 
-summary(expgrowth_BS)
+summary(expgrowth_ZH)
 # Summary of exponential growth model
 
-expgrowth_BS@doubling
-# Doubling rate
+plot(expgrowth_ZH)
+# Plot of exponential growth model
+
+expgrowth_ZH@GrowthModel_OLS$fit_metrics
+expgrowth_ZH@GrowthModel_OLS$fit_metrics
+# Fit metrics for OLS and NLS models
 }

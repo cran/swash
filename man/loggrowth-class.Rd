@@ -16,13 +16,12 @@ Objects can be created by the function \code{logistic_growth}.
 }
 \section{Slots}{
   \describe{
-    \item{\code{LinModel}:}{Object of class \code{list} Results of the OLS helper model}
-    \item{\code{GrowthModel_OLS}:}{Object of class \code{list} Results of the OLS fit (predicted, parameters, first derivative)}
-    \item{\code{GrowthModel_NLS}:}{Object of class \code{list} Results of the NLS fit (predicted, parameters, first derivative)}
-    \item{\code{t}:}{Object of class \code{numeric} Input time points data}
-    \item{\code{y}:}{Object of class \code{numeric} Input infections data}
+  \item{\code{LinModel}:}{Object of class \code{list} Results of the OLS helper model}
+  \item{\code{GrowthModel_OLS}:}{Object of class \code{list} Results of the OLS fit (predicted, parameters, first derivative)}
+  \item{\code{GrowthModel_NLS}:}{Object of class \code{list} Results of the NLS fit (predicted, parameters, first derivative)}
+  \item{\code{t}:}{Object of class \code{numeric} Input time points data}
+  \item{\code{y}:}{Object of class \code{numeric} Input infections data}
   \item{\code{config}:}{Object of class \code{list} Model fit configurations}
-
   }
 }
 \section{Methods}{

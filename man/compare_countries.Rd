@@ -90,7 +90,7 @@ COVID19Cases_geoRegion <-
 # Extract first COVID-19 wave
 
 CH_covidwave1 <- 
-  swash (
+  swash_backwash(
     data = COVID19Cases_geoRegion, 
     col_cases = "entries", 
     col_date = "datum", 
@@ -100,7 +100,7 @@ CH_covidwave1 <-
 # Spatial aggregate: NUTS 3 (cantons)
 
 AT_covidwave1 <- 
-  swash (
+  swash_backwash(
     data = Oesterreich_Faelle,
     col_cases = "Faelle",
     col_date = "Datum",

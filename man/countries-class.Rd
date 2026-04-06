@@ -4,6 +4,7 @@
 \alias{plot,countries-method}
 \alias{show,countries-method}
 \alias{summary,countries-method}
+\alias{print,countries-method}
 
 \title{Class \code{"countries"}}
 \description{
@@ -28,6 +29,7 @@ Objects can be created by the function \code{compare_countries(sbm1, sbm2)}.
   \describe{
     \item{plot}{\code{signature(x = "countries")}: Plots the results of a two-country comparison with the Swash-Backwash Model }
     \item{show}{\code{signature(object = "countries")}: Prints an \code{countries} object; use \code{summary(sbm_ci)} for results }
+    \item{print}{\code{signature(object = "countries")}: Prints an \code{countries} object; use \code{summary(sbm_ci)} for results }
     \item{summary}{\code{signature(object = "countries")}: Prints a summary of a \code{countries} object (results of the two-country comparison) }
 	 }
 }

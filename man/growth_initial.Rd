@@ -5,21 +5,26 @@
 \title{
 Exponential Growth Models for Regional Infections
 }
+
 \description{
 Estimates \eqn{N} exponential growth models for a given time period in \eqn{N} regions.
 }
+
 \usage{
 growth_initial(
   object, 
   time_units = 10,
   GI = 4,
+  nls = TRUE,
+  nls_start = list(a = 1, b = 0.1),
+  add_constant = 1,
   verbose = FALSE
   )
 }
 
 \arguments{
   \item{object}{
-     object of class \code{sbm}
+     object of class \code{infpan}
 }
   \item{time_units}{
      \code{numeric} value for the analysis time (time units from start)
@@ -27,21 +32,29 @@ growth_initial(
   \item{GI}{
      Generation interval for computing \eqn{R_0}
 }
+ \item{nls}{
+     Nonlinear estimation? \code{TRUE} or \code{FALSE}
+}
+ \item{nls_start}{
+     A \code{list} with start values for the two parameters to be estimated
+}
+  \item{add_constant}{
+     Numeric constant to be added to y if zero values occur (only relevant for OLS estimation)
+}
   \item{verbose}{
      \code{bool} argument which indicates whether progress messages are displayed
 }
 }
 
 \details{
-Please note: The method growth_initial() for class 'sbm' is deprecated. In swash version >=2.0.0 it will be replaced by the method growth_initial() for the new class 'infpan'.
-
-The function estimates exponential growth models for regional infections based on a \code{sbm} object. Such models are design for the analysis of the \emph{initial} phase of an epidemic spread. The user must state how much time units (from start) are included. See \code{\link{exponential_growth}} for further details of the estimation.
+The method estimates exponential growth models for regional infections based on an \code{infpan} object. 
+Such models are design for the analysis of the \emph{initial} phase of an epidemic spread. 
+The user must state how much time units (from start) are included. 
+See \code{\link{exponential_growth}} for further details of the estimation.
 }
 
 \value{
-\code{list} with two entries:
-    \item{\code{results}:}{Object of class \code{"data.frame"} Results of the exponential growth models (growth rate, basic reproduction number, doubling rate) for each region}
-    \item{\code{exponential_growth_models}:}{Object of class \code{"list"} List with \eqn{N} entries for \eqn{N} exponential models}
+object of class \code{\link{growthmodels-class}}
 }
 
 \references{
@@ -70,22 +83,22 @@ COVID19Cases_geoRegion <-
   COVID19Cases_geoRegion[COVID19Cases_geoRegion$datum <= "2020-05-31",]
 # Extract first COVID-19 wave
 
-CH_covidwave1 <- 
-  swash (
-    data = COVID19Cases_geoRegion, 
-    col_cases = "entries", 
-    col_date = "datum", 
-    col_region = "geoRegion"
-    )
-# Swash-Backwash Model for Swiss COVID19 cases
-# Spatial aggregate: NUTS 3 (cantons)
+infpan_CH <- load_infections_paneldata(
+    data = COVID19Cases_geoRegion,
+    col_cases = "entries",
+    col_date = "datum",
+    col_region = "geoRegion",
+    other_cols = c("Population" = "pop"), 
+    verbose = TRUE
+  )
+# Import as infections panel data set (class infpan)
 
 CH_covidwave1_initialgrowth_3weeks <- 
   growth_initial(
-    CH_covidwave1,
+    infpan_CH,
     time_units = 21
-    )
-CH_covidwave1_initialgrowth_3weeks$results
-# Exponential models for sbm object CH_covidwave1 
+  )
+summary(CH_covidwave1_initialgrowth_3weeks)
+# Exponential models for infpan object CH_covidwave1 
 # initial growth in the first 3 weeks
 }
