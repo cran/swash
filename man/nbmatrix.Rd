@@ -34,7 +34,7 @@ The function is based on \code{spdep::poly2nb}, which creates neighbours lists. 
 
 \value{
 \code{list} with two entries:
-    \item{\code{nb}:}{Object of class \code{"sb"} Neighbours list; see the \code{spdep:poly2nb} documentation }
+    \item{\code{nb}:}{Object of class \code{"sb"} Neighbours list; see the \code{spdep::poly2nb} documentation }
     \item{\code{nbmat}:}{Object of class \code{"data.frame"} Dataset neighbouring regions }
 }
 

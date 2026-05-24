@@ -7,7 +7,7 @@ Time Series Model with Breakpoints
 }
 
 \description{
-Estimation of breakpoints in linear regression models from daily infections data
+Estimation of breakpoints in linear regression models from incremental (e.g., daily) infections data
 }
 
 \usage{
@@ -47,8 +47,8 @@ breaks_growth(
 }
 
 \details{
-This function allows detects breakpoints in a linear regression time series model. 
-The user must specify the dependent variable (daily infections) and the time variable (time counter or date values). 
+This function allows detecting breakpoints in a linear regression time series model. 
+The user must specify the dependent variable (e.g, daily infections) and the time variable (time counter or date values). 
 The estimation is performed using OLS.
 The function internally uses the function \code{breakpoints} from the \code{strucchange} package (Zeileis et al. 2003),
 where breakpoints are identified using the Bai-Perron algorithm (Bai & Perron 2003). 
@@ -63,7 +63,7 @@ Bai J, Perron P (2003) Computation and analysis of multiple structural change mo
 
 Wieland T (2020) A phenomenological approach to assessing the effectiveness of COVID-19 related nonpharmaceutical interventions in Germany. \emph{Safety Science} 131, 104924. \doi{https://doi.org/10.1016/j.ssci.2020.104924}
 
-Zeileis C, Kleiber W, Krämer K, Hornik, K (2003) Testing and dating of structural changes in practice. \emph{Computational Statistics & Data Analysis} 44(1-2), 109-123. \doi{https://doi.org/10.1016/S0167-9473(03)00030-6}
+Zeileis C, Kleiber W, Krämer K, Hornik K (2003) Testing and dating of structural changes in practice. \emph{Computational Statistics & Data Analysis} 44(1-2), 109-123. \doi{https://doi.org/10.1016/S0167-9473(03)00030-6}
 }
 
 \author{

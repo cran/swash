@@ -12,7 +12,9 @@
 \title{Methods for Function \code{plot}}
 
 \description{
-Methods for function \code{plot} for different S4 classes: \code{infpan}, \code{sbm}, \code{sbm_ci}, and \code{loggrowth}.
+Methods for function \code{plot} for different S4 classes: 
+\code{infpan}, \code{sbm}, \code{sbm_ci}, \code{loggrowth}, \code{expgrowth}, 
+\code{hawkes}, and \code{breaksgrowth}.
 }
 
 \section{Methods}{
@@ -57,9 +59,11 @@ Methods for function \code{plot} for different S4 classes: \code{infpan}, \code{
     horiz_cum = TRUE,
     separate_plots = FALSE)}:
     
-  Plots the results of the Swash-Backwash Model. This generates two plots:
+  Plots the results of the Swash-Backwash Model. This generates four plots:
   \itemize{
     \item Edges over time.
+    \item SIR integrals.
+    \item All-over infections.
     \item Total infections per time unit.
   }
   
@@ -174,7 +178,7 @@ Methods for function \code{plot} for different S4 classes: \code{infpan}, \code{
 }
 
 \item{\code{signature(x = "breaksgrowth")}}{
-  \code{plot.hawkes(x, y, ...)}:
+  \code{plot.breaksgrowth(x, y, ...)}:
   Plots the results of a breakpoint analysis, including:
   \itemize{
     \item Time series data

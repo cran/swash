@@ -11,7 +11,7 @@
 \description{
 The class \code{"growthmodels"} contains the results of growth model analyses and the related input data as well as additional information.
 The \code{swash} package includes the following model analyses under the heading "growth models": Exponential growth models,
-logistic growth models, Hansen Process models, and time series models with breakpoints.
+logistic growth models, Hawkes Process models, and time series models with breakpoints.
 Use \code{summary(growthmodels)} for results summary.
 See the corresponding functions for details: \link{exponential_growth}, \link{logistic_growth}, \link{hawkes_growth}, \link{breaks_growth}.
 }
@@ -35,8 +35,8 @@ Objects can be created by the functions \code{exponential_growth}, \code{logisti
 
 \section{Methods}{
   \describe{
-    \item{print}{\code{signature(x = "growthmodels")}: Prints an \code{growthmodels} object; use \code{summary(growthmodels)} for results }
-    \item{show}{\code{signature(object = "growthmodels")}: Prints an \code{growthmodels} object; use \code{summary(growthmodels)} for results }
+    \item{print}{\code{signature(x = "growthmodels")}: Prints a \code{growthmodels} object; use \code{summary(growthmodels)} for results }
+    \item{show}{\code{signature(object = "growthmodels")}: Prints a \code{growthmodels} object; use \code{summary(growthmodels)} for results }
     \item{summary}{\code{signature(object = "growthmodels")}: Prints a summary of \code{growthmodels} objects (model results) }
 	 }
 }

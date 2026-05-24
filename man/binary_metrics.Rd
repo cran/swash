@@ -24,7 +24,7 @@ binary_metrics(
      Numeric vector: Y expected
 }
   \item{no_information_rate}{
-     \code{bool} argument which indicates whether the no-information rate is calculated based on negatives or positives
+     \code{character} argument which indicates whether the no-information rate is calculated based on negatives or positives
 }
 }
 

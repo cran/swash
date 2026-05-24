@@ -32,7 +32,7 @@ hawkes_growth(
 
 \details{
 This function allows the estimation of a Hawkes Process model, with the time decay being expressed as exponential function,
-which results in three estimated parameters (\eqn{\mu}, \eqn{\alpha}, and \eqn{\beta}).
+which results in three estimated parameters: \eqn{\mu} (background rate), \eqn{\alpha} (excitation parameter), and \eqn{\beta} (decay).
 The user must specify the dependent variable (incremental infections). 
 The estimation is performed using nonlinear estimation via \code{stats::optim}.
 See the corresponding documentation for available optimization methods (default: "L-BFGS-B").

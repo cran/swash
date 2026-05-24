@@ -9,15 +9,21 @@ swash: Health Geography Toolbox for Model-Based Analysis of Infections Panel Dat
 
 \description{
 
-The R library is a toolbox for quantitative analysis in health geography towards the spatial spread of infectious diseases.
+The R library \emph{swash} provides a toolbox for quantitative analyses in health geography with a focus on the spatial spread of infectious diseases.
+It bundles functions developed by the author between 2020 and 2023 for the quantitative analysis of (panel) infection data during the COVID-19 pandemic.
+The aim was to consolidate these methods and analytical tools into a unified and coherent framework.
+The target audience of this R package consists of researchers and practitioners in the fields of health geography, spatial epidemiology, and statistics.
+
 In order to use all functionalities, the user should import her/his infections panel data using the function \code{load_infections_paneldata()}, 
 which returns an instance of class \code{infpan}. The panel data is checked whether it is balanced and whether it includes missing values. 
 From an \code{infpan} object, the user may utilize the following built-in analysis models and visualization functions:
 
 \itemize{
-    \item{\emph{Swash-Backwash Model for the Single Epidemic Wave}, including further analysis towards bootstrap-based inference and country comparison}
-    \item{\emph{Growth Analysis} with logistic growth models, exponential growth models (for the initial phase of a spread), and Hawkes process models}
-    \item{\emph{Breakpoints analysis} using the Bai-Parron algorithm implemented in \code{strucchange::breakpoints}}
+    \item{\emph{Swash-Backwash Model for the Single Epidemic Wave}, including further analysis towards bootstrap-based inference and country comparison as well as visualization}
+    \item{\emph{Growth Analysis} with \emph{logistic} and \emph{exponential growth models} for cumulative or incremental infections, 
+    whereby the former is intended for the entire infection wave, and the latter for the initial phase of the infection wave; including visualization}
+    \item{\emph{Hawkes process} models for incremental infections; including visualization}
+    \item{\emph{Breakpoints analysis} using the \emph{Bai-Perron algorithm} implemented in \code{strucchange::breakpoints}; including visualization}
     \item{Calculation of further epidemic indicators from the infections panel data such as the \emph{effective reproduction number}}
     \item{\emph{Plots} of infection curves by region}
 }
@@ -28,7 +34,7 @@ All mentioned functions may be used stand-alone as well.
 
 \details{
 Based on an \code{infpan} object, several indicators may be calculated from incremental infections values, such as incidence or effective reprodction number \eqn{R_t}.
-Infection curves may be plotted by \code{plot(infan)}. All built-in model analyses may be conducted based on an instance of class \code{infpan}.
+Infection curves may be plotted by \code{plot(infpan)}. All built-in model analyses may be conducted based on an instance of class \code{infpan}.
 
 The Swash-Backwash Model (SBM) for the Single Epidemic Wave is the spatial equivalent of the classic epidemiological SIR (Susceptible-Infected-Recovered) model. 
 It was developed by Cliff and Haggett (2006) to model the velocity of spread of infectious diseases across space. 
@@ -36,7 +42,7 @@ Current applications can be found, for example, in Smallman-Raynor et al. (2022a
 This package enables the calculation of the Swash-Backwash Model for user-supplied panel data on regional infections. 
 The core of this is the \code{swash_backwash()} function, which calculates the model and creates a model object of the \code{sbm} class defined in this package. 
 This class can be used to visualize results (\code{summary()}, \code{plot()}) and calculate bootstrap confidence intervals for the model estimates (\code{confint(sbm)}); 
-the latter returns an object of class \code{sbm_ci} as defined in this package. Two \code{sbm_ci} objects for different countries may be compared with \code{compare_countries()}, 
+the latter returns an object of the built-in class \code{sbm_ci}. Two \code{sbm_ci} objects for different countries may be compared with \code{compare_countries()}, 
 which allows the estimation of mean differences of a user-specified model parameter (e.g., spatial reproduction number \eqn{R_{OA}}) between two countries. 
 This makes it possible to check whether the spatial spread velocity of a communicable disease is significantly different in one country than in another country; 
 the result is an object of class \code{countries}. To calculate the SBM model based on an \code{infpan} object, use the corresponding method \code{swash(infpan)}.
@@ -45,15 +51,15 @@ The library allows for estimating growth models based on time series of infectio
 Logistic and exponential growth models (see, e.g., Chowell et al. 2014, 2015, Pell et al. 2018, Wieland 2020a, 2020b) 
 as well as Hawkes process models (see, e.g. Rizoiu et al. 2018) are provided. 
 Additionally, breakpoints in time series may be detected (see, e.g., Wieland 2020b).
-A model for a single time series may be estimated with the functions \code{logistic_growth()}, \code{exponential_growth()}, \code{hawkes_growth()}, 
-or \code{breaks_growth()} respectively. These function return objects of class \code{loggrowth}, \code{expgrowth}, \code{hawkes},
-and \code{breaksgrowth}, respectively, all of them defined in this package. Plotting is available via \code{plot} method.
+A model for a single time series may be estimated with the built-in functions \code{logistic_growth()}, \code{exponential_growth()}, \code{hawkes_growth()}, 
+or \code{breaks_growth()}, respectively. These function return objects of class \code{loggrowth}, \code{expgrowth}, \code{hawkes},
+and \code{breaksgrowth}, respectively, all of them defined in this package. Plotting is available via the \code{plot} method.
 Estimating such a model based on an \code{infpan} object is provided by the \code{infpan} methods \code{growth()}, \code{growth_initial()}, 
 \code{growth_hawkes()}, and \code{growth_breaks()}, respectively, all of them resulting in an object of class \code{growthmodels}.
 
 The package also contains other functions for spatio-temporal analysis, including spatial statistics (\code{nbstat()} for neighborhood statistics)
 and fit metrics (\code{metrics()}, \code{binary_metrics()}, \code{binary_metrics_glm()}).
-The package includes example data from the SARS-CoV-2/COVID-19 pandemic.
+The package includes example data from the COVID-19 pandemic.
 }
 
 \author{

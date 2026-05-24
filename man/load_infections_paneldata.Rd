@@ -51,7 +51,7 @@ load_infections_paneldata(
 }
 
 \details{
-The function import user-given infections panel data. 
+The function imports user-given infections panel data. 
 The input data is checked in several ways (e.g., whether data is balanced or not).
 Other relevant columns from the input data may be defined in the \code{character} vector \code{other_cols}: 
 "R_t" (Effective reproduction number), "Cum. cases" (Cumulative cases), "Incidence" Incidence (per xxx pop),

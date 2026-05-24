@@ -6,7 +6,7 @@
 Fit metrics for binary logit model
 }
 \description{
-Calculation of fit metrices for binary variables (Sensitivity, specificity, accuracy) out of binary logit models (glm object) 
+Calculation of fit metrices for binary variables (Sensitivity, specificity, accuracy) out of binary logit models (\code{glm} object) 
 }
 \usage{
 binary_metrics_glm(
@@ -20,7 +20,7 @@ binary_metrics_glm(
      \code{glm} object with binary logit model
 }
   \item{threshold}{
-     Threshold for destinction of probability with respect to TRUE or FALSE
+     Threshold for distinction of probability with respect to TRUE or FALSE
 }
 }
 

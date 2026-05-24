@@ -40,7 +40,7 @@ compare_countries(
      Proportion of regions included in each sample (default: 0.8)
 }
   \item{alpha}{
-     Significance level \eqn{\alpha} for the confidence intervals (default: 0.05)
+     Significance level \eqn{\alpha} for 1-\eqn{\alpha}*100 confidence intervals (default: 0.05)
 }
   \item{replace}{
      Resampling with replacement (\code{TRUE} or \code{FALSE}, default: \code{TRUE} = bootstrap resampling)
@@ -48,7 +48,17 @@ compare_countries(
 }
 
 \details{
-The combination of the Swash-Backwash Model and bootstrap resampling allows the estimation of mean differences of a user-specified model parameter (e.g., spatial reproduction number \eqn{R_{OA}}) between two countries. This makes it possible to check whether the spatial spread velocity of a communicable disease is significantly different in one country than in another country. Since the initial data in the Swash-Backwash Model should be balanced, \emph{entity-based bootstrap sampling} is carried out in the \code{compare_countries()} function. This means that not, for example, 80\% of all observations are included in each sample at a sample ratio equal to \eqn{p} = 0.8, but rather all observations for 80\% of the regions. For both countries, \eqn{B} bootstrap samples (default: 100) are drawn for which the Swash-Backwash Model is calculated. Based on the distribution of indicators, confidence intervals are calculated at the user-specified significance level \eqn{\alpha}. The \code{compare_countries()} function calculates the differences of the user's desired indicator between the two samples, \eqn{D}, and also calculates \eqn{\alpha} confidence intervals for this.
+The combination of the Swash-Backwash Model and bootstrap resampling allows the estimation of mean differences of a user-specified 
+model parameter (e.g., spatial reproduction number \eqn{R_{OA}}) between two countries. 
+This makes it possible to check whether the spatial spread velocity of a communicable disease is significantly different
+in one country than in another country. Since the initial data in the Swash-Backwash Model should be balanced, 
+\emph{entity-based bootstrap sampling} is carried out in the \code{compare_countries()} function.
+This means that not, for example, 80\% of all observations are included in each sample at a sample ratio equal to \eqn{p} = 0.8,
+but rather all observations for 80\% of the regions. For both countries, \eqn{B} bootstrap samples (default: 100) 
+are drawn for which the Swash-Backwash Model is calculated. 
+Based on the distribution of indicators, confidence intervals are calculated at the user-specified significance level \eqn{\alpha}. 
+The \code{compare_countries()} function calculates the differences of the user's desired indicator between the two samples, \eqn{D}, 
+and also calculates \eqn{\alpha} confidence intervals for this.
 }
 
 \value{

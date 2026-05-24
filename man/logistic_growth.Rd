@@ -63,7 +63,7 @@ logistic_growth(
 \details{
 This function allows the estimation of a logistic growth model. 
 The user must specify the dependent variable (cumulative infections) and the time variable (time counter or date values). 
-The estimation is performed using a linearized model as an OLS estimator and as an NLS estimator.
+The estimation is performed using a linearized model with an OLS estimator and nonlinear least squares.
 For the former, the saturation value can either be specified by the user or found using a search algorithm. 
 The parameters from the OLS fit are used as starting values for the NLS estimation.
 }

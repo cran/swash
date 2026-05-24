@@ -34,7 +34,7 @@ growth(
      Method for saturation value search, either "bisect" or "trial_and_error"
 }
   \item{seq_by}{
-     No of segments for the "trial_and_error" estimation of the saturation value
+     No. of segments for the "trial_and_error" estimation of the saturation value
 }
   \item{nls}{
      Nonlinear estimation? \code{TRUE} or \code{FALSE}

@@ -98,7 +98,7 @@ Thomas Wieland
 }
 
 \seealso{
-\code{\link{metrics}}
+\code{\link{binary_metrics}}
 }
 
 \examples{

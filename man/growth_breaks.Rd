@@ -25,7 +25,7 @@ growth_breaks(
      object of class \code{infpan}
 }
   \item{ln}{
-     \code{bool} argument which indicates whether dependent variable should be transformed by natural logarithm
+     \code{bool} argument which indicates whether the dependent variable should be transformed by natural logarithm
 }
   \item{add_constant}{
      Numeric constant to be added to y if zero values occur

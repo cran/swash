@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{COVID19Cases_geoRegion}
 \docType{data}
 \alias{COVID19Cases_geoRegion}
@@ -49,12 +50,20 @@ data(COVID19Cases_geoRegion)
     \item{entries_diff_last}{(integer) Difference in last entries.}
   }
 }
+
 \details{
-The data is included as it was published in by the Swiss Federal Office of Public Health (Bundesamt fuer Gesundheit, BAG). Note that the reporting date equals the date of SARS-CoV-2 testing.
+The data is included as it was published in by the Swiss Federal Office of Public Health (Bundesamt fuer Gesundheit, BAG). 
+Note that the reporting date equals the date of SARS-CoV-2 testing.
 }
+
 \source{
-  Federal Office of Public Health FOPH (2023) COVID-19 Dashboard Source Data. \url{https://www.covid19.admin.ch/api/data/documentation} (retrieved 2023-06-28)
+Federal Office of Public Health - FOPH (2023) COVID-19 Dashboard Source Data. \url{https://www.covid19.admin.ch/api/data/documentation} (retrieved 2023-06-28)
 }
+
+\references{
+Wieland T (2025) Assessing the effectiveness of non-pharmaceutical interventions in the SARS-CoV-2 pandemic: results of a natural experiment regarding Baden-Württemberg (Germany) and Switzerland in the second infection wave. \emph{Journal of Public Health} 33(11), 2497-2511. \doi{https://doi.org/10.1007/s10389-024-02218-x}
+}
+
 \examples{
 data(COVID19Cases_geoRegion)
 # Get SWISS COVID19 cases at NUTS 3 level

@@ -59,10 +59,16 @@ an der Heiden M, Hamouda O (2020) Schätzung der aktuellen Entwicklung der SARS-
 Bonifazi G, Lista L, Menasce D, Mezzetto M, Pedrini D, Spighi R, Zoccoli A (2021) A simplified estimate of the effective reproduction number Rt using its relation with the doubling time and application to Italian COVID-19 data. \emph{The European Physical Journal Plus} 136, 386. \doi{https://doi.org/10.1140/epjp/s13360-021-01339-6}
 
 Wieland T (2020) A phenomenological approach to assessing the effectiveness of COVID-19 related nonpharmaceutical interventions in Germany. \emph{Safety Science} 131, 104924. \doi{https://doi.org/10.1016/j.ssci.2020.104924}
+
+Wieland T (2025) Assessing the effectiveness of non-pharmaceutical interventions in the SARS-CoV-2 pandemic: results of a natural experiment regarding Baden-Württemberg (Germany) and Switzerland in the second infection wave. \emph{Journal of Public Health} 33(11), 2497-2511. \doi{https://doi.org/10.1007/s10389-024-02218-x}
 }
 
 \author{
 Thomas Wieland
+}
+
+\seealso{
+\code{\link{infpan-class}}, \code{\link{load_infections_paneldata}}, \code{\link{calculate_incidence}}, \code{\link{calculate_cum}}, \code{\link{calculate_rollmean}}
 }
 
 \examples{

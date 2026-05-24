@@ -38,6 +38,7 @@ Objects can be created by importing infections panel data using the function \co
     \item{calculate_Rt}{\code{signature(x = "infpan")}: Calculates the effective reproduction number \eqn{R_t} from \code{infpan} objects. Returns updated \code{infpan} instance.}
     \item{calculate_cum}{\code{signature(x = "infpan")}: Calculates cumulative cases from \code{infpan} objects. Returns updated \code{infpan} instance.}
     \item{calculate_rollmean}{\code{signature(x = "infpan")}: Calculates rolling means of cases from \code{infpan} objects. Returns updated \code{infpan} instance.}
+    \item{calculate_rollsum}{\code{signature(x = "infpan")}: Calculates rolling sums of cases from \code{infpan} objects. Returns updated \code{infpan} instance.}
     \item{calculate_incidence}{\code{signature(x = "infpan")}: Calculates incidences of cases from \code{infpan} objects. Returns updated \code{infpan} instance.}
     \item{print}{\code{signature(x = "infpan")}: Prints an \code{infpan} object; use \code{summary(infpan)} for results }
     \item{show}{\code{signature(object = "infpan")}: Shows an \code{infpan} object; use \code{summary(infpan)} for results }
@@ -46,6 +47,7 @@ Objects can be created by importing infections panel data using the function \co
     \item{growth}{\code{signature(object = "infpan")}: Estimates logistic growth models from \code{infpan} objects. Returns \code{growthmodels} instance. }
     \item{growth_initial}{\code{signature(object = "infpan")}: Estimates exponential growth models from \code{infpan} objects for a given time period. Returns \code{growthmodels} instance. }
     \item{growth_hawkes}{\code{signature(object = "infpan")}: Estimates Hawkes process models from \code{infpan} objects. Returns \code{growthmodels} instance. }
+    \item{breaks_growth}{\code{signature(object = "infpan")}: Estimates breakpoints in linear regression models from \code{infpan} objects. Returns \code{growthmodels} instance. }
 	 }
 }
 

@@ -21,9 +21,9 @@ Objects can be created by the function \code{hawkes_growth}.
   \describe{
   \item{\code{t}:}{Object of class \code{numeric} Input time points data}
   \item{\code{y}:}{Object of class \code{numeric} Input infections data}
-  \item{\code{mu}:}{Object of class \code{numeric} Estimated \eqn{\mu} parameter}
-  \item{\code{alpha}:}{Object of class \code{numeric} Estimated \eqn{\alpha} parameter}
-  \item{\code{beta}:}{Object of class \code{numeric} Estimated \eqn{\beta} parameter}
+  \item{\code{mu}:}{Object of class \code{numeric} Estimated \eqn{\mu} parameter (background rate)}
+  \item{\code{alpha}:}{Object of class \code{numeric} Estimated \eqn{\alpha} parameter (excitation parameter)}
+  \item{\code{beta}:}{Object of class \code{numeric} Estimated \eqn{\beta} parameter (decay)}
   \item{\code{br}:}{Object of class \code{numeric} Estimated breaking ratio (\eqn{\alpha}/\eqn{\beta})}
   \item{\code{y_pred}:}{Object of class \code{numeric} Predicted values of y}
   \item{\code{fit_metrics}:}{Object of class \code{list} Fit metrics for model, output from built-in function \code{fit_metrics}}

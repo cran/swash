@@ -34,8 +34,12 @@ as_balanced(
 }
 }
 \details{
-The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data in order for the calculations to be carried out. However, for a correct estimation it is implicitly assumed that the input data is balanced. The function corrects non-balanced panel data. It is executed automatically whithin the \code{swash()} function (when using the function \code{is_balanced()}), but can also be used separately.
+The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data in order for the calculations to be carried out. 
+However, for a correct estimation it is implicitly assumed that the input data is balanced. 
+The function corrects non-balanced panel data. 
+It is executed automatically whithin the \code{swash_backwash()} function and \code{swash()} method, respectively, but can also be used separately.
 }
+
 \value{
   \item{data }{Corrected input dataset (\code{data.frame})}
 }
@@ -43,9 +47,11 @@ The Swash-Backwash Model for the Single Epidemic Wave does not necessarily requi
 \author{
 Thomas Wieland
 }
+
 \seealso{
 \code{\link{is_balanced}}
 }
+
 \examples{
 data(COVID19Cases_geoRegion)
 # Get SWISS COVID19 cases at NUTS 3 level

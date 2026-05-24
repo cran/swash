@@ -15,7 +15,7 @@ and the related input data as well as additional information.
 Use \code{summary(sbm)} and \code{plot(sbm)} for results summary and plotting, respectively.
 }
 \section{Objects from the Class}{
-Objects can be created by the function \code{swash}.
+Objects can be created by the function \code{swash_backwash} and the \code{infpan} method \code{swash}, respectively.
 }
 \section{Slots}{
   \describe{
@@ -52,8 +52,6 @@ Cliff AD, Haggett P (2006) A swash-backwash model of the single epidemic wave. \
 Smallman-Raynor MR, Cliff AD, Stickler PJ (2022) Meningococcal Meningitis and Coal Mining in Provincial England: Geographical Perspectives on a Major Epidemic, 1929–33. \emph{Geographical Analysis} 54, 197–216. \doi{https://doi.org/10.1111/gean.12272}
 
 Smallman-Raynor MR, Cliff AD, The COVID-19 Genomics UK (COG-UK) Consortium (2022) Spatial growth rate of emerging SARS-CoV-2 lineages in England, September 2020–December 2021. \emph{Epidemiology and Infection} 150, e145. \doi{https://doi.org/10.1017/S0950268822001285}.
-
-Wieland T (2020) Flatten the Curve! Modeling SARS-CoV-2/COVID-19 Growth in Germany at the County Level. \emph{REGION} 7(2), 43–83. \doi{https://doi.org/10.18335/region.v7i2.324}
 }
 
 \examples{

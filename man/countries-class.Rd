@@ -8,10 +8,11 @@
 
 \title{Class \code{"countries"}}
 \description{
-The class \code{"countries"} contains the results of a two-country comparison analysis using the Swash-Backwash Model, including two \code{"sbm_ci"} classes for each country. Use \code{summary(countries)} and \code{plot(countries)} for results summary and plotting, respectively.
+The class \code{countries} contains the results of a two-country comparison analysis using the Swash-Backwash Model, 
+including two \code{sbm_ci} objects for each country. Use \code{summary(countries)} and \code{plot(countries)} 
+for results summary and plotting, respectively.
 }
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("countries", ...)}.
 Objects can be created by the function \code{compare_countries(sbm1, sbm2)}. 
 }
 \section{Slots}{

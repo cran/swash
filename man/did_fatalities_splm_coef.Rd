@@ -38,4 +38,23 @@ Wieland T (2025) Assessing the effectiveness of non-pharmaceutical interventions
 
 \examples{
 data(did_fatalities_splm_coef)
+# Results of a difference-in-differences model
+
+plot_coef_ci(
+  point_estimates = did_fatalities_splm_coef$Estimate,
+  confint_lower = did_fatalities_splm_coef$CI_lower_Bonferroni,
+  confint_upper = did_fatalities_splm_coef$CI_upper_Bonferroni,
+  coef_names = did_fatalities_splm_coef$Var,
+  skipvars = c(
+    "Alpha_share", 
+    "lambda",
+    "rho",
+    "log(D_Infections_daily_7dsum_per100000_lag2weeks)",
+    "vacc_cum_per100000_lag2weeks"
+    ),
+  lwd = 13,
+  pch = 19,
+  auto_color = TRUE
+)
+# Plot with point estimates and confidence intervals
 }
