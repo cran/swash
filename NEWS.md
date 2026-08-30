@@ -1,4 +1,7 @@
-# swash 2.0.1
+# swash 2.0.2
+
+## General
+- Deprecation warnings with respect to version >=3.0.0
 
 ## Bugfixes
-- Extensions and corrections of documentation files
+- Updating URLs in help texts that are no longer valid

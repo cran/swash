@@ -104,7 +104,7 @@ IS: https://www.covid.is/data (accessed 2022-06-27)
 
 IT: \url{https://github.com/pcm-dpc/COVID-19/tree/master/dati-regioni} (accessed 2022-06-24), file "dpc-covid19-ita-regioni-latest_raw"
 
-LV: \url{https://covid19.gov.lv/en/node/16387} (accessed 2022-07-27)
+LV: https://covid19.gov.lv/en/node/16387 (accessed 2022-07-27)
 
 LT: \url{https://open-data-ls-osp-sdg.hub.arcgis.com/datasets/ba35de03e111430f88a86f7d1f351de6_0/explore} (accessed 2022-06-27)
 

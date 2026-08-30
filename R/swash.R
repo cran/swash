@@ -5,8 +5,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.0.0
-# Last update: 2026-04-05 22:03
+# Version:     2.0.1
+# Last update: 2026-08-30 11:08
 # Copyright (c) 2020-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -18,7 +18,7 @@ library(lubridate)
 
 
 package_name <- "swash"
-package_version <- "2.0.0"
+package_version <- "2.0.2"
 
 
 permitted_other_cols <- c(
@@ -4909,6 +4909,13 @@ nbmatrix <-
     row.names = NULL
   ) {
     
+    .Deprecated(
+      msg = paste(
+        "The function nbmatrix() is deprecated.",
+        "It is being substantially modified in swash version >=3.0.0."
+      )
+    )
+    
     nb <- spdep::poly2nb(
       polygon_sf, 
       row.names = row.names
@@ -4982,7 +4989,14 @@ nbstat <-
     data_col, 
     func = "sum",
     row.names = NULL
-  ) { 
+  ) {
+    
+    .Deprecated(
+      msg = paste(
+        "The function nbstat() is deprecated.",
+        "It will be replaced with a method for the new nbmatrix class in swash version >=3.0.0."
+      )
+    )
     
     nbmat <- nbmatrix(
       polygon_sf, 
