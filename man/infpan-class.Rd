@@ -28,6 +28,7 @@ Objects can be created by importing infections panel data using the function \co
     \item{\code{other_cols}:}{Object of class \code{"character"} Names of other relevant columns derived from incremental case data, e.g. effective reproduction number \eqn{R_t} }
     \item{\code{time_format}:}{Object of class \code{"character"} Format of time points in time column }
     \item{\code{time_unit}:}{Object of class \code{"character"} Time unit, default: "days" }
+    \item{\code{geodata}:}{Object of class \code{"sf"} Geodata (sf object) of regions }
     \item{\code{timestamp}:}{Object of class \code{"list"} Time stamps of any update of the instance }
   }
 }
@@ -48,6 +49,9 @@ Objects can be created by importing infections panel data using the function \co
     \item{growth_initial}{\code{signature(object = "infpan")}: Estimates exponential growth models from \code{infpan} objects for a given time period. Returns \code{growthmodels} instance. }
     \item{growth_hawkes}{\code{signature(object = "infpan")}: Estimates Hawkes process models from \code{infpan} objects. Returns \code{growthmodels} instance. }
     \item{breaks_growth}{\code{signature(object = "infpan")}: Estimates breakpoints in linear regression models from \code{infpan} objects. Returns \code{growthmodels} instance. }
+    \item{add_geodata}{\code{signature(object = "infpan")}: Adds geodata (\code{sf} object) to the \code{infpan} object. }
+    \item{plot_map}{\code{signature(object = "infpan")}: Plots a map from an \code{infpan} object which displays the attribute specified. }
+    \item{spatial_statistic}{\code{signature(object = "infpan")}: Calculates a spatial statistic from a specified attribute in an \code{infpan} object. Returns \code{nbmatrix} instance. }
 	 }
 }
 

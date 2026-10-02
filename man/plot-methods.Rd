@@ -9,11 +9,12 @@
 \alias{plot,countries,ANY-method}
 \alias{plot,breaksgrowth,ANY-method}
 \alias{plot,hawkes,ANY-method}
+\alias{plot,nbmatrix,ANY-method}
 \title{Methods for Function \code{plot}}
 
 \description{
 Methods for function \code{plot} for different S4 classes: 
-\code{infpan}, \code{sbm}, \code{sbm_ci}, \code{loggrowth}, \code{expgrowth}, 
+\code{infpan}, \code{sbm}, \code{sbm_ci}, \code{nbmatrix}, \code{loggrowth}, \code{expgrowth}, 
 \code{hawkes}, and \code{breaksgrowth}.
 }
 
@@ -190,6 +191,27 @@ Methods for function \code{plot} for different S4 classes:
     \item \code{x}: An object of class \code{breaksgrowth} containing the data for the breakspoints model.
     \item \code{y}: Optional argument for additional customization of the plot (e.g., color, labels).
     \item \code{...}: Additional arguments for graphical parameters.
+  }
+
+  \strong{Details}: This method is useful for visualizing the derived breakpoints.
+}
+
+\item{\code{signature(x = "nbmatrix")}}{
+  \code{plot.nbmatrix(x, y, ...)}:
+  Plots the results of a neighborhood matrix/spatial statistics analysis, including:
+  \itemize{
+    \item Spatial features (polygons)
+    \item Specified indicator
+  }
+
+  \strong{Arguments}:
+  \itemize{
+    \item \code{x}: An object of class \code{nbmatrix} containing the data.
+    \item \code{y}: Optional argument for additional customization of the plot (e.g., color, labels).
+    \item \code{statistic}: Statistic to be plotted.
+    \item \code{attribute}: Attribute to be plotted.
+    \item \code{verbose}: Attribute to be plotted.
+    \item \code{...}: \code{bool} argument which indicates whether progress messages are displayed.
   }
 
   \strong{Details}: This method is useful for visualizing the derived breakpoints.

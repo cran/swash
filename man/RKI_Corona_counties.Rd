@@ -62,15 +62,27 @@ RKI (2020) RKI Corona Landkreise. Robert Koch-Institut (RKI), dl-de/by-2-0. Attr
 data(RKI_Corona_counties)
 # German counties (Source: Robert Koch Institute)
 
-Corona_nbstat <- 
-  nbstat (
+Corona_nbmat <- 
+  nbmatrix (
     RKI_Corona_counties, 
     ID_col="AGS",
-    link_data = RKI_Corona_counties, 
-    data_ID_col = "AGS", 
-    data_col = "EWZ", 
-    func = "sum"
+    verbose = TRUE
   )
-Corona_nbstat$nbmat_data_aggregate
-# Sum of population (EWZ) of neighbouring counties
+# Creating neighborhood matrix
+
+Corona_nbstat <- nbstat(
+  Corona_nbmat,
+  link_data = RKI_Corona_counties, 
+  ID_col = "AGS", 
+  data_col = "EWZ", 
+  func = "sum",
+  verbose = TRUE
+  )
+# Sum of population (EWZ) of neighboring counties
+
+plot(
+  Corona_nbstat,
+  main = "No. of inhabitants"
+)
+# Plot simple map of "EWZ"
 }

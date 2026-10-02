@@ -12,20 +12,25 @@ export(
   "logistic_growth",
   "metrics",
   "nbmatrix",
-  "nbstat",
   "plot_coef_ci",
   "quantile_ci", 
   "R_t",
   "swash_backwash"
   )
 exportMethods(
+  "add_geodata",
   "calculate_cum",
   "calculate_incidence",
   "calculate_rollmean",
   "calculate_rollsum",
   "calculate_Rt",
   "confint",
+  "getisord",
+  "gstar",
+  "moran",
+  "nbstat",
   "plot",
+  "plot_map",
   "print",
   "summary",
   "swash",
@@ -33,6 +38,7 @@ exportMethods(
   "growth_breaks",
   "growth_hawkes",
   "growth_initial",
+  "spatial_statistic",
   "timestamps"
 )
 exportClasses(
@@ -41,6 +47,7 @@ exportClasses(
   "expgrowth",
   "growthmodels",
   "hawkes",
+  "nbmatrix",
   "infpan",
   "loggrowth",
   "sbm",
@@ -79,6 +86,7 @@ importFrom(
   "median", 
   "nls", 
   "optim",
+  "pnorm",
   "quantile",
   "coef",
   "predict"
@@ -94,7 +102,14 @@ importFrom(
   )
 importFrom(
   "spdep",
+  "globalG.test",
+  "moran.test",
+  "nb2listw",
   "poly2nb"
+)
+importFrom(
+  "sfdep",
+  "local_gstar_perm"
 )
 import("sf")
 importFrom(
