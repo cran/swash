@@ -32,13 +32,13 @@ exportMethods(
   "plot",
   "plot_map",
   "print",
+  "spatial_statistic",
   "summary",
   "swash",
   "growth",
   "growth_breaks",
   "growth_hawkes",
   "growth_initial",
-  "spatial_statistic",
   "timestamps"
 )
 exportClasses(

@@ -66,6 +66,8 @@ The user must specify the dependent variable (cumulative infections) and the tim
 The estimation is performed using a linearized model with an OLS estimator and nonlinear least squares.
 For the former, the saturation value can either be specified by the user or found using a search algorithm. 
 The parameters from the OLS fit are used as starting values for the NLS estimation.
+See Rawlings et al. (1998) for the basics of intrinsically linear models such as the logistic or exponential growth model.
+See Wieland (2020) for the documentation of the fitting procedure applied in this function.
 }
 
 \value{
@@ -73,11 +75,22 @@ object of class \code{\link{loggrowth-class}}
 }
 
 \references{
-Chowell G, Simonsen L, Viboud C, Yang K (2014) Is West Africa Approaching a Catastrophic Phase or is the 2014 Ebola Epidemic Slowing Down? Different Models Yield Different Answers for Liberia. \emph{PLoS currents} 6. \doi{https://dx.doi.org/10.1371/currents.outbreaks.b4690859d91684da963dc40e00f3da81}
+Chowell G, Simonsen L, Viboud C, Yang K (2014) 
+Is West Africa Approaching a Catastrophic Phase or is the 2014 Ebola Epidemic Slowing Down? Different Models Yield Different Answers for Liberia. 
+\emph{PLoS currents} 6. \doi{https://dx.doi.org/10.1371/currents.outbreaks.b4690859d91684da963dc40e00f3da81}
 
-Pell B, Kuang Y, Viboud C, Chowell G (2018) Using phenomenological models for forecasting the 2015 ebola challenge. \emph{Epidemics} 22, 62–70. \doi{https://doi.org/10.1016/j.epidem.2016.11.002}
+Pell B, Kuang Y, Viboud C, Chowell G (2018) 
+Using phenomenological models for forecasting the 2015 ebola challenge. 
+\emph{Epidemics} 22, 62-70. \doi{https://doi.org/10.1016/j.epidem.2016.11.002}
 
-Wieland T (2020) Flatten the Curve! Modeling SARS-CoV-2/COVID-19 Growth in Germany at the County Level. \emph{REGION} 7(2), 43–83. \doi{https://doi.org/10.18335/region.v7i2.324}
+Rawlings JO, Pantula SG, Dickey DA (1998)
+Applied Regression Analysis: A Research Tool. Second Edition.
+New York: Springer.
+\doi{https://doi.org/10.1007/b98890}
+
+Wieland T (2020) 
+Flatten the Curve! Modeling SARS-CoV-2/COVID-19 Growth in Germany at the County Level. 
+\emph{REGION} 7(2), 43–83. \doi{https://doi.org/10.18335/region.v7i2.324}
 }
 
 \author{

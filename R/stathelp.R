@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.0.0
-# Last update: 2026-09-12 10:13
+# Version:     1.0.1
+# Last update: 2026-10-10 08:27
 # Copyright (c) 2022-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -261,7 +261,8 @@ metrics <-
     point.pch = 19,
     line.col = "red",
     plot_residuals.main = "Residuals",
-    legend.cex = 0.7
+    legend.cex = 0.7,
+    na.rm = TRUE
   ) {
     
     if (length(observed) != length(expected)) {
@@ -273,17 +274,24 @@ metrics <-
     observed_expected$residuals <- observed_expected$expected-observed_expected$observed
     observed_expected$residuals_abs <- abs(observed_expected$expected-observed_expected$observed)
     observed_expected$residuals_sq <- (observed_expected$expected-observed_expected$observed)^2
-    observed_expected$residuals_rel <- observed_expected$residuals/observed_expected$observed*100
+    observed_expected$residuals_rel <- ifelse(
+      observed_expected$observed == 0,
+      0,
+      observed_expected$residuals/observed_expected$observed * 100
+    )
     observed_expected$residuals_rel_abs <- abs(observed_expected$residuals_rel)
     
-    SQR <- sum(observed_expected$residuals_sq)
-    SAR <- sum(observed_expected$residuals_abs)
-    SQT <- sum((observed_expected$observed - mean(observed_expected$observed))^2)
-    R2 <- (1-(SQR/SQT))
-    MSE <- mean((observed_expected$observed - observed_expected$expected)^2)
+    SQR <- sum(observed_expected$residuals_sq, na.rm = na.rm)
+    SAR <- sum(observed_expected$residuals_abs, na.rm = na.rm)
+    SQT <- sum((observed_expected$observed - mean(observed_expected$observed, na.rm = na.rm))^2, na.rm = na.rm)
+    R2 <- NA
+    if(SQT > 0) {
+      R2 <- (1-(SQR/SQT))  
+    }
+    MSE <- mean((observed_expected$observed - observed_expected$expected)^2, na.rm = na.rm)
     RMSE <- sqrt(MSE)
-    MAE <- sum(observed_expected$observed-observed_expected$expected)
-    MAPE <- mean(observed_expected$residuals_rel_abs)
+    MAE <- mean(abs(observed_expected$observed - observed_expected$expected), na.rm = na.rm)
+    MAPE <- mean(observed_expected$residuals_rel_abs, na.rm = na.rm)
     
     if (plot == TRUE) {
       

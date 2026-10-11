@@ -29,7 +29,7 @@ but extended by the Geometry column and the canton abbreviation.
 
 \source{
 Bundesamt fuer Statistik (2026). Kartengeometrien ThemaKart - Set 2026.
-\url{https://dam-api.bfs.admin.ch/hub/api/dam/assets/36390072/thumbnail?width=1980&height=1080} (accessed 2026-08-30)
+https://dam-api.bfs.admin.ch/hub/api/dam/assets/36390072/thumbnail?width=1980&height=1080 (accessed 2026-08-30)
 }
 
 

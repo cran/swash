@@ -21,7 +21,8 @@ metrics(
   point.pch = 19,
   line.col = "red",
   plot_residuals.main = "Residuals",
-  legend.cex = 0.7
+  legend.cex = 0.7,
+  na.rm = TRUE
 )
 }
 
@@ -59,6 +60,9 @@ metrics(
   }
   \item{legend.cex}{
      Numeric. Character expansion factor for legends.
+  }
+  \item{na.rm}{
+     \code{bool} argument which indicates whether NA values should be skipped before computation; passed to \code{mean} and \code{sum}.
   }
 }
 

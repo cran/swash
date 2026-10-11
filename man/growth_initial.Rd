@@ -48,7 +48,7 @@ growth_initial(
 
 \details{
 The method estimates exponential growth models for regional infections based on an \code{infpan} object. 
-Such models are design for the analysis of the \emph{initial} phase of an epidemic spread. 
+This model is designed for the analysis of the \emph{initial} phase of an epidemic spread. 
 The user must state how much time units (from start) are included. 
 See \code{\link{exponential_growth}} for further details of the estimation.
 }
@@ -58,13 +58,26 @@ object of class \code{\link{growthmodels-class}}
 }
 
 \references{
-Bonifazi G et al. (2021) A simplified estimate of the effective reproduction number Rt using its relation with the doubling time and application to Italian COVID-19 data. \emph{The European Physical Journal Plus} 136, 386. \doi{https://doi.org/10.1140/epjp/s13360-021-01339-6}
+Bonifazi G, Lista L, Menasce D, Mezzetto M, Pedrini D, Spighi R, Zoccoli A (2021) 
+A simplified estimate of the effective reproduction number Rt using its relation with the doubling time and application to Italian COVID-19 data. 
+\emph{The European Physical Journal Plus} 136, 386. \doi{https://doi.org/10.1140/epjp/s13360-021-01339-6}
 
-Chowell G, Viboud C, Hyman JM, Simonsen L (2015) The Western Africa ebola virus disease epidemic exhibits both global exponential and local polynomial growth rates. \emph{PLOS Currents Outbreaks}, ecurrents.outbreaks.8b55f4bad99ac5c5db3663e916803261. \doi{https://doi.org/10.1371/currents.outbreaks.8b55f4bad99ac5c5db3663e916803261}
+Chowell G, Viboud C, Hyman JM, Simonsen L (2015) 
+The Western Africa ebola virus disease epidemic exhibits both global exponential and local polynomial growth rates. 
+\emph{PLOS Currents Outbreaks}, ecurrents.outbreaks.8b55f4bad99ac5c5db3663e916803261. \doi{https://doi.org/10.1371/currents.outbreaks.8b55f4bad99ac5c5db3663e916803261}
 
-Pell B, Kuang Y, Viboud C, Chowell G (2018) Using phenomenological models for forecasting the 2015 ebola challenge. \emph{Epidemics 22}, 62–70. \doi{https://doi.org/10.1016/j.epidem.2016.11.002}
+Pell B, Kuang Y, Viboud C, Chowell G (2018) 
+Using phenomenological models for forecasting the 2015 ebola challenge. 
+\emph{Epidemics 22}, 62–70. \doi{https://doi.org/10.1016/j.epidem.2016.11.002}
 
-Wieland T (2020) A phenomenological approach to assessing the effectiveness of COVID-19 related nonpharmaceutical interventions in Germany. \emph{Safety Science} 131, 104924. \doi{https://doi.org/10.1016/j.ssci.2020.104924}
+Rawlings JO, Pantula SG, Dickey DA (1998)
+Applied Regression Analysis: A Research Tool. Second Edition.
+New York: Springer.
+\doi{https://doi.org/10.1007/b98890}
+
+Wieland T (2020) 
+A phenomenological approach to assessing the effectiveness of COVID-19 related nonpharmaceutical interventions in Germany. 
+\emph{Safety Science} 131, 104924. \doi{https://doi.org/10.1016/j.ssci.2020.104924}
 }
 
 \author{

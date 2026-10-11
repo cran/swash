@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.0.0
-# Last update: 2026-09-12 11:27
+# Version:     1.0.1
+# Last update: 2026-10-10 09:22
 # Copyright (c) 2025-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -21,7 +21,7 @@ library(lubridate)
 
 # Package name and version:
 package_name <- "swash"
-package_version <- "3.0.0"
+package_version <- "3.0.1"
 package_title <- "swash: Health Geography Toolbox for Model-Based Analysis of Infections Panel Data"
 
 # Class description texts:

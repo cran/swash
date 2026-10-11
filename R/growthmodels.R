@@ -6,8 +6,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.0.0
-# Last update: 2026-09-08 19:11
+# Version:     2.0.1
+# Last update: 2026-10-07 21:12
 # Copyright (c) 2020-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -1235,7 +1235,10 @@ exponential_growth <-
     
     exp_gr <- linexpmodel$coefficients[2]
     
-    R0 <- exp (exp_gr*GI)
+    R0 <- NA
+    if(exp_gr > 0) {
+      R0 <- exp (exp_gr*GI)
+    }
     
     doubling <- log(2)/exp_gr
     
@@ -1289,7 +1292,10 @@ exponential_growth <-
           
           exp_gr_NLS <- expmodel_summary$coefficients[2]
           
-          R0_NLS <- exp (exp_gr_NLS*GI)
+          R0_NLS <- NA
+          if(exp_gr_NLS > 0) {
+            R0_NLS <- exp (exp_gr_NLS*GI)
+          }
           
           doubling_NLS <- log(2)/exp_gr_NLS
           
