@@ -101,7 +101,7 @@ Methods for function \code{plot} for different S4 classes:
 }
 
 \item{\code{signature(x = "countries")}}{
-  \code{plot.sbm(x, y = NULL, col_bars = "grey", col_ci = "red")}:
+  \code{plot.countries(x, y = NULL, col_bars = "grey", col_ci = "red")}:
   Plots the results of the between-countries analysis via Swash-Backwash Model. This generates four plots:
   \itemize{
     \item Indicator for country 1

@@ -19,7 +19,7 @@ Geodata (sf) of Swiss canton boundaries
     \item{\code{name}}{Swiss canton name}
     \item{\code{geometry}}{Geometry}
     \item{\code{cant_abbrev}}{Swiss canton abbreviation}
-)}
+}
 }
 
 \details{
@@ -29,7 +29,7 @@ but extended by the Geometry column and the canton abbreviation.
 
 \source{
 Bundesamt fuer Statistik (2026). Kartengeometrien ThemaKart - Set 2026.
-https://dam-api.bfs.admin.ch/hub/api/dam/assets/36390072/thumbnail?width=1980&height=1080 (accessed 2026-08-30)
+\url{https://dam-api.bfs.admin.ch/hub/api/dam/assets/36390072/thumbnail?width=1980&height=1080} (accessed 2026-08-30)
 }
 
 
@@ -81,7 +81,7 @@ timestamps(infpan_CH)
 plot_map(
   infpan_CH,
   attribute = "Incidence",
-  main = "COVID-19 Indicence 2020-05-31",
+  main = "COVID-19 Incidence 2020-05-31",
   breaks = c(0, 0.05, 0.1, 0.2, 1),
   verbose = TRUE
 )

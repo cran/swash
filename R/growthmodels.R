@@ -6,8 +6,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.0.1
-# Last update: 2026-10-07 21:12
+# Version:     2.0.2
+# Last update: 2026-10-11 20:12
 # Copyright (c) 2020-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -1175,8 +1175,8 @@ exponential_growth <-
     
     if (nrow(yt_df_length_clean) < nrow(yt_df)) {
       
-      y <- yt_df$y
-      t <- yt_df$t
+      y <- yt_df_length_clean$y
+      t <- yt_df_length_clean$t
       
       nan_cases <- nrow(yt_df)-nrow(yt_df_length_clean)
       
@@ -1416,10 +1416,9 @@ logistic_growth <-
             
           }
           
-          values_ssq_order <- values_ssq[order(values_ssq[,2])]
-          
-          S_est <- values_ssq_order[1]
-          
+          best_idx <- which.min(values_ssq[, 2])
+          S_est <- values_ssq[best_idx, 1]
+
           plot(values_ssq[,1], values_ssq[,2], "l")
           
         }
@@ -1447,8 +1446,8 @@ logistic_growth <-
             sum_of_squares_lin_m <- sum(model_lin_m_summary$residuals^2)
             
             y_new_end <- log ((1/y)-(1/S_end))
-            model_lin_end <- lm (y_new_m ~ t)
-            model_lin_end_summary <- summary(model_lin_m)
+            model_lin_end <- lm(y_new_end ~ t)
+            model_lin_end_summary <- summary(model_lin_end)
             sum_of_squares_lin_end <- sum(model_lin_end_summary$residuals^2)
             
             if (sum_of_squares_lin_start < sum_of_squares_lin_end)
@@ -1496,8 +1495,8 @@ logistic_growth <-
     
     if (nrow(yt_df_length_clean) < nrow(yt_df)) {
       
-      y <- yt_df$y
-      t <- yt_df$t
+      y <- yt_df_length_clean$y
+      t <- yt_df_length_clean$t
       
       nan_cases <- nrow(yt_df)-nrow(yt_df_length_clean)
       warning(paste0(nan_cases, " NaN values were removed"))
@@ -1875,8 +1874,8 @@ breaks_growth <-
     
     if (nrow(yt_df_length_clean) < nrow(yt_df)) {
       
-      y <- yt_df$y
-      t <- yt_df$t
+      y <- yt_df_length_clean$y
+      t <- yt_df_length_clean$t
       
       nan_cases <- nrow(yt_df)-nrow(yt_df_length_clean)
       warning(paste0(nan_cases, " NaN values were removed"))
@@ -1955,9 +1954,13 @@ breaks_growth <-
     }
     
     if(isTRUE(verbose)) {
+      
       cat("OK", "\n")
+      
       cat(paste0(bp_obj_breakpoints_no, " breakpoints were found, which leads to ", bp_obj_segments_no, " segments"), "\n")
+      
       cat(paste0("Calculating segment models ... "))
+      
     }
     
     
@@ -2145,7 +2148,23 @@ R_t <-
     if(!is.numeric(infections)) {
       stop("Vector 'infections' must be of type 'numeric'")
     }
+
+    if (
+      length(GP) != 1L ||
+      !is.numeric(GP) ||
+      is.complex(GP) ||
+      is.na(GP) ||
+      !is.finite(GP) ||
+      GP < 1 ||
+      GP != floor(GP)
+    ) {
+      stop("Parameter 'GP' must be a single positive integer.", call. = FALSE)
+    }
     
+    if(length(infections) < GP*2) {
+      stop(paste0("R_t with parameter 'GP' = ", GP, " can not be calculated because vector 'infections' only contains ", length(infections), " values"))
+    }
+
     i <- 0
     
     infections_daily_A <- vector()

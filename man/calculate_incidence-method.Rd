@@ -18,7 +18,7 @@
   verbose = FALSE)}}{
 Calculates the incidence of the infections panel data for all time points for each region.
 Use \code{use_column} to specify which column should be used for the calculation of incidence. 
-The following values are permitted: "Cases" (default, incremental cases), "Cum. cases" (cumulative cases), "Roll. mean" (rolling mean of cases), 
+The following values are permitted: "Cases" (default, new infection cases), "Cum. cases" (cumulative cases), "Roll. mean" (rolling mean of cases), 
 or "Roll. sum" (rolling sum of cases). If the specified column does not exist in the infections panel data of the \code{infpan} object,
 the function raises an error. If in the \code{infpan} object, no "Population" column is defined, incidence calculation is not possible.
 If \code{col_name} is \code{NULL}, the column is defined as "<Column name of cases>_inc".

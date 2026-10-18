@@ -7,7 +7,7 @@ Hawkes Process Model for Epidemic Data
 }
 
 \description{
-Estimation of Hawkes Process models from incremental infections data
+Estimation of Hawkes Process models from new infections data
 }
 
 \usage{
@@ -20,7 +20,7 @@ hawkes_growth(
 
 \arguments{
   \item{y}{
-     \code{numeric vector} with incremental infections data over time (e.g., daily infections)
+     \code{numeric vector} with new infection cases (e.g., daily, weekly) data over time (e.g., daily infections)
 }
   \item{optim_method}{
      \code{character} specifying the optimization algorithm, passed to \code{stats::optim}
@@ -33,7 +33,7 @@ hawkes_growth(
 \details{
 This function allows the estimation of a Hawkes Process model, with the time decay being expressed as exponential function,
 which results in three estimated parameters: \eqn{\mu} (background rate), \eqn{\alpha} (excitation parameter), and \eqn{\beta} (decay).
-The user must specify the dependent variable (incremental infections). 
+The user must specify the dependent variable (new infections). 
 The estimation is performed using nonlinear estimation via \code{stats::optim}.
 See the corresponding documentation for available optimization methods (default: "L-BFGS-B").
 }

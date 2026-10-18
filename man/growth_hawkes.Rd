@@ -3,7 +3,7 @@
 \alias{growth_hawkes}
 
 \title{
-Hawkes Processs models for Regional Infections
+Hawkes Process models for Regional Infections
 }
 
 \description{

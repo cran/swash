@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.0.0
-# Last update: 2026-09-12 10:13
+# Version:     1.1.0
+# Last update: 2026-10-13 21:29
 # Copyright (c) 2025-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -17,8 +17,34 @@ is_balanced <-
     col_date, 
     col_region,
     as_balanced = TRUE,
-    fill_missing = 0
+    fill_missing = 0,
+    drop_duplicates = TRUE
   ) {
+    
+    if(!"data.frame" %in% class(data)) {
+      stop("Specified object is not a data.frame")
+    }
+    
+    required_cols <- c(col_cases, col_date, col_region)
+    missing_cols <- setdiff(required_cols, colnames(data))
+    if (length(missing_cols) > 0) {
+      stop(
+        paste("The following columns are missing:", paste(missing_cols, collapse = ", ")),
+        call. = FALSE
+      )
+    }
+    
+    if(isTRUE(drop_duplicates)) {
+      
+      nrow_data <- nrow(data)
+      
+      data <- data[!duplicated(data[c(col_region, col_date)]), , drop = FALSE]
+      
+      if(nrow(data) < nrow_data) {
+        warning(paste0("User-stated data frame included ", nrow_data-nrow(data), " rows with duplicated region/time combinations, which were excluded"))  
+      }
+      
+    }
     
     N <- nlevels(as.factor(data[[col_region]]))
     TP <- nlevels(as.factor(data[[col_date]]))
@@ -80,8 +106,34 @@ as_balanced <-
     col_cases, 
     col_date, 
     col_region,
-    fill_missing = 0
+    fill_missing = 0,
+    drop_duplicates = TRUE
   ) {
+    
+    if(!"data.frame" %in% class(data)) {
+      stop("Specified object is not a data.frame")
+    }
+    
+    required_cols <- c(col_cases, col_date, col_region)
+    missing_cols <- setdiff(required_cols, colnames(data))
+    if (length(missing_cols) > 0) {
+      stop(
+        paste("The following columns are missing:", paste(missing_cols, collapse = ", ")),
+        call. = FALSE
+      )
+    }
+    
+    if(isTRUE(drop_duplicates)) {
+      
+      nrow_data <- nrow(data)
+      
+      data <- data[!duplicated(data[c(col_region, col_date)]), , drop = FALSE]
+      
+      if(nrow(data) < nrow_data) {
+        warning(paste0("User-stated data frame included ", nrow_data-nrow(data), " rows with duplicated region/time combinations, which were excluded"))  
+      }
+      
+    }
     
     N <- nlevels(as.factor(data[[col_region]]))
     TP <- nlevels(as.factor(data[[col_date]]))
@@ -101,11 +153,12 @@ as_balanced <-
         data,
         N_x_TPt,
         by.x = paste0("__", col_region, "_x_", col_date, "__"),
-        by.y = paste0("__", col_region, "_x_", col_date, "__")
+        by.y = paste0("__", col_region, "_x_", col_date, "__"),
+        all.y = TRUE
       )
     
     data[[col_region]] <- data[[paste0("__", col_region, "__")]]
-    data[[col_date]] <- data[[paste0("__", col_date(), "__")]]
+    data[[col_date]] <- data[[paste0("__", col_date, "__")]]
     if (nrow(data[is.na(data[[col_cases]]),]) > 0) {
       data[is.na(data[[col_cases]]),][[col_cases]] <- fill_missing
     }
@@ -265,4 +318,58 @@ setMethod(
     
     return(df)
     
+  }
+
+
+.df_date_col <-
+  function(
+    df,
+    col_date,
+    time_format,
+    verbose = FALSE
+  ) {
+    
+    if(!"data.frame" %in% class(df)) {
+      stop("User-specified data is not of class data.frame")
+    }
+    
+    if(!col_date %in% colnames(df)) {
+      stop(paste0("User-specified time column '", col_date, "' is not in data frame"))
+    }
+    
+    if(isTRUE(verbose)) {
+      cat(paste0("Checking time column '", col_date, "' from data frame with ", nrow(df), " rows ... "))
+    }
+    
+    error_message <- NULL
+    
+    tryCatch(
+      {
+        
+        df[[col_date]] <- 
+          as.Date(
+            df[[col_date]], 
+            format = time_format
+          )
+        
+      },
+      
+      error = function(cond) {
+        
+        error_message <- paste0("Time column '", col_date, "' does not seem to have a valid date format: ", conditionMessage(cond))
+        stop(error_message)
+        
+      }
+      
+    )
+    
+    date_col_NA <- 
+      nrow(df[is.na(df[[col_date]]),])
+    
+    if(date_col_NA > 0) {
+      warning(paste0("There are ", date_col_NA, " NA values in time column '", col_date, "'"))
+    }
+    
+    invisible(df)
+   
   }

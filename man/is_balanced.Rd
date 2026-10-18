@@ -14,7 +14,8 @@ is_balanced(
   col_date, 
   col_region, 
   as_balanced = TRUE, 
-  fill_missing = 0
+  fill_missing = 0,
+  drop_duplicates = TRUE
   )
 }
 \arguments{
@@ -31,15 +32,26 @@ is_balanced(
      Column containing the unique identifier of the regions (e.g., name, NUTS 3 code)
 }
   \item{as_balanced}{
-     Boolean argument which indicates whether non-balanced panel data shall be balanced (default: TRUE)
+     \code{bool} argument which indicates whether non-balanced panel data shall be balanced (default: TRUE)
 }
   \item{fill_missing}{
      Constant to fill missing values (default and recommended: 0)
 }
+  \item{drop_duplicates}{
+      \code{bool} argument which indicates whether duplicated region/time combinations are removed
 }
+}
+
 \details{
-The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data in order for the calculations to be carried out. However, for a correct estimation it is implicitly assumed that the input data is balanced. The function tests whether the panel data is balanced. It is executed automatically whithin the \code{swash()} function (using automatic correction with \code{as_balanced = TRUE}), but can also be used separately.
+The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data 
+in order for the calculations to be carried out. 
+However, for a correct estimation it is implicitly assumed that the input data is balanced. 
+The function tests whether the panel data is balanced. 
+It is executed automatically within the \code{swash()} function (using automatic correction 
+with \code{as_balanced = TRUE}) and during the import of infections panel data via \code{load_infections_paneldata()}, 
+but can also be used separately.
 }
+
 \value{
 List with two entries:
   \item{data_balanced }{Result of test (\code{TRUE} or \code{FALSE})}

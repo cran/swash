@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.0.1
-# Last update: 2026-10-10 08:27
+# Version:     1.0.2
+# Last update: 2026-10-14 20:49
 # Copyright (c) 2022-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -128,27 +128,46 @@ plot_coef_ci <- function(
         data_plot$col_point <- set_estimate_colors[2]
         data_plot$col_confint <- set_confint_colors[2]
         
-        data_plot[
+        if(nrow(data_plot[
           (data_plot$point_estimates < 0)
           & (data_plot$confint_lower < 0)
           & (data_plot$confint_upper < 0)
-          ,]$col_point <- set_estimate_colors[1]
-        data_plot[
-          (data_plot$point_estimates < 0)
-          & (data_plot$confint_lower < 0)
-          & (data_plot$confint_upper < 0)
-          ,]$col_confint <- set_confint_colors[1]
+          ,]) > 0) {
         
-        data_plot[
+          data_plot[
+            (data_plot$point_estimates < 0)
+            & (data_plot$confint_lower < 0)
+            & (data_plot$confint_upper < 0)
+            ,]$col_point <- set_estimate_colors[1]
+          
+          data_plot[
+            (data_plot$point_estimates < 0)
+            & (data_plot$confint_lower < 0)
+            & (data_plot$confint_upper < 0)
+            ,]$col_confint <- set_confint_colors[1]
+            
+        }
+        
+        
+        if(nrow(data_plot[
           (data_plot$point_estimates > 0)
           & (data_plot$confint_lower > 0)
           & (data_plot$confint_upper > 0)
-          ,]$col_point <- set_estimate_colors[3]
-        data_plot[
-          (data_plot$point_estimates > 0)
-          & (data_plot$confint_lower > 0)
-          & (data_plot$confint_upper > 0)
-          ,]$col_confint <- set_confint_colors[3]
+          ,]) > 0) {
+          
+          data_plot[
+            (data_plot$point_estimates > 0)
+            & (data_plot$confint_lower > 0)
+            & (data_plot$confint_upper > 0)
+            ,]$col_point <- set_estimate_colors[3]
+          
+          data_plot[
+            (data_plot$point_estimates > 0)
+            & (data_plot$confint_lower > 0)
+            & (data_plot$confint_upper > 0)
+            ,]$col_confint <- set_confint_colors[3]  
+          
+        }
         
       }
       
@@ -245,6 +264,8 @@ plot_coef_ci <- function(
     cex = cex, 
     col = data_plot$col_point
   )
+  
+  invisible(data_plot)
   
 }
 

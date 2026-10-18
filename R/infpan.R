@@ -2,11 +2,11 @@
 # Name:        infpan (swash package)
 # Purpose:     Class infpan (Infections panel data)
 #              Functions, classes and corresponding methods
-# Author:      Thomas Wieland 
+# Author:      Thomas Wieland
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.0.0
-# Last update: 2026-10-02 19:03
+# Version:     2.0.1
+# Last update: 2026-10-17 10:01
 # Copyright (c) 2021-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -316,7 +316,19 @@ setMethod(
     
     N <- object@data_statistics[1]
     N_names <- levels(as.factor(input_data[[col_region]]))
-    
+
+    if (
+      length(k) != 1L ||
+      !is.numeric(k) ||
+      is.complex(k) ||
+      is.na(k) ||
+      !is.finite(k) ||
+      k < 1 ||
+      k != floor(k)
+    ) {
+      stop("Parameter 'k' must be a single positive integer.", call. = FALSE)
+    }
+
     if (is.null(col_name)) {
       col_name <- paste0(col_cases, "_rm")
     }
@@ -467,6 +479,18 @@ setMethod(
     
     N <- object@data_statistics[1]
     N_names <- levels(as.factor(input_data[[col_region]]))
+
+    if (
+      length(k) != 1L ||
+      !is.numeric(k) ||
+      is.complex(k) ||
+      is.na(k) ||
+      !is.finite(k) ||
+      k < 1 ||
+      k != floor(k)
+    ) {
+      stop("Parameter 'k' must be a single positive integer.", call. = FALSE)
+    }
     
     if (is.null(col_name)) {
       col_name <- paste0(col_cases, "_rs")
@@ -2103,8 +2127,14 @@ load_infections_paneldata <-
       stop(paste0("Import failed. Columns not in data.frame: ", paste(col_errors, collapse = ", ")))
     }
     
-    data[[col_date]] <- as.Date(data[[col_date]], format = time_format)
-    
+    data <-
+      .df_date_col(
+        data,
+        col_date,
+        time_format,
+        verbose = verbose
+      )
+
     data <- data[order(data[[col_region]], data[[col_date]]),]
     
     N <- nlevels(as.factor(data[[col_region]]))
@@ -2121,6 +2151,7 @@ load_infections_paneldata <-
         col_date = col_date
       )
     data_balanced <- data_check_balanced$data_balanced
+    data <- data_check_balanced$data
     
     data_statistics <- c(N, TP, N_withoutcases, data_balanced)
     

@@ -52,7 +52,7 @@ data(COVID19Cases_geoRegion)
 }
 
 \details{
-The data is included as it was published in by the Swiss Federal Office of Public Health (Bundesamt fuer Gesundheit, BAG). 
+The data is included as it was published by the Swiss Federal Office of Public Health (Bundesamt fuer Gesundheit, BAG). 
 Note that the reporting date equals the date of SARS-CoV-2 testing.
 }
 

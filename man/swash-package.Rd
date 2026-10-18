@@ -33,9 +33,9 @@ From an \code{infpan} object, the user may utilize the following built-in analys
 
 \itemize{
     \item{\emph{Swash-Backwash Model for the Single Epidemic Wave}, including further analysis towards bootstrap-based inference and country comparison as well as visualization}
-    \item{\emph{Growth Analysis} with \emph{logistic} and \emph{exponential growth models} for cumulative or incremental (daily/weekly) infections, 
+    \item{\emph{Growth Analysis} with \emph{logistic} and \emph{exponential growth models} for cumulative or new (e.g., daily, weekly) infections, 
     including visualization}
-    \item{\emph{Hawkes process} models for incremental infections, including visualization}
+    \item{\emph{Hawkes process} models for new infection cases (e.g., daily, weekly), including visualization}
     \item{\emph{Breakpoints analysis} using the \emph{Bai-Perron algorithm} implemented in \code{strucchange::breakpoints}, 
     including visualization}
     \item{Spatial statistics for the identification of clusters/hotspots, such as \emph{Moran's I} and \emph{Getis-Ord}, 
@@ -51,10 +51,10 @@ Every change (e.g., the calculation of a new indicator) within an object is trac
 }
 
 \details{
-Based on an \code{infpan} object, several indicators may be calculated from incremental infections values, such as incidence or effective reprodction number \eqn{R_t}.
+Based on an \code{infpan} object, several indicators may be calculated from new infections values, such as incidence or effective reproduction number \eqn{R_t}.
 Infection curves may be plotted by \code{plot(infpan)}. It is also possible to import spatial features (\code{sf} spatial data frame) into an \code{infpan} object
 in order to plot maps of specified indicator at a given time point. All built-in model analyses mentioned below may be conducted based on an instance of class \code{infpan},
-but may also used independently. 
+but may also be used independently. 
 
 The Swash-Backwash Model for the Single Epidemic Wave (SBM) is the spatial equivalent of the classic epidemiological SIR (Susceptible-Infected-Recovered) model. 
 It was developed by Cliff and Haggett (2006) to model the velocity of spread of infectious diseases across space. 

@@ -49,7 +49,7 @@ growth_initial(
 \details{
 The method estimates exponential growth models for regional infections based on an \code{infpan} object. 
 This model is designed for the analysis of the \emph{initial} phase of an epidemic spread. 
-The user must state how much time units (from start) are included. 
+The user must state how many time units (from start) are included. 
 See \code{\link{exponential_growth}} for further details of the estimation.
 }
 

@@ -6,7 +6,7 @@
 Calculate Neighbourhood Statistics from Polygons
 }
 \description{
-Calculating descriptive neighbourhood statistics based on regions (polygons) with contiguous boundaries and resulting a data frame
+Calculating descriptive neighbourhood statistics based on regions (polygons) with contiguous boundaries from an object of class \code{nbmatrix}
 }
 
 \usage{

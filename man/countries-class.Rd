@@ -18,7 +18,7 @@ Objects can be created by the function \code{compare_countries(sbm1, sbm2)}.
 \section{Slots}{
   \describe{
     \item{\code{sbm_ci1}:}{Object of class \code{"sbm_ci"} Results of \code{"confint(sbm1)"} for country 1 }
-    \item{\code{sbm_ci2}:}{Object of class \code{"sbm_ci"} Results of \code{"confint(sbm1)"} for country 2 }
+    \item{\code{sbm_ci2}:}{Object of class \code{"sbm_ci"} Results of \code{"confint(sbm2)"} for country 2 }
     \item{\code{D}:}{Object of class \code{"numeric"} Results: Difference \eqn{D} between the samples with respect to the chosen indicator }
     \item{\code{D_ci}:}{Object of class \code{"numeric"} Results: \eqn{\alpha} confidence intervals of \eqn{D}}
     \item{\code{config}:}{Object of class \code{"list"} Configuration details for bootstrap sampling }
@@ -29,8 +29,8 @@ Objects can be created by the function \code{compare_countries(sbm1, sbm2)}.
 \section{Methods}{
   \describe{
     \item{plot}{\code{signature(x = "countries")}: Plots the results of a two-country comparison with the Swash-Backwash Model }
-    \item{show}{\code{signature(object = "countries")}: Prints an \code{countries} object; use \code{summary(sbm_ci)} for results }
-    \item{print}{\code{signature(object = "countries")}: Prints an \code{countries} object; use \code{summary(sbm_ci)} for results }
+    \item{show}{\code{signature(object = "countries")}: Prints an \code{countries} object; use \code{summary(countries)} for results }
+    \item{print}{\code{signature(x = "countries")}: Prints an \code{countries} object; use \code{summary(countries)} for results }
     \item{summary}{\code{signature(object = "countries")}: Prints a summary of a \code{countries} object (results of the two-country comparison) }
 	 }
 }

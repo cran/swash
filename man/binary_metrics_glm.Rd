@@ -6,7 +6,7 @@
 Fit metrics for binary logit model
 }
 \description{
-Calculation of fit metrices for binary variables (Sensitivity, specificity, accuracy) out of binary logit models (\code{glm} object) 
+Calculation of fit metrics for binary variables (Sensitivity, specificity, accuracy) out of binary logit models (\code{glm} object) 
 }
 \usage{
 binary_metrics_glm(
@@ -25,7 +25,7 @@ binary_metrics_glm(
 }
 
 \details{
-The function computes model performance metrices for binary outcomes. A binary logit model (glm) must be stated by the user. The function returns sensitivity, specificity, accurracy, and no-information rate.
+The function computes model performance metrics for binary outcomes. A binary logit model (glm) must be stated by the user. The function returns sensitivity, specificity, accuracy, and no-information rate.
 }
 
 \value{

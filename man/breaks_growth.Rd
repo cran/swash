@@ -7,7 +7,7 @@ Time Series Model with Breakpoints
 }
 
 \description{
-Estimation of breakpoints in linear regression models from incremental (e.g., daily) infections data
+Estimation of breakpoints in linear regression models from infections cases over time
 }
 
 \usage{
@@ -24,7 +24,7 @@ breaks_growth(
 
 \arguments{
   \item{y}{
-     \code{numeric vector} with cumulative infections data over time
+     \code{numeric vector} with (new or cumulative) infections data over time
 }
   \item{t}{
      \code{vector} of class \code{numeric} or \code{Date} with time points or dates
@@ -51,7 +51,8 @@ This function allows detecting breakpoints in a linear regression time series mo
 The user must specify the dependent variable (e.g, daily infections) and the time variable (time counter or date values). 
 The estimation is performed using OLS.
 The function internally uses the function \code{breakpoints} from the \code{strucchange} package (Zeileis et al. 2003),
-where breakpoints are identified using the Bai-Perron algorithm (Bai & Perron 2003). 
+where breakpoints are identified using the Bai-Perron algorithm (Bai & Perron 2003).
+See Wieland (2020) for an empirical application on COVID-19 cases.
 }
 
 \value{

@@ -13,7 +13,7 @@ data(RKI_Corona_counties)
   A data.frame with multiple columns:
   \describe{
     \item{OBJECTID}{unknown/not necessary}
-    \item{ADE}{(unknown/not necessary}
+    \item{ADE}{unknown/not necessary}
     \item{GF}{unknown/not necessary}
     \item{BSG}{unknown/not necessary}
     \item{RS}{(character) County code 1}
@@ -53,7 +53,7 @@ data(RKI_Corona_counties)
   }
 }
 \details{
-The data is included as it was published in by the Robert Koch Institute (Robert Koch-Institut, RKI) but extended by the geometry column (Original data: shapefile).
+The data is included as it was published by the Robert Koch Institute (Robert Koch-Institut, RKI) but extended by the geometry column (Original data: shapefile).
 }
 \source{
 RKI (2020) RKI Corona Landkreise. Robert Koch-Institut (RKI), dl-de/by-2-0. Attribution: Robert Koch-Institut, Bundesamt für Kartographie und Geodäsie. \url{https://npgeo-corona-npgeo-de.hub.arcgis.com/datasets/917fc37a7095} (retrieved 2020-03-30)

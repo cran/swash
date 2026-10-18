@@ -13,16 +13,17 @@ The class \code{"growthmodels"} contains the results of growth model analyses an
 The \code{swash} package includes the following model analyses under the heading "growth models": Exponential growth models,
 logistic growth models, Hawkes Process models, and time series models with breakpoints.
 Use \code{summary(growthmodels)} for results summary.
-See the corresponding functions for details: \link{exponential_growth}, \link{logistic_growth}, \link{hawkes_growth}, \link{breaks_growth}.
+See the corresponding stand-alone functions for details: \link{exponential_growth}, \link{logistic_growth}, 
+\link{hawkes_growth}, \link{breaks_growth}.
 }
 
 \section{Objects from the Class}{
-Objects can be created by the functions \code{exponential_growth}, \code{logistic_growth}, \code{breaks_growth}, or \code{hawkes_growth}.
+Objects can be created by the methods \code{growth_initial}, \code{growth}, \code{growth_breaks}, or \code{growth_hawkes}.
 }
 
 \section{Slots}{
   \describe{
-    \item{\code{results}:}{Object of class \code{"data.frame"} Model results as a table with coefficents, fit metrics, etc.}
+    \item{\code{results}:}{Object of class \code{"data.frame"} Model results as a table with coefficients, fit metrics, etc.}
     \item{\code{growth_models}:}{Object of class \code{"list"} containing all models }
     \item{\code{model_type}:}{Object of class \code{"character"} describing the type of model }
     \item{\code{results_cols}:}{Object of class \code{"character"} Vector with column names containing results }

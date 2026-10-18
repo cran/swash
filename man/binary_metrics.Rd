@@ -6,7 +6,7 @@
 Fit metrics of observed and expected binary variables
 }
 \description{
-Calculation of fit metrices for binary variables (Sensitivity, specificity, accuracy) 
+Calculation of fit metrics for binary variables (Sensitivity, specificity, accuracy) 
 }
 \usage{
 binary_metrics(
@@ -29,7 +29,7 @@ binary_metrics(
 }
 
 \details{
-The function computes model performance metrices for binary outcomes. Observed and expected data must be stated by the user. The function returns sensitivity, specificity, accurracy, and no-information rate.
+The function computes model performance metrics for binary outcomes. Observed and expected data must be stated by the user. The function returns sensitivity, specificity, accuracy, and no-information rate.
 }
 
 \value{

@@ -5,8 +5,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.0.0
-# Last update: 2026-09-08 19:13
+# Version:     2.0.1
+# Last update: 2026-10-17 10:19
 # Copyright (c) 2022-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -197,6 +197,22 @@ setMethod(
     replace = TRUE,
     verbose = FALSE
   ) {
+
+    if(!is.numeric(iterations)) {
+      stop(paste0("Parameter iterations must be numeric"))
+    }    
+    if(!is.numeric(samples_ratio)) {
+      stop(paste0("Parameter samples_ratio must be numeric"))
+    }
+    if(!is.numeric(alpha)) {
+      stop(paste0("Parameter alpha must be numeric"))
+    }
+    if(samples_ratio < 0 | samples_ratio > 1) {
+      stop(paste0("Specified invalid samples_ratio: ", samples_ratio, ". Must be between 0 and 1"))
+    }
+    if(alpha < 0 | alpha > 1) {
+      stop(paste0("Specified invalid alpha: ", alpha, ". Must be between 0 and 1"))
+    }
     
     N = object@data_statistics[1]
     TP = object@data_statistics[2]
@@ -205,6 +221,10 @@ setMethod(
     
     regions <- as.character(levels(as.factor(object@input_data[[object@col_names[3]]])))
     regions_to_sample <- round(N*samples_ratio)
+    
+    if(regions_to_sample < 2) {
+      stop(paste0("Specified sample results in ", regions_to_sample, " sample units"))
+    }
     
     bootstrap_config <- list(
       iterations = iterations,
@@ -220,27 +240,37 @@ setMethod(
     i <- 0
     swash_bootstrap <- matrix(ncol = 9, nrow = iterations)
     
-    for (i in 1:iterations) {
+    region_col <- object@col_names[3]
+    
+    for (i in seq_len(iterations)) {
+      regions_sample <- sample(
+        x = regions,
+        size = regions_to_sample,
+        replace = replace
+      )
       
-      regions_sample <- 
-        sample(
-          x = regions, 
-          size = regions_to_sample,
-          replace = replace)
+      sampled_blocks <- lapply(seq_along(regions_sample), function(draw) {
+        block <- input_data[
+          as.character(input_data[[region_col]]) == regions_sample[[draw]],
+          ,
+          drop = FALSE
+        ]
+        
+        block[[region_col]] <- paste0("bootstrap_", draw)
+        block
+      })
       
-      data_sample <- 
-        input_data[as.character(input_data[[object@col_names[3]]]) %in% regions_sample,]
+      data_sample <- do.call(rbind, sampled_blocks)
       
       data_sample_size <- nrow(data_sample)
       
-      data_sample_swash <- 
-        swash_backwash(
-          data = data_sample,
-          col_cases = object@col_names[1], 
-          col_date = object@col_names[2], 
-          col_region = object@col_names[3]
-        )
-      
+      data_sample_swash <- swash_backwash(
+        data = data_sample,
+        col_cases = object@col_names[1],
+        col_date = object@col_names[2],
+        col_region = region_col
+      )
+            
       swash_bootstrap[i, 1] <- i
       swash_bootstrap[i, 2] <- data_sample_swash@integrals[1]
       swash_bootstrap[i, 3] <- data_sample_swash@integrals[2]
@@ -733,6 +763,14 @@ swash_backwash <-
       if (length(col_errors) > 0) {
         stop(paste0("Import failed. Columns not in data.frame: ", paste(col_errors, collapse = ", ")))
       }
+
+    data <-
+      .df_date_col(
+        data,
+        col_date,
+        time_format,
+        verbose = verbose
+      )
       
       if(isTRUE(verbose)) {
         cat("Reading and diagnosing infections panel data ... ")
@@ -785,13 +823,7 @@ swash_backwash <-
       }
       
     }
-    
-    data[[col_date]] <- 
-      as.Date(
-        data[[col_date]], 
-        format = time_format
-      )
-    
+        
     data <- data[order(data[[col_region]], data[[col_date]]),]
     
     if (isTRUE(verbose)) {

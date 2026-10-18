@@ -121,7 +121,7 @@ timestamps(infpan_CH)
 plot_map(
   infpan_CH,
   attribute = "Incidence",
-  main = "COVID-19 Indicence 2020-05-31",
+  main = "COVID-19 Incidence 2020-05-31",
   breaks = c(0, 0.05, 0.1, 0.2, 1),
   verbose = TRUE
 )

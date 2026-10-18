@@ -13,7 +13,8 @@ as_balanced(
   col_cases, 
   col_date, 
   col_region, 
-  fill_missing = 0
+  fill_missing = 0,
+  drop_duplicates = TRUE
   )
 }
 \arguments{
@@ -32,16 +33,20 @@ as_balanced(
   \item{fill_missing}{
      Constant to fill missing values (default and recommended: 0)
 }
+  \item{drop_duplicates}{
+      \code{bool} argument which indicates whether duplicated region/time combinations are removed
 }
+}
+
 \details{
 The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data in order for the calculations to be carried out. 
 However, for a correct estimation it is implicitly assumed that the input data is balanced. 
 The function corrects non-balanced panel data. 
-It is executed automatically whithin the \code{swash_backwash()} function and \code{swash()} method, respectively, but can also be used separately.
+It is executed automatically within the \code{swash_backwash()} function and \code{swash()} method, respectively, but can also be used separately.
 }
 
 \value{
-  \item{data }{Corrected input dataset (\code{data.frame})}
+  Corrected input dataset (\code{data.frame})
 }
 
 \author{

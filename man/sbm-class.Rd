@@ -22,7 +22,7 @@ Objects can be created by the function \code{swash_backwash} and the \code{infpa
     \item{\code{R_0A}:}{Object of class \code{"numeric"} Model result: spatial reproduction number \eqn{R_{0A}}}
     \item{\code{integrals}:}{Object of class \code{"numeric"} Model result: integrals \eqn{S_A}, \eqn{I_A}, and \eqn{R_A} }
     \item{\code{velocity}:}{Object of class \code{"numeric"} Model result: velocity measures \eqn{t_{FE}} and \eqn{t_{LE}} }
-    \item{\code{occ_regions}:}{Object of class \code{"data.frame"} Model result: Occurence at regional level }
+    \item{\code{occ_regions}:}{Object of class \code{"data.frame"} Model result: Occurrence at regional level }
     \item{\code{SIR_regions}:}{Object of class \code{"data.frame"} Model result: Susceptible, infected and recovered regions over time }
     \item{\code{cases_by_date}:}{Object of class \code{"data.frame"} Total cases by date }
     \item{\code{cases_by_region}:}{Object of class \code{"data.frame"} Cumulative cases by region }
