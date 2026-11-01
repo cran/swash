@@ -12,7 +12,8 @@ Calculation of fit metrics for binary variables (Sensitivity, specificity, accur
 binary_metrics(
   observed, 
   expected,
-  no_information_rate = "negative"
+  no_information_rate = "negative",
+  na.rm = TRUE
   )
 }
 
@@ -26,6 +27,9 @@ binary_metrics(
   \item{no_information_rate}{
      \code{character} argument which indicates whether the no-information rate is calculated based on negatives or positives
 }
+  \item{na.rm}{
+     \code{bool} argument which indicates whether NA values should be skipped before computation.
+  }
 }
 
 \details{

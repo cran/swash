@@ -18,7 +18,9 @@ logistic_growth(
   S_iterations = 10, 
   S_start_est_method = "bisect", 
   seq_by = 10,
+  plot_trial_and_error = TRUE,
   nls = TRUE,
+  impute_missing_values = FALSE,
   add_constant = 1,
   verbose = FALSE
   )
@@ -49,8 +51,14 @@ logistic_growth(
  \item{seq_by}{
      No of segments for the "trial_and_error" estimation of the saturation value
 }
+ \item{plot_trial_and_error}{
+     \code{bool} argument which indicates whether tried values are plotted if \code{S_start_est_method = "trial_and_error"}
+}
  \item{nls}{
      Nonlinear estimation? \code{TRUE} or \code{FALSE}
+}
+  \item{impute_missing_values}{
+     \code{bool} argument which indicates whether missing values have to be imputed via linear imputation
 }
   \item{add_constant}{
      Numeric constant to be added to y if zero values occur (only relevant for OLS estimation)

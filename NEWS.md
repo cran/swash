@@ -1,14 +1,29 @@
+# swash 3.0.3
+
+## Bugfixes
+- `breaks_growth()` and `plot(breaksgrowth)` now treat results with less than two segments (which are rare) correctly 
+- `calculate_rollmean(infpan)` and `calculate_rollsum(infpan)`: Check of the specified rolling window `k` with respect to the number of time points in the `infpan` object
+- Check for `NA` values in observed and expected vectors in `binary_metrics()`
+- Check for regions without any infection cases when using the Swash-Backwash Model with `swash_backwash()` or `swash(infpan)`
+- Corrections in RD documentations
+
+## Other
+- Comprehensive and consistent validation of user-supplied time-series and panel data across all functions and methods that utilize time series; included `impute_missing_values` option 
+- `exponential growth()`: Doubling time is set to `NA` if the estimated growth rate `r` is non-positive 
+- If no start values for NLS estimation is specified in `exponential_growth()`, coefficients from the OLS estimation are used as start values (as in `logistic_growth()`)
+
+
 # swash 3.0.2
 
 ## Bugfixes
-- Fixed bugs in balancing datasets procedure in load_infections_paneldata(), is_balanced(), and as_balanced()
-- Checking of correct time format of 'col_date' in load_infections_paneldata() and swash_backwash()
-- Fixed bug in bootstrap sampling in confint(sbm)
-- A potential error in plot_coef_ci() involving exclusively positive or exclusively negative significant estimates has been fixed
-- Fixed bug in dealing with NA values in logistic_growth(), exponential_growth(), and breaks_growth()
-- Fixed bug in bisection mode in logistic_growth()
-- Checking of specified parameters in confint(sbm)
-- Checking 'infections' vector length and type of parameter 'GP' in R_t()
+- Fixed bugs in balancing datasets procedure in `load_infections_paneldata()`, `is_balanced()`, and `as_balanced()`
+- Checking of correct time format of 'col_date' in `load_infections_paneldata()` and `swash_backwash()`
+- Fixed bug in bootstrap sampling in `confint(sbm)`
+- A potential error in `plot_coef_ci()` involving exclusively positive or exclusively negative significant estimates has been fixed
+- Fixed bug in dealing with NA values in `logistic_growth()`, `exponential_growth()`, and `breaks_growth()`
+- Fixed bug in bisection mode in `logistic_growth()`
+- Checking of specified parameters in `confint(sbm)`
+- Checking 'infections' vector length and type of parameter 'GP' in `R_t()`
 - Restored erroneously removed NEWS.md
 
 
@@ -16,8 +31,8 @@
 
 ## Bugfixes
 - Corrections in NAMESPACE (required for correct package installation)
-- exponential growth(): R0 is set to NA (instead of 0) if the estimated growth rate is negative
-- metrics(): Correcting R-squared for zero variance, added na.rm parameter (default: TRUE)
+- `exponential growth()`: R0 is set to NA (instead of 0) if the estimated growth rate is negative
+- `metrics()`: Correcting R-squared for zero variance, added na.rm parameter (default: TRUE)
 
 ## Other
 - Implemented testthat testing in tests/ folder, keeping former swash_test.R in examples/ folder
@@ -27,16 +42,16 @@
 # swash 3.0.0
 
 ## Breaking changes (Non-backwards compatible)
-- Complete change to the nbmatrix() function: creation of an instance of the new nbmatrix class
-- Replacement of the old nbstat() function with the nbstat() method of the nbmatrix class
+- Complete change to the `nbmatrix()` function: creation of an instance of the new `nbmatrix` class
+- Replacement of the old `nbstat()` function with the `nbstat()` method of the `nbmatrix` class
 - Rearrangement of the code in modules for better readability and easier maintaining
 
 ## New features
 - Spatial statistics based on neighborhood matrix: Global Getis-Ord, Global Moran's I,
-- Local Getis-Ord Gi*, with all of them being methods of class nbmatrix
-- Plotting a map from an nbmatrix object
-- Importing geodata (sf) in infpan objects
-- Plotting maps of attributes in an infpan object with method plot_map()
+- Local Getis-Ord Gi*, with all of them being methods of class `nbmatrix`
+- Plotting a map from an `nbmatrix` object
+- Importing geodata (sf) in `infpan` objects
+- Plotting maps of attributes in an `infpan` object with method `plot_map()`
 
 ## Bugfixes
 - Corrections in RD documentations
@@ -84,8 +99,8 @@
 - Fit metrics for logistic and exponential growth models
 
 ## Bugfixes
-- Bug in calculation in metrics() fixed
-- Check for vectors lengths in logistic_growth() and exponential_growth()
+- Bug in calculation in `metrics()` fixed
+- Check for vectors lengths in `logistic_growth()` and `exponential_growth()`
 - Deprecation warnings with respect to version >=2.0.0
 
 
@@ -96,5 +111,3 @@
 
 ## Bugfixes
 - Deprecation warnings with respect to version >=2.0.0.
-
-

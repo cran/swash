@@ -6,8 +6,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.0.2
-# Last update: 2026-10-11 20:12
+# Version:     2.1.0
+# Last update: 2026-11-01 10:01
 # Copyright (c) 2020-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -628,7 +628,7 @@ setMethod(
     t <- x@t
     y <- x@y
     y_pred <- x@y_pred
-    
+
     mu <- x@mu
     alpha <- x@alpha
     beta <- x@beta
@@ -785,11 +785,12 @@ setMethod(
   }
 )
 
+
 setMethod(
-  "plot", 
-  "breaksgrowth", 
+  "plot",
+  "breaksgrowth",
   function(
-    x, 
+    x,
     y = NULL,
     line.col = "chocolate",
     ci.col = c(
@@ -797,20 +798,20 @@ setMethod(
       rgb(0, 255, 0, maxColorValue = 255, alpha = 0.5),
       rgb(255, 0, 0, maxColorValue = 255, alpha = 0.5)
     ),
-    legend.show = TRUE, 
+    legend.show = TRUE,
     legend.pos = c(
-      "topright", 
-      "topright", 
-      "topright", 
+      "topright",
+      "topright",
+      "topright",
       "topright"
     ),
-    xlab = "Time", 
-    ylab = "Y", 
+    xlab = "Time",
+    ylab = "Y",
     ylim = NULL,
     plot.main = c(
-      "Breakpoints", 
-      "Segment model fits", 
-      "BIC and Residual Sum of Squares", 
+      "Breakpoints",
+      "Segment model fits",
+      "BIC and Residual Sum of Squares",
       "Model without breaks (one segment)"
     ),
     output.full = TRUE,
@@ -842,36 +843,42 @@ setMethod(
     t <- as.numeric(x@t)
     dataset <- data.frame(y, t)
     
+    bp_obj_breakpoints <- bp_obj_breakpoints[
+      !is.na(bp_obj_breakpoints)
+    ]
+    bp_obj_breakpoints_no <- length(bp_obj_breakpoints)
+    bp_obj_segments_no <- bp_obj_breakpoints_no + 1
+    
     if (isTRUE(ln)) {
       bp_formula <- as.formula("log(y) ~ t")
     } else {
       bp_formula <- as.formula("y ~ t")
     }
+    
     model_no_bp <- lm(
-      bp_formula, 
+      bp_formula,
       data = dataset
     )
     
-    ci_lower <- round((alpha/2)*100, 1)
-    ci_upper <- round((1-(alpha/2))*100, 1)
+    ci_lower <- round((alpha / 2) * 100, 1)
+    ci_upper <- round((1 - (alpha / 2)) * 100, 1)
     CI <- paste0("CI (", ci_lower, ";", ci_upper, ")")
     
-    if ((output.full == TRUE) & (separate_plots == FALSE)) {
-      par (mfrow = c(2, 2))
+    if (isTRUE(output.full) && !isTRUE(separate_plots)) {
+      par(mfrow = c(2, 2))
     }
-    
     
     col_ci <- ci.col[1]
     
     if (is.null(ylim)) {
       
       plot(
-        model_no_bp$model[order(model_no_bp$model[,2]),][,2], 
-        model_no_bp$model[order(model_no_bp$model[,2]),][,1], 
-        lwd = 1.5, 
-        type = "l", 
-        col = line.col, 
-        xlab = xlab, 
+        model_no_bp$model[order(model_no_bp$model[, 2]), 2],
+        model_no_bp$model[order(model_no_bp$model[, 2]), 1],
+        lwd = 1.5,
+        type = "l",
+        col = line.col,
+        xlab = xlab,
         ylab = ylab,
         main = plot.main[1]
       )
@@ -879,14 +886,14 @@ setMethod(
     } else {
       
       plot(
-        model_no_bp$model[order(model_no_bp$model[,2]),][,2], 
-        model_no_bp$model[order(model_no_bp$model[,2]),][,1], 
-        lwd = 1.5, 
-        type = "l", 
-        col = line.col, 
-        xlab = xlab, 
+        model_no_bp$model[order(model_no_bp$model[, 2]), 2],
+        model_no_bp$model[order(model_no_bp$model[, 2]), 1],
+        lwd = 1.5,
+        type = "l",
+        col = line.col,
+        xlab = xlab,
         ylab = ylab,
-        main = plot.main[1], 
+        main = plot.main[1],
         ylim = ylim
       )
       
@@ -894,246 +901,353 @@ setMethod(
     
     if (bp_obj_breakpoints_no > 0) {
       
-      i <- 0
+      bp_ci <- NULL
       
-      for (i in 1:bp_obj_breakpoints_no) {
+      if (!is.null(bp_obj_breakpoints_ci)) {
+        bp_ci <- bp_obj_breakpoints_ci[[1]]
+      }
+      
+      if (is.matrix(bp_ci) || is.data.frame(bp_ci)) {
         
-        rect(
-          bp_obj_breakpoints_ci[[1]][i], 
-          par("usr")[3], 
-          bp_obj_breakpoints_ci[[1]][i+((2/3)*length(bp_obj_breakpoints_ci[[1]]))], 
-          par("usr")[4], 
-          col = col_ci, 
-          lty = 0
-        )
+        bp_ci <- as.data.frame(bp_ci)
         
-        abline (
-          v = bp_obj_breakpoints_ci[[1]][i+((1/3)*length(bp_obj_breakpoints_ci[[1]]))], 
-          col = "blue", 
-          lty = 1, 
+        ci_names <- tolower(colnames(bp_ci))
+        lower_col <- which(
+          grepl("lower|lwr|2\\.5|low", ci_names)
+        )[1]
+        upper_col <- which(
+          grepl("upper|upr|97\\.5|high", ci_names)
+        )[1]
+        
+        if (is.na(lower_col) || is.na(upper_col)) {
+          if (ncol(bp_ci) >= 3) {
+            lower_col <- 2
+            upper_col <- 3
+          } else if (ncol(bp_ci) >= 2) {
+            lower_col <- 1
+            upper_col <- 2
+          }
+        }
+        
+        if (
+          !is.na(lower_col) &&
+          !is.na(upper_col) &&
+          nrow(bp_ci) >= bp_obj_breakpoints_no
+        ) {
+          bp_ci_lower <- as.numeric(bp_ci[[lower_col]])
+          bp_ci_upper <- as.numeric(bp_ci[[upper_col]])
+        } else {
+          bp_ci_lower <- rep(NA_real_, bp_obj_breakpoints_no)
+          bp_ci_upper <- rep(NA_real_, bp_obj_breakpoints_no)
+        }
+        
+      } else if (
+        is.numeric(bp_ci) &&
+        length(bp_ci) == 3 * bp_obj_breakpoints_no
+      ) {
+        
+        n_bp <- bp_obj_breakpoints_no
+        bp_ci_lower <- bp_ci[seq_len(n_bp)]
+        bp_ci_upper <- bp_ci[2 * n_bp + seq_len(n_bp)]
+        
+      } else {
+        
+        bp_ci_lower <- rep(NA_real_, bp_obj_breakpoints_no)
+        bp_ci_upper <- rep(NA_real_, bp_obj_breakpoints_no)
+        
+      }
+      
+      for (i in seq_len(bp_obj_breakpoints_no)) {
+        
+        if (
+          is.finite(bp_ci_lower[i]) &&
+          is.finite(bp_ci_upper[i])
+        ) {
+          rect(
+            bp_ci_lower[i],
+            par("usr")[3],
+            bp_ci_upper[i],
+            par("usr")[4],
+            col = col_ci,
+            lty = 0
+          )
+        }
+        
+        abline(
+          v = bp_obj_breakpoints[i],
+          col = "blue",
+          lty = 1,
           lwd = 1.5
         )
         
       }
       
-      i <- 0
-      
-      for (i in 1:bp_obj_segments_no) {
-        
-        text (
-          x = mean(c(segments_models_df[i,1], segments_models_df[i,2])), 
-          y = min(model_no_bp$model[,1]),
-          (round(segments_models_df[i, 7], 3)), 
-          cex = 1, 
-          col = "black"
-        )    
-        
+      if (isTRUE(show_model_results)) {
+        for (i in seq_len(bp_obj_segments_no)) {
+          
+          if (
+            !is.null(segments_models_df) &&
+            nrow(segments_models_df) >= i &&
+            ncol(segments_models_df) >= 7
+          ) {
+            text(
+              x = mean(c(
+                segments_models_df[i, 1],
+                segments_models_df[i, 2]
+              )),
+              y = min(model_no_bp$model[, 1], na.rm = TRUE),
+              labels = round(segments_models_df[i, 7], 3),
+              cex = 1,
+              col = "black"
+            )
+          }
+          
+        }
       }
       
-      
-      if (legend.show == TRUE) {
+      if (isTRUE(legend.show)) {
         
         legend(
-          legend.pos[1], 
-          legend = c("Breakpoint", CI), 
+          legend.pos[1],
+          legend = c("Breakpoint", CI),
           col = c("blue", col_ci),
-          lty = c(1, NA), 
-          pch = c(NA, 15), 
-          lwd = 1.5, 
-          bty = "n", 
+          lty = c(1, NA),
+          pch = c(NA, 15),
+          lwd = 1.5,
+          bty = "n",
           bg = "white"
         )
         
-        text(
-          min(model_no_bp$model[,2])-max(model_no_bp$model[,2])*0.1, 
-          min(model_no_bp$model[,1]), 
-          "Slope", 
-          xpd = NA
-        )
+        if (isTRUE(show_model_results)) {
+          text(
+            min(model_no_bp$model[, 2], na.rm = TRUE) -
+              max(abs(model_no_bp$model[, 2]), na.rm = TRUE) * 0.1,
+            min(model_no_bp$model[, 1], na.rm = TRUE),
+            "Slope",
+            xpd = NA
+          )
+        }
         
       }
       
     }
     
-    
-    if (output.full == TRUE) {
+    if (isTRUE(output.full)) {
+      
+      if (isTRUE(separate_plots)) {
+        dev.new()
+        par(mfrow = c(1, 1))
+      }
       
       col_ci <- ci.col[2]
       
       if (is.null(ylim)) {
         
         plot(
-          model_no_bp$model[,2], 
-          model_no_bp$model[,1], 
-          pch = 19, 
-          col = line.col, 
+          model_no_bp$model[, 2],
+          model_no_bp$model[, 1],
+          pch = 19,
+          col = line.col,
           cex = 0.8,
-          xlab = xlab, 
+          xlab = xlab,
           ylab = ylab,
           main = plot.main[2]
         )
         
-      }
-      
-      else {
+      } else {
         
         plot(
-          model_no_bp$model[,2], 
-          model_no_bp$model[,1], 
-          pch = 19, 
-          col = line.col, 
+          model_no_bp$model[, 2],
+          model_no_bp$model[, 1],
+          pch = 19,
+          col = line.col,
           cex = 0.8,
-          xlab = xlab, 
-          ylab = ylab, 
-          main = plot.main[2], 
+          xlab = xlab,
+          ylab = ylab,
+          main = plot.main[2],
           ylim = ylim
         )
         
       }
       
-      i <- 0
-      
-      for (i in 1:bp_obj_segments_no) {
+      if (
+        !is.null(segments_models_df) &&
+        !is.null(segment_model_ci_points) &&
+        nrow(segments_models_df) >= bp_obj_segments_no &&
+        length(segment_model_ci_points) >= bp_obj_segments_no
+      ) {
         
-        pol_coords <- 
-          data.frame(
-            cbind(
-              model_no_bp$model[(segments_models_df[i,1]):(segments_models_df[i,2]), 2],
-              rev(model_no_bp$model[(segments_models_df[i,1]):(segments_models_df[i,2]), 2]),
-              segment_model_ci_points[[i]][,2]), 
-            rev(segment_model_ci_points[[i]][,3]
-            )
+        for (i in seq_len(bp_obj_segments_no)) {
+          
+          segment_start <- segments_models_df[i, 1]
+          segment_end <- segments_models_df[i, 2]
+          ci_points <- segment_model_ci_points[[i]]
+          
+          if (
+            !is.finite(segment_start) ||
+            !is.finite(segment_end) ||
+            segment_start < 1 ||
+            segment_end > nrow(model_no_bp$model) ||
+            segment_start > segment_end ||
+            is.null(ci_points) ||
+            nrow(ci_points) != (segment_end - segment_start + 1) ||
+            ncol(ci_points) < 3
+          ) {
+            next
+          }
+          
+          segment_indices <- seq.int(segment_start, segment_end)
+          segment_t <- model_no_bp$model[segment_indices, 2]
+          
+          pol_coords <- data.frame(
+            x1 = segment_t,
+            x2 = rev(segment_t),
+            y1 = ci_points[, 2],
+            y2 = rev(ci_points[, 3])
           )
-        colnames(pol_coords) <- c("x1", "x2", "y1", "y2")
-        
-        polygon(
-          c(pol_coords$x1, pol_coords$x2), 
-          c(pol_coords$y1, pol_coords$y2),
-          col = col_ci, 
-          border = NA
-        )
-        
-        lines (
-          x = (model_no_bp$model[(segments_models_df[i,1]):(segments_models_df[i,2]), 2]),
-          y = (segment_model_ci_points[[i]][,1]), col = "darkgreen", 
-          lty = 2, 
-          lwd = 1.5
-        )
-        
-        text (
-          x = mean(c(segments_models_df[i,1], segments_models_df[i,2])), 
-          y = min(model_no_bp$model[,1]),
-          (round(segments_models_df[i, 14], 3)), 
-          cex = 1, 
-          col = "black"
-        )
+          
+          polygon(
+            c(pol_coords$x1, pol_coords$x2),
+            c(pol_coords$y1, pol_coords$y2),
+            col = col_ci,
+            border = NA
+          )
+          
+          lines(
+            x = segment_t,
+            y = ci_points[, 1],
+            col = "darkgreen",
+            lty = 2,
+            lwd = 1.5
+          )
+          
+          if (
+            isTRUE(show_model_results) &&
+            ncol(segments_models_df) >= 14
+          ) {
+            text(
+              x = mean(c(segment_start, segment_end)),
+              y = min(model_no_bp$model[, 1], na.rm = TRUE),
+              labels = round(segments_models_df[i, 14], 3),
+              cex = 1,
+              col = "black"
+            )
+          }
+          
+        }
         
       }
       
-      if (legend.show == TRUE) {
+      if (isTRUE(legend.show)) {
         
         legend(
-          legend.pos[2], 
-          legend = c("Model fit", CI), 
+          legend.pos[2],
+          legend = c("Model fit", CI),
           col = c("darkgreen", col_ci),
-          lty = c(2, NA), 
-          pch = c(NA, 15), 
-          lwd = 1.5, 
-          bty = "n", 
+          lty = c(2, NA),
+          pch = c(NA, 15),
+          lwd = 1.5,
+          bty = "n",
           bg = "white"
         )
         
-        text(
-          min(model_no_bp$model[,2])-max(model_no_bp$model[,2])*0.1, 
-          min(model_no_bp$model[,1]), 
-          expression(R^2), 
-          xpd=NA
-        )
+        if (isTRUE(show_model_results)) {
+          text(
+            min(model_no_bp$model[, 2], na.rm = TRUE) -
+              max(abs(model_no_bp$model[, 2]), na.rm = TRUE) * 0.1,
+            min(model_no_bp$model[, 1], na.rm = TRUE),
+            expression(R^2),
+            xpd = NA
+          )
+        }
         
       }
       
+      if (isTRUE(separate_plots)) {
+        dev.new()
+        par(mfrow = c(1, 1))
+      }
+      
       plot(
-        bp_obj, 
-        lwd = 1.5, 
+        bp_obj,
+        lwd = 1.5,
         main = plot.main[3]
       )
+      
+      if (isTRUE(separate_plots)) {
+        dev.new()
+        par(mfrow = c(1, 1))
+      }
       
       if (is.null(ylim)) {
         
         plot(
-          model_no_bp$model[,2], 
-          model_no_bp$model[,1], 
-          pch = 19, 
-          col = line.col, 
+          model_no_bp$model[, 2],
+          model_no_bp$model[, 1],
+          pch = 19,
+          col = line.col,
           cex = 0.8,
-          xlab = xlab, 
+          xlab = xlab,
           ylab = ylab,
           main = plot.main[4]
         )
-      }
-      
-      else {
+        
+      } else {
         
         plot(
-          model_no_bp$model[,2], 
-          model_no_bp$model[,1], 
-          pch = 19, 
-          col = line.col, 
+          model_no_bp$model[, 2],
+          model_no_bp$model[, 1],
+          pch = 19,
+          col = line.col,
           cex = 0.8,
-          xlab = xlab, 
+          xlab = xlab,
           ylab = ylab,
-          main = plot.main[4], 
+          main = plot.main[4],
           ylim = ylim
         )
         
       }
       
-      model_no_bp_ci_points <- 
-        predict(
-          model_no_bp, 
-          interval = "confidence", 
-          level = 1-alpha
-        )
+      model_no_bp_ci_points <- predict(
+        model_no_bp,
+        interval = "confidence",
+        level = 1 - alpha
+      )
       
       col_ci <- ci.col[3]
       
-      pol_coords <- 
-        data.frame(
-          cbind(
-            model_no_bp$model[,2],
-            rev(model_no_bp$model[,2]),
-            model_no_bp_ci_points[,2], 
-            rev(model_no_bp_ci_points[,3])
-          )
-        )
-      
-      colnames(pol_coords) <- c("x1", "x2", "y1", "y2")
+      pol_coords <- data.frame(
+        x1 = model_no_bp$model[, 2],
+        x2 = rev(model_no_bp$model[, 2]),
+        y1 = model_no_bp_ci_points[, 2],
+        y2 = rev(model_no_bp_ci_points[, 3])
+      )
       
       polygon(
-        c(pol_coords$x1, pol_coords$x2), 
+        c(pol_coords$x1, pol_coords$x2),
         c(pol_coords$y1, pol_coords$y2),
-        col = col_ci, 
+        col = col_ci,
         border = NA
       )
       
       lines(
-        x = model_no_bp$model[,2], 
-        y = model_no_bp$fitted.values, 
-        lwd = 1.5, 
-        lty = 2, 
+        x = model_no_bp$model[, 2],
+        y = model_no_bp$fitted.values,
+        lwd = 1.5,
+        lty = 2,
         col = "red"
       )
       
-      if (legend.show == TRUE) {
+      if (isTRUE(legend.show)) {
         
         legend(
-          legend.pos[4], 
+          legend.pos[4],
           legend = c("Model fit", CI),
-          col = c("red", col_ci), 
-          lty = c(2, NA), 
-          pch = c(NA, 15), 
-          lwd = 1.5, 
-          bty = "n", 
+          col = c("red", col_ci),
+          lty = c(2, NA),
+          pch = c(NA, 15),
+          lwd = 1.5,
+          bty = "n",
           bg = "white"
         )
         
@@ -1150,102 +1264,59 @@ setMethod(
 exponential_growth <-
   function(
     y, 
-    t,
+    t = NULL,
     GI = 4,
     nls = TRUE,
     nls_start = list(a = 1, b = 0.1),
+    impute_missing_values = FALSE,
     add_constant = 1,
     verbose = FALSE
   ) {
     
-    if (!is.numeric(y)) {
-      stop ("Infections vector must be of class 'numeric'.")
-    }
-    
-    if (!is.numeric(t) & !is.Date(t)) {
-      stop ("Time vector must be of class 'numeric' or 'Date'.")
-    }
-    
-    if (length(y) != length(t)) {
-      stop (paste0("Vectors 'y' and 't' differ in length: ", length(y), ", ", length(t)))
-    }
-    
-    yt_df <- data.frame(y, t)
-    yt_df_length_clean <- yt_df[complete.cases(yt_df), ]
-    
-    if (nrow(yt_df_length_clean) < nrow(yt_df)) {
-      
-      y <- yt_df_length_clean$y
-      t <- yt_df_length_clean$t
-      
-      nan_cases <- nrow(yt_df)-nrow(yt_df_length_clean)
-      
-      warning(paste0(nan_cases, " NaN values were removed"))
-      
-    }
-    
     TP <- length(y)
     
-    class_t <- "numeric"
-    
-    if (is.Date(t)) {
-      
-      class_t <- "Date"
-      
-      message("Time vector is of class 'Date'. Calculating time counter.")
-      
-      start_date <- min(t)
-      
-      time_counter <- as.integer(t-start_date)
-      
-      t <- time_counter
+    if(is.null(t)) {
+      t <- 1:TP
     }
     
-    if (any(y <= 0)) {
-      
-      if (!is.null(add_constant) && is.numeric(add_constant)) {
-        
-        y_lin <- y+add_constant
-        
-        message(paste0("Input infections data contains values <= 0. All values are increased by a constant equal to ", add_constant, " for linear estimation."))
-        
-      } else {
-        
-        y_lin <- y[y > 0]
-        
-        warning(paste0("Input infections data contains values <= 0. These values are skipped for linear estimation."))
-        
-      }
-      
-    } else {
-      
-      y_lin <- y
-      
-    }
+    yt_ols <- 
+      .clean_timeseries(
+        y = y,
+        t = t,
+        impute_missing_values = impute_missing_values,
+        accept_non_positive_values = FALSE,
+        add_constant = add_constant,
+        time_counter = TRUE,
+        verbose = verbose
+      )
+    
+    y <- yt_ols$y
+    t <- yt_ols$t
     
     if(isTRUE(verbose)) {
       cat("Performing OLS estimation ... ")
     }
     
-    log_y_lin <- log(y_lin)
+    log_y <- log(y)
     
-    linexpmodel <- lm (log_y_lin ~ t)
+    linexpmodel <- lm(log_y ~ t)
     
     y_0 <- linexpmodel$coefficients[1]
     
     exp_gr <- linexpmodel$coefficients[2]
     
     R0 <- NA
+    doubling <- NA
+    
     if(exp_gr > 0) {
       R0 <- exp (exp_gr*GI)
+      doubling <- log(2)/exp_gr
     }
-    
-    doubling <- log(2)/exp_gr
     
     y_pred <- exp(predict(linexpmodel))
     
     fit_metrics <- metrics(
-      observed = y_lin,
+      observed = y,
       expected = y_pred,
       plot = FALSE
     )
@@ -1273,6 +1344,32 @@ exponential_growth <-
     
     if (isTRUE(nls)) {
       
+      yt_nls <- 
+        .clean_timeseries(
+          y = y,
+          t = t,
+          impute_missing_values = impute_missing_values,
+          accept_non_positive_values = TRUE,
+          add_constant = FALSE,
+          time_counter = TRUE,
+          verbose = verbose
+        )
+      
+      if(is.null(nls_start)) {
+        
+        nls_start <-
+          list(
+            a = y_0,
+            b = exp_gr
+          )
+        
+        message("No start values for NLS estimation provided. Using coefficients from OLS estimation.")
+
+      }
+      
+      y <- yt_nls$y
+      t <- yt_nls$t
+      
       if(isTRUE(verbose)) {
         cat("Trying nonlinear estimation ... ")
       }
@@ -1293,11 +1390,12 @@ exponential_growth <-
           exp_gr_NLS <- expmodel_summary$coefficients[2]
           
           R0_NLS <- NA
+          doubling_NLS <- NA
+          
           if(exp_gr_NLS > 0) {
             R0_NLS <- exp (exp_gr_NLS*GI)
+            doubling_NLS <- log(2)/exp_gr_NLS
           }
-          
-          doubling_NLS <- log(2)/exp_gr_NLS
           
           y_pred_NLS <- predict(expmodel)
           
@@ -1342,6 +1440,8 @@ exponential_growth <-
       
     }
     
+    TP <- length(y)
+    
     config <-
       list (
         TP = TP,
@@ -1367,14 +1467,16 @@ exponential_growth <-
 logistic_growth <- 
   function (
     y, 
-    t, 
+    t = NULL, 
     S = NULL,
     S_start = NULL, 
     S_end = NULL, 
     S_iterations = 10, 
-    S_start_est_method = "bisect", 
+    S_start_est_method = "bisect",
     seq_by = 10,
+    plot_trial_and_error = TRUE,
     nls = TRUE,
+    impute_missing_values = FALSE,
     add_constant = 1,
     verbose = FALSE
   ) 
@@ -1389,6 +1491,7 @@ logistic_growth <-
     S_start_est_method = "bisect", 
     S_iterations = 10, 
     seq_by = 10,
+    plot_trial_and_error = plot_trial_and_error,
     verbose = FALSE
       ) {
         
@@ -1418,8 +1521,10 @@ logistic_growth <-
           
           best_idx <- which.min(values_ssq[, 2])
           S_est <- values_ssq[best_idx, 1]
-
-          plot(values_ssq[,1], values_ssq[,2], "l")
+          
+          if(isTRUE(plot_trial_and_error)) {
+            plot(values_ssq[,1], values_ssq[,2], "l")
+          }
           
         }
         
@@ -1478,70 +1583,14 @@ logistic_growth <-
         
       }
     
-    if (!is.numeric(y)) {
-      stop("Cumulative infections vector must be of class 'numeric'.")
+    
+    TP <- length(y)
+    
+    if(is.null(t)) {
+      t <- 1:TP
     }
     
-    if (!is.numeric(t) & !is.Date(t)) {
-      stop("Time vector must be of class 'numeric' or 'Date'.")
-    }
-    
-    if (length(y) != length(t)) {
-      stop (paste0("Vectors 'y' and 't' differ in length: ", length(y), ", ", length(t)))
-    }
-    
-    yt_df <- data.frame(y, t)
-    yt_df_length_clean <- yt_df[complete.cases(yt_df), ]
-    
-    if (nrow(yt_df_length_clean) < nrow(yt_df)) {
-      
-      y <- yt_df_length_clean$y
-      t <- yt_df_length_clean$t
-      
-      nan_cases <- nrow(yt_df)-nrow(yt_df_length_clean)
-      warning(paste0(nan_cases, " NaN values were removed"))
-      
-    }
-    
-    if (any(y <= 0)) {
-      
-      if (!is.null(add_constant) && is.numeric(add_constant)) {
-        
-        y_lin <- y+add_constant
-        
-        message(paste0("Input infections data contains values <= 0. All values are increased by a constant equal to ", add_constant, " for linear estimation."))
-        
-      } else {
-        
-        y_lin <- y[y > 0]
-        
-        warning(paste0("Input infections data contains values <= 0. These values are skipped for linear estimation."))
-      }
-      
-    } else {
-      
-      y_lin <- y
-      
-    }
-    
-    TP <- length(y_lin)
-    
-    class_t <- "numeric"
-    
-    if (is.Date(t)) {
-      
-      class_t <- "Date"
-      
-      message("Time vector is of class 'Date'. Calculating time counter.")
-      
-      start_date <- min(t)
-      
-      time_counter <- as.integer(t-start_date)
-      
-      t <- time_counter
-    }
-    
-    if (is.null(S) & (is.null(S_start) | is.null(S_end))) {
+    if (is.null(S) && (is.null(S_start) | is.null(S_end))) {
       stop ("Saturation value or start and end values are required for estimation")
     }
     
@@ -1555,11 +1604,32 @@ logistic_growth <-
         
       }
       
-      if(S < max(y_lin)) {
-        stop (paste0("Saturation value must be above or equal to the the maximum of y (", max(y_lin), ")"))
+      if(S < max(y)) {
+        stop (paste0("Saturation value ", S, " must be above or equal to the the maximum of y (", max(y), ")"))
       }
       
     }
+    
+    
+    yt_ols <- 
+      .clean_timeseries(
+        y = y,
+        t = t,
+        impute_missing_values = impute_missing_values,
+        accept_non_positive_values = FALSE,
+        add_constant = add_constant,
+        time_counter = TRUE,
+        verbose = verbose
+      )
+    
+    y <- yt_ols$y
+    t <- yt_ols$t
+    
+    y_cum <- .is_cumulative(y)
+    if(!y_cum) {
+      stop("Vector y does not contain cumulative values")
+    }
+
     
     if ((!is.null(S_start) & (!is.null(S_end)))) {
       
@@ -1572,13 +1642,13 @@ logistic_growth <-
         
       }
       
-      if ((S_start < max(y_lin)) || (S_end < max(y_lin))) {
-        stop (paste0("Start and end values of saturation must be above or equal to the the maximum of y (", max(y_lin), ")"))
+      if ((S_start < max(y)) || (S_end < max(y))) {
+        stop (paste0("Start and end values of saturation must be above or equal to the the maximum of y (", max(y), ")"))
       }
       
       S <- 
         loggrowth_saturation(
-          y = y_lin, 
+          y = y, 
           t = t, 
           S_start = S_start, 
           S_end = S_end, 
@@ -1594,7 +1664,7 @@ logistic_growth <-
       cat("Performing OLS estimation ... ")
     }
     
-    y_new <- log ((1/y_lin)-(1/S))
+    y_new <- log ((1/y)-(1/S))
     
     model_lin <- lm (y_new ~ t)
     
@@ -1627,7 +1697,7 @@ logistic_growth <-
     d2y_dt2 <- r*dy_dt*(1-((2*y_pred)/S))
     
     fit_metrics_ols <- metrics(
-      observed = y_lin,
+      observed = y,
       expected = y_pred,
       plot = FALSE
     )
@@ -1655,7 +1725,19 @@ logistic_growth <-
     nls_estimation <- TRUE
     nls_error_message <- NULL
     
+    
     if (nls == TRUE) {
+      
+      yt_nls <- 
+        .clean_timeseries(
+          y = y,
+          t = t,
+          impute_missing_values = impute_missing_values,
+          accept_non_positive_values = TRUE,
+          add_constant = FALSE,
+          time_counter = TRUE,
+          verbose = verbose
+        )
       
       if(isTRUE(verbose)) {
         cat("Trying nonlinear estimation ... ")
@@ -1729,6 +1811,8 @@ logistic_growth <-
       }
     }
     
+    TP <- length(y)
+    
     config <-
       list (
         S = S, 
@@ -1738,7 +1822,6 @@ logistic_growth <-
         S_start_est_method = S_start_est_method,
         seq_by = seq_by,
         nls = nls,
-        class_t = class_t,
         TP = TP,
         nls_estimation = nls_estimation,
         nls_error_message = nls_error_message
@@ -1760,39 +1843,66 @@ logistic_growth <-
 hawkes_growth <- 
   function (
     y,
+    t = NULL,
     optim_method = "L-BFGS-B",
+    impute_missing_values = FALSE,
     verbose = FALSE
   ) 
   {
     
-    if (!is.numeric(y)) {
-      stop ("Daily infections vector must be of class 'numeric'.")
-    }
-    
     TP <- length(y)
     
-    loglik <- 
+    if(is.null(t)) {
+      t <- 1:TP
+    }
+    
+    yt_ml <- 
+      .clean_timeseries(
+        y = y,
+        t = t,
+        impute_missing_values = impute_missing_values,
+        accept_non_positive_values = TRUE,
+        add_constant = FALSE,
+        time_counter = TRUE,
+        verbose = verbose
+      )
+    
+    y <- yt_ml$y
+    t <- yt_ml$t
+    
+    y_cum <- .is_cumulative(y)
+    if(y_cum) {
+      stop("Vector y contains cumulative values")
+    }
+    
+    
+    if(isTRUE(verbose)) {
+      cat("Performing log-likelihood estimation ... ")
+    }
+    
+    
+    loglik <-
       function(par) {
         
         mu <- par[1]
         alpha <- par[2]
         beta <- par[3]
         
-        lambda <- sapply(1:TP, function(t)
-          mu + sum(alpha * exp(-beta*(t-1:(t-1)))*y[1:(t-1)])
+        lambda <- sapply(t, function(t)
+          mu + sum(alpha * exp(-beta * (t - 1:(t-1))) * y[1:(t-1)])
         )
         
         -sum(dpois(y, lambda, log=TRUE))
       }
     
-    fit <- 
+    fit <-
       optim(
         c(
-          mu=mean(y), 
-          alpha=0.2, 
+          mu=mean(y),
+          alpha=0.2,
           beta=0.2
-        ), 
-        loglik, 
+        ),
+        loglik,
         method=optim_method,
         lower=c(
           1e-6,
@@ -1804,17 +1914,20 @@ hawkes_growth <-
     mu    <- fit$par["mu"]
     alpha <- fit$par["alpha"]
     beta  <- fit$par["beta"]
-    br <- alpha/beta
+    br    <- alpha/beta
     
-    y_pred <- numeric(TP)
+    y_pred <- numeric(length(t))
     
-    for(t in 1:TP){
-      if(t == 1){
-        y_pred[t] <- mu
+    for (i in seq_along(t)) {
+      if (i == 1) {
+        y_pred[i] <- mu
       } else {
-        y_pred[t] <- mu + sum(alpha * exp(-beta * (t-1:(t-1))) * y[1:(t-1)])
+        y_pred[i] <- mu + sum(
+          alpha * exp(-beta * (t[i] - t[1:(i-1)])) *
+            y[1:(i-1)]
+        )
       }
-    }
+    } 
     
     fit_metrics <- metrics(
       observed = y,
@@ -1823,6 +1936,8 @@ hawkes_growth <-
     )
     
     fit_metrics <- fit_metrics[[1]]
+
+    TP <- length(y)
     
     config <-
       list(
@@ -1830,95 +1945,60 @@ hawkes_growth <-
         optim_method = optim_method
       )
     
-    hawkes_object <-
-      new(
-        "hawkes",
-        y = y,
-        t = 1:TP,
-        mu = mu,
-        alpha = alpha,
-        beta = beta,
-        br = br,
-        y_pred = y_pred,
-        fit_metrics = fit_metrics,
-        config = config
-      )
+    if(isTRUE(verbose)) {
+      cat("OK", "\n")
+    }
+    
+    new(
+      "hawkes",
+      y = y,
+      t = t,
+      mu = mu,
+      alpha = alpha,
+      beta = beta,
+      br = br,
+      y_pred = y_pred,
+      fit_metrics = fit_metrics,
+      config = config
+    )
+    
   }
+
 
 
 breaks_growth <-
   function(
     y, 
-    t,
+    t = NULL,
     ln = FALSE,
+    impute_missing_values = FALSE,
     add_constant = 1,
     alpha = 0.05,
     ...,
     verbose = FALSE
   ) {
     
-    if (!is.numeric(y)) {
-      stop("Infections vector must be of class 'numeric'.")
+    TP <- length(y)
+    
+    if(is.null(t)) {
+      t <- 1:TP
     }
     
-    if (!is.numeric(t) & !is.Date(t)) {
-      stop("Time vector must be of class 'numeric' or 'Date'.")
-    }
+    yt_ols <- 
+      .clean_timeseries(
+        y = y,
+        t = t,
+        impute_missing_values = impute_missing_values,
+        accept_non_positive_values = FALSE,
+        add_constant = add_constant,
+        time_counter = TRUE,
+        verbose = verbose
+      )
     
-    if (length(y) != length(t)) {
-      stop (paste0("Vectors 'y' and 't' differ in length: ", length(y), ", ", length(t)))
-    }
+    y <- yt_ols$y
+    t <- yt_ols$t
     
-    yt_df <- data.frame(y, t)
-    yt_df_length_clean <- yt_df[complete.cases(yt_df), ]
-    
-    if (nrow(yt_df_length_clean) < nrow(yt_df)) {
-      
-      y <- yt_df_length_clean$y
-      t <- yt_df_length_clean$t
-      
-      nan_cases <- nrow(yt_df)-nrow(yt_df_length_clean)
-      warning(paste0(nan_cases, " NaN values were removed"))
-      
-    }
-    
-    if (any(y <= 0)) {
-      
-      if (!is.null(add_constant) && is.numeric(add_constant)) {
-        
-        y_lin <- y+add_constant
-        
-        message(paste0("Input infections data contains values <= 0. All values are increased by a constant equal to ", add_constant, "."))
-        
-      } else {
-        
-        y_lin <- y[y > 0]
-        
-        warning(paste0("Input infections data contains values <= 0. These values are skipped."))
-      }
-      
-    } else {
-      
-      y_lin <- y
-      
-    }
-    
-    TP <- length(y_lin)
-    
-    class_t <- "numeric"
-    
-    if (is.Date(t)) {
-      
-      class_t <- "Date"
-      
-      message("Time vector is of class 'Date'. Calculating time counter.")
-      
-      start_date <- min(t)
-      
-      time_counter <- as.integer(t-start_date)
-      
-      t <- time_counter
-    }
+    yt_df_length_clean <- data.frame(y, t)
     
     bp_formula <- as.formula("y ~ t")
     if (isTRUE(ln)) {
@@ -1927,10 +2007,9 @@ breaks_growth <-
     
     if (isTRUE(verbose)) {
       if (isTRUE(ln)) { 
-        cat(paste0("Calculating breakpoints for time series with ", TP, " time points, nat. log. of y values ... "))
+        cat("Calculating breakpoints for time series with nat. log. of y values ... ")
       } else {
-        cat(paste0("Calculating breakpoints for time series with ", TP, " time points ... "))
-        
+        cat("Calculating breakpoints for time series ... ")
       }
     }
     
@@ -1943,14 +2022,17 @@ breaks_growth <-
     
     bp_obj_coef <- coef(bp_obj)
     bp_obj_breakpoints <- bp_obj$breakpoints
-    bp_obj_breakpoints_no <- length(bp_obj_breakpoints)
-    bp_obj_segments_no <- bp_obj_breakpoints_no+1
+    bp_obj_breakpoints_no <- sum(!is.na(bp_obj_breakpoints))
+    bp_obj_breakpoints <- bp_obj_breakpoints[!is.na(bp_obj_breakpoints)]
+    bp_obj_segments_no <- bp_obj_breakpoints_no + 1
+    
+    bp_obj_breakpoints_ci <- NULL
     
     if (bp_obj_breakpoints_no > 0) {
       bp_obj_breakpoints_ci <- confint(
         bp_obj, 
         level = 1-alpha
-      )  
+      )
     }
     
     if(isTRUE(verbose)) {
@@ -1959,10 +2041,9 @@ breaks_growth <-
       
       cat(paste0(bp_obj_breakpoints_no, " breakpoints were found, which leads to ", bp_obj_segments_no, " segments"), "\n")
       
-      cat(paste0("Calculating segment models ... "))
+      cat("Calculating segment models ... ")
       
     }
-    
     
     bp_obj_segments <- 
       matrix(
@@ -1970,24 +2051,31 @@ breaks_growth <-
         nrow = bp_obj_segments_no
       )
     
-    bp_obj_segments[1,] <- c(1, bp_obj_breakpoints[1])
-    
-    i <- 0
-    
-    for (i in 2:(bp_obj_segments_no-1)) {
-      bp_obj_segments[i,] <- 
-        c(
-          (bp_obj_breakpoints[i-1]+1), 
-          bp_obj_breakpoints[i]
-        )
-    }
-    
-    bp_obj_segments[bp_obj_segments_no,] <- 
-      c(
-        bp_obj_breakpoints[bp_obj_breakpoints_no], 
+    if (bp_obj_breakpoints_no == 0) {
+      
+      bp_obj_segments[1, ] <- c(1, length(y))
+      
+    } else {
+      
+      bp_obj_segments[1, ] <- c(1, bp_obj_breakpoints[1])
+      
+      if (bp_obj_segments_no > 2) {
+        
+        for (i in 2:(bp_obj_segments_no - 1)) {
+          bp_obj_segments[i, ] <- c(
+            bp_obj_breakpoints[i - 1] + 1,
+            bp_obj_breakpoints[i]
+          )
+        }
+        
+      }
+      
+      bp_obj_segments[bp_obj_segments_no, ] <- c(
+        bp_obj_breakpoints[bp_obj_breakpoints_no] + 1,
         length(y)
       )
-    
+      
+    }
     
     i <- 0
     
@@ -2007,7 +2095,12 @@ breaks_growth <-
     
     for (i in 1:bp_obj_segments_no) {
       
-      yt_df_length_clean_segment <- yt_df_length_clean[bp_obj_segments[i,1]:bp_obj_segments[i,2],]
+      yt_df_length_clean_segment <- 
+        yt_df_length_clean[
+          bp_obj_segments[i, 1]:bp_obj_segments[i, 2],
+          ,
+          drop = FALSE
+        ]
       
       segment_model <- 
         lm(
@@ -2023,6 +2116,7 @@ breaks_growth <-
           segment_model,
           level = 1-alpha
         )
+      
       slopes[i, 2] <- segment_model_ci_est[2]
       slopes[i, 3] <- segment_model_ci_est[4]
       intercepts[i, 2] <- segment_model_ci_est[1]
@@ -2035,6 +2129,7 @@ breaks_growth <-
       
       segment_model_y <- yt_df_length_clean_segment$y
       segment_model_y_pred <- predict(segment_model)
+      
       if (isTRUE(ln)) {
         segment_model_y_pred <- exp(segment_model_y_pred)
       }
@@ -2044,7 +2139,9 @@ breaks_growth <-
         segment_model_y_pred,
         plot = FALSE
       )
+      
       segment_model_fit_metrics <- segment_model_fit_metrics[[1]]
+      
       SQR[i] <- segment_model_fit_metrics$SQR
       SAR[i] <- segment_model_fit_metrics$SAR
       SQT[i] <- segment_model_fit_metrics$SQT
@@ -2053,6 +2150,7 @@ breaks_growth <-
       RMSE[i] <- segment_model_fit_metrics$RMSE
       MAE[i] <- segment_model_fit_metrics$MAE
       MAPE[i] <- segment_model_fit_metrics$MAPE
+      
       segment_model_fit_metrics <- NULL
       
       segment_model_ci_points[[i]] <- 
@@ -2104,7 +2202,7 @@ breaks_growth <-
       )
     
     model_breakpoints_list <- 
-      list (
+      list(
         segments_models_df = segments_models_df,
         segment_model_ci_points = segment_model_ci_points,
         bp_obj_coef = bp_obj_coef,
@@ -2115,8 +2213,10 @@ breaks_growth <-
         bp_obj = bp_obj
       )
     
+    TP <- length(y)
+    
     config <-
-      list (
+      list(
         TP = TP,
         ln = ln,
         add_constant = add_constant,
@@ -2124,7 +2224,7 @@ breaks_growth <-
       )
     
     if(isTRUE(verbose)) {
-      cat("OK", "\n") 
+      cat("OK", "\n")
     }
     
     new(
@@ -2136,6 +2236,7 @@ breaks_growth <-
     )
     
   }
+
 
 
 R_t <- 
@@ -2196,6 +2297,6 @@ R_t <-
       infections_data = cbind.data.frame(infections_daily_A, infections_daily_B, R_t)
     )
     
-    return(results)
+    invisible(results)
     
   }

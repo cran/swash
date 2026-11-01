@@ -3,11 +3,11 @@
 \alias{swash_backwash}
 
 \title{
-Swash-Backwash Model for the Single Epidemic Wave
+Swash-Backwash Model of the Single Epidemic Wave
 }
 
 \description{
-Analysis of regional infection/surveillance data using the Swash-Backwash Model for the Single Epidemic Wave by Cliff and Haggett (2006).
+Analysis of regional infection/surveillance data using the Swash-Backwash Model of the Single Epidemic Wave by Cliff and Haggett (2006).
 }
 
 \usage{

@@ -11,10 +11,11 @@ Estimation of exponential growth models from daily infections data
 \usage{
 exponential_growth(
   y, 
-  t, 
+  t = NULL, 
   GI = 4,
   nls = TRUE,
   nls_start = list(a = 1, b = 0.1),
+  impute_missing_values = FALSE,
   add_constant = 1,
   verbose = FALSE
   )
@@ -35,6 +36,9 @@ exponential_growth(
 }
  \item{nls_start}{
      A \code{list} with start values for the two parameters to be estimated
+}
+  \item{impute_missing_values}{
+     \code{bool} argument which indicates whether missing values have to be imputed via linear imputation
 }
   \item{add_constant}{
      Numeric constant to be added to y if zero values occur (only relevant for OLS estimation)
@@ -102,7 +106,7 @@ COVID19Cases_ZH <-
 # COVID cases for Zurich
 
 expgrowth_ZH <- exponential_growth(
-  y = COVID19Cases_ZH$sumTotal[1:28], 
+  y = COVID19Cases_ZH$entries[1:28], 
   t = COVID19Cases_ZH$datum[1:28] 
 )
 # Exponential growth model for the first 4 weeks

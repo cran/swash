@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.0.0
-# Last update: 2026-10-10 08:42
+# Version:     1.0.1
+# Last update: 2026-10-31 11:38
 # Copyright (c) 2026 Thomas Wieland
 #-------------------------------------------------------------------------------
 
@@ -140,6 +140,8 @@ test_that("#1 Importing infections panel data as infpan instance and performing 
   
   expect_no_error(summary(CH_covidwave1_growth))
   
+  expect_s4_class(CH_covidwave1_growth, "growthmodels")
+  
   
   # Initial exponential growth
   CH_covidwave1_initialgrowth_3weeks <- expect_no_error(
@@ -151,6 +153,8 @@ test_that("#1 Importing infections panel data as infpan instance and performing 
   
   expect_no_error(summary(CH_covidwave1_initialgrowth_3weeks))
   
+  expect_s4_class(CH_covidwave1_initialgrowth_3weeks, "growthmodels")
+  
   
   # Hawkes process
   CH_covidwave1_Hawkes <- expect_no_error(
@@ -159,6 +163,8 @@ test_that("#1 Importing infections panel data as infpan instance and performing 
   
   expect_no_error(summary(CH_covidwave1_Hawkes))
   
+  expect_s4_class(CH_covidwave1_Hawkes, "growthmodels")
+  
   
   # Breakpoints
   CH_covidwave1_breaks <- expect_no_error(
@@ -166,6 +172,8 @@ test_that("#1 Importing infections panel data as infpan instance and performing 
   )
   
   expect_no_error(summary(CH_covidwave1_breaks))
+  
+  expect_s4_class(CH_covidwave1_breaks, "growthmodels")
   
   
   # Swash-Backwash model
@@ -177,6 +185,9 @@ test_that("#1 Importing infections panel data as infpan instance and performing 
   )
   
   expect_no_error(summary(CH_covidwave1))
+  
+  expect_s4_class(CH_covidwave1, "sbm")
+  
   
 })
 # Warnings are irrelevant
@@ -248,7 +259,7 @@ test_that("#3 Testing logistic and exponential growth models", {
   COVID19Cases_ZH <-
     COVID19Cases_geoRegion[
       (COVID19Cases_geoRegion$geoRegion == "ZH") &
-        (COVID19Cases_geoRegion$sumTotal > 0),
+        (COVID19Cases_geoRegion$entries > 0),
     ]
   
   
@@ -281,7 +292,7 @@ test_that("#3 Testing logistic and exponential growth models", {
   # Exponential growth model for the first 4 weeks
   expgrowth_ZH <- expect_no_error(
     exponential_growth(
-      y = COVID19Cases_ZH$sumTotal[1:28],
+      y = COVID19Cases_ZH$entries[1:28],
       t = COVID19Cases_ZH$datum[1:28]
     )
   )

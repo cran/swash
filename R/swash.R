@@ -1,12 +1,12 @@
 #---------------------------------------------------------------
 # Name:        swash (swash package)
-# Purpose:     Swash-Backwash Model for the Single Epidemic Wave
+# Purpose:     Swash-Backwash Model of the Single Epidemic Wave
 #              Functions, classes and corresponding methods
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.0.1
-# Last update: 2026-10-17 10:19
+# Version:     2.0.2
+# Last update: 2026-10-28 20:41
 # Copyright (c) 2022-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -745,6 +745,8 @@ swash_backwash <-
       data <- NULL
     }
     
+    
+    # User data:
     if (!is.null(data)) {
       
       col_errors <- character(0)
@@ -773,7 +775,7 @@ swash_backwash <-
       )
       
       if(isTRUE(verbose)) {
-        cat("Reading and diagnosing infections panel data ... ")
+        cat("Aggregating information on infections panel data ... ")
       }
       
       N <- nlevels(as.factor(data[[col_region]]))
@@ -782,21 +784,26 @@ swash_backwash <-
       TP <- nlevels(as.factor(data[[col_date]]))
       TP_t <- levels(as.factor(data[[col_date]]))
       
+      if(isTRUE(verbose)) {
+        cat("OK", "\n")
+      }
+      
+      data[[col_cases]] <- 
+        .check_negative(data[[col_cases]])
+      
       data_check_balanced <- 
         is_balanced(
           data,
           col_cases = col_cases,
           col_region = col_region,
-          col_date = col_date
+          col_date = col_date,
+          verbose = verbose
         )
       data_balanced <- data_check_balanced$data_balanced
       
-      if (isTRUE(verbose)) {
-        cat("OK", "\n")
-      }
-      
     }
     
+    # infpan object:
     if (!is.null(infpan)) {
       
       if (isTRUE(verbose)) {
@@ -826,18 +833,57 @@ swash_backwash <-
         
     data <- data[order(data[[col_region]], data[[col_date]]),]
     
-    if (isTRUE(verbose)) {
+    
+    if(isTRUE(verbose)) {
+      cat("Checking infections panel data for regions without infection cases ... ")
+    }
+    
+    cases_by_region <- 
+      aggregate(
+        data[[col_cases]],
+        by = list(data[[col_region]]),
+        FUN = sum
+    )
+    colnames(cases_by_region) <-
+      c(
+        col_region,
+        col_cases
+      )
+    
+    regions_without_cases <-
+      cases_by_region[cases_by_region[[col_cases]] == 0,]
+    
+    regions_without_cases <-
+      unique(regions_without_cases[[col_region]])
+    
+    regions_without_cases_count <- length(regions_without_cases) 
+    
+    if(regions_without_cases_count > 0) {
       
-      cat(paste0("Infections panel data include ", N, " regions in column '", col_region, "' and ", TP, " time points in column '", col_date, "', with cases in column '", col_cases, "'. "))
+      data <- data[!data[[col_region]] %in% regions_without_cases]
       
-      if (isTRUE(data_balanced)) {
-        cat("The data is balanced.")
-      } else {
-        cat("The data is not balanced.")
-      }
-      cat("\n")
+      N <- nlevels(as.factor(data[[col_region]]))
+      N_names <- levels(as.factor(data[[col_region]]))
+      N_withoutcases <- regions_without_cases_count
+      TP <- nlevels(as.factor(data[[col_date]]))
+      TP_t <- levels(as.factor(data[[col_date]]))
       
     }
+    
+    if(isTRUE(verbose)) {
+      cat("OK", "\n")
+    }
+    
+    if(regions_without_cases_count > 0) { 
+      warning(paste0(regions_without_cases_count, " regions without any infection cases were removed from the infections panel data."))
+      }
+    
+    message(paste0("Infections panel data include ", N, " regions in column '", col_region, "' and ", TP, " time points in column '", col_date, "', with cases in column '", col_cases, "'. "))
+    
+    if (!isTRUE(data_balanced)) {
+      warning("The data is not balanced.")
+    }
+      
     
     if(isTRUE(verbose)) {
       cat(paste0("Calculating Swash-Backwash Model for ", N, " regions and ", TP, " time points ... "))
@@ -861,39 +907,41 @@ swash_backwash <-
       data_n$occurence <- 0
       
       if (sum(data_n[[col_cases]], na.rm = TRUE) > 0) {
+        
         data_n[data_n[[col_cases]] > 0,]$occurence <- 1
+      
+        first_occ <- which(data_n$occurence == 1)[1]
+        data_n$LE <- 0
+        data_n$LE[first_occ] <- 1
         
-      } else {
+        first_occ_regions[,i+1] <- data_n$LE
         
+        colnames(first_occ_regions)[i+1] <- paste0("Region_", N_names[i])
+        
+        last_occ <- which(data_n$occurence == 1)[length(which(data_n$occurence == 1))]
+        data_n$FE <- 0
+        data_n$FE[last_occ] <- 1
+        
+        last_occ_regions[,i+1] <- data_n$FE
+        
+        colnames(last_occ_regions)[i+1] <- paste0("Region_", N_names[i])
+        
+        } else {
+          
         N_withoutcases <- N_withoutcases+1
+        
       }
-      
-      first_occ <- which(data_n$occurence == 1)[1]
-      data_n$LE <- 0
-      data_n$LE[first_occ] <- 1
-      
-      first_occ_regions[,i+1] <- data_n$LE
-      
-      colnames(first_occ_regions)[i+1] <- paste0("Region_", N_names[i])
-      
-      last_occ <- which(data_n$occurence == 1)[length(which(data_n$occurence == 1))]
-      data_n$FE <- 0
-      data_n$FE[last_occ] <- 1
-      
-      last_occ_regions[,i+1] <- data_n$FE
-      
-      colnames(last_occ_regions)[i+1] <- paste0("Region_", N_names[i])
       
     }
     
     first_occ_regions$no_regions_LE <- rowSums(first_occ_regions[, 2:(N+1)])
-    first_occ_regions$t <- seq (1:TP)
+    first_occ_regions$t <- seq(1:TP)
     first_occ_regions$t_x_nt <- first_occ_regions$t*first_occ_regions$no_regions_LE
     
     t_LE <- sum(first_occ_regions$t_x_nt)/N
     
     last_occ_regions$no_regions_FE <- rowSums(last_occ_regions[, 2:(N+1)])
-    last_occ_regions$t <- seq (1:TP)
+    last_occ_regions$t <- seq(1:TP)
     last_occ_regions$t_x_nt <- last_occ_regions$t*last_occ_regions$no_regions_FE
     
     t_FE <- sum(last_occ_regions$t_x_nt)/N
@@ -901,6 +949,7 @@ swash_backwash <-
     S_A <- (t_LE-1)/TP
     I_A <- (t_FE/TP)-S_A
     R_A <- 1-(S_A+I_A)
+    
     R_0A <- (1-S_A)/(1-R_A)
     
     integrals <- 

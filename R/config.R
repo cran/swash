@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.0.2
-# Last update: 2026-10-17 10:05
+# Version:     1.0.3
+# Last update: 2026-11-01 10:01
 # Copyright (c) 2025-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -21,7 +21,7 @@ library(lubridate)
 
 # Package name and version:
 package_name <- "swash"
-package_version <- "3.0.2"
+swash_package_version <- "3.0.3"
 package_title <- "swash: Health Geography Toolbox for Model-Based Analysis of Infections Panel Data"
 
 # Class description texts:
@@ -56,7 +56,7 @@ permitted_cols <-
 # Descriptions of model-based analyses in the infpan class
 model_descriptions <- 
   list(
-    "sbm" = "Swash-Backwash Model for the Single Epidemic Wave",
+    "sbm" = "Swash-Backwash Model of the Single Epidemic Wave",
     "loggrowth" = "Logistic Growth Model",
     "expgrowth" = "Exponential Growth Model",
     "hawkes" = "Hawkes Process",

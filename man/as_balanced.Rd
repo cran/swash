@@ -13,8 +13,9 @@ as_balanced(
   col_cases, 
   col_date, 
   col_region, 
-  fill_missing = 0,
-  drop_duplicates = TRUE
+  fill_missing = NA,
+  drop_duplicates = TRUE,
+  verbose = FALSE
   )
 }
 \arguments{
@@ -36,10 +37,13 @@ as_balanced(
   \item{drop_duplicates}{
       \code{bool} argument which indicates whether duplicated region/time combinations are removed
 }
+  \item{verbose}{
+     \code{bool} argument which indicates whether progress messages are displayed
+}
 }
 
 \details{
-The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data in order for the calculations to be carried out. 
+The Swash-Backwash Model of the Single Epidemic Wave does not necessarily require balanced panel data in order for the calculations to be carried out. 
 However, for a correct estimation it is implicitly assumed that the input data is balanced. 
 The function corrects non-balanced panel data. 
 It is executed automatically within the \code{swash_backwash()} function and \code{swash()} method, respectively, but can also be used separately.

@@ -13,8 +13,9 @@ Estimation of breakpoints in linear regression models from infections cases over
 \usage{
 breaks_growth(
   y, 
-  t,
+  t = NULL,
   ln = FALSE,
+  impute_missing_values = FALSE,
   add_constant = 1,
   alpha = 0.05,
   ...,
@@ -31,6 +32,9 @@ breaks_growth(
 }
   \item{ln}{
      \code{bool} argument which indicates whether dependent variable should be transformed by natural logarithm
+}
+  \item{impute_missing_values}{
+     \code{bool} argument which indicates whether missing values have to be imputed via linear imputation
 }
   \item{add_constant}{
      Numeric constant to be added to y if zero values occur

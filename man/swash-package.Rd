@@ -32,7 +32,7 @@ which returns an instance of class \code{infpan}. The panel data is checked whet
 From an \code{infpan} object, the user may utilize the following built-in analysis and visualization functions:
 
 \itemize{
-    \item{\emph{Swash-Backwash Model for the Single Epidemic Wave}, including further analysis towards bootstrap-based inference and country comparison as well as visualization}
+    \item{\emph{Swash-Backwash Model of the Single Epidemic Wave}, including further analysis towards bootstrap-based inference and country comparison as well as visualization}
     \item{\emph{Growth Analysis} with \emph{logistic} and \emph{exponential growth models} for cumulative or new (e.g., daily, weekly) infections, 
     including visualization}
     \item{\emph{Hawkes process} models for new infection cases (e.g., daily, weekly), including visualization}
@@ -56,7 +56,7 @@ Infection curves may be plotted by \code{plot(infpan)}. It is also possible to i
 in order to plot maps of specified indicator at a given time point. All built-in model analyses mentioned below may be conducted based on an instance of class \code{infpan},
 but may also be used independently. 
 
-The Swash-Backwash Model for the Single Epidemic Wave (SBM) is the spatial equivalent of the classic epidemiological SIR (Susceptible-Infected-Recovered) model. 
+The Swash-Backwash Model of the Single Epidemic Wave (SBM) is the spatial equivalent of the classic epidemiological SIR (Susceptible-Infected-Recovered) model. 
 It was developed by Cliff and Haggett (2006) to model the velocity of spread of infectious diseases across space. 
 Current applications may be found, for example, in Smallman-Raynor et al. (2022a,b). 
 This package enables the calculation of the Swash-Backwash Model for user-supplied panel data on regional infections. 

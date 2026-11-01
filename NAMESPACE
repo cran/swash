@@ -114,6 +114,7 @@ importFrom(
 import("sf")
 importFrom(
   "zoo",
+  "na.approx",
   "rollmean",
   "rollsum"
 )

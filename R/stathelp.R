@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     1.0.2
-# Last update: 2026-10-14 20:49
+# Version:     1.0.3
+# Last update: 2026-10-24 10:49
 # Copyright (c) 2022-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -133,7 +133,7 @@ plot_coef_ci <- function(
           & (data_plot$confint_lower < 0)
           & (data_plot$confint_upper < 0)
           ,]) > 0) {
-        
+          
           data_plot[
             (data_plot$point_estimates < 0)
             & (data_plot$confint_lower < 0)
@@ -145,7 +145,7 @@ plot_coef_ci <- function(
             & (data_plot$confint_lower < 0)
             & (data_plot$confint_upper < 0)
             ,]$col_confint <- set_confint_colors[1]
-            
+          
         }
         
         
@@ -292,6 +292,17 @@ metrics <-
     
     observed_expected <- data.frame(observed, expected)
     
+    if(isTRUE(na.rm)) {
+      
+      observed_expected_nrow <- nrow(observed_expected)
+      
+      observed_expected <- observed_expected[complete.cases(observed_expected),]
+      
+      if(nrow(observed_expected) < observed_expected_nrow) {
+        warning(paste0(observed_expected_nrow-nrow(observed_expected), " cases were incomplete and have been removed."))
+      }
+    }
+    
     observed_expected$residuals <- observed_expected$expected-observed_expected$observed
     observed_expected$residuals_abs <- abs(observed_expected$expected-observed_expected$observed)
     observed_expected$residuals_sq <- (observed_expected$expected-observed_expected$observed)^2
@@ -401,18 +412,38 @@ metrics <-
 binary_metrics <- function(
     observed, 
     expected,
-    no_information_rate = "negative"
+    no_information_rate = "negative",
+    na.rm = TRUE
 ) {
   
   if (length(observed) != length(expected)) {
     stop("Vectors 'observed' and 'expected' differ in length")
-  }
+  } 
   
+  observed_expected <- data.frame(observed, expected)
+  
+  if(isTRUE(na.rm)) {
+    
+    observed_expected_nrow <- nrow(observed_expected)
+    
+    observed_expected <- observed_expected[complete.cases(observed_expected),]
+    
+    observed <- observed_expected$observed
+    expected <- observed_expected$expected
+    
+    if(nrow(observed_expected) < observed_expected_nrow) {
+      warning(paste0(observed_expected_nrow-nrow(observed_expected), " cases were incomplete and have been removed."))
+    }
+  }
+
   if (!all(observed %in% c(0,1)) || !all(expected %in% c(0,1))) {
     stop("Observed and/or expected values are not binary")
   }
+  if (length(unique(observed)) == 1L) {
+    stop("Observed values are constant")
+  }
   
-  observed_expected <- data.frame(observed, expected)
+  
   observed_expected$hit <- 0
   observed_expected[observed_expected$observed == observed_expected$expected,]$hit <- 1
   

@@ -4,8 +4,8 @@
 # Author:      Thomas Wieland 
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.2.0
-# Last update: 2026-10-17 10:12
+# Version:     2.2.1
+# Last update: 2026-10-31 10:02
 # Copyright (c) 2025-2026 Thomas Wieland
 #-------------------------------------------------------------------------------
 
@@ -107,6 +107,8 @@ moran_incidence <-
 # Calculating Moran's I test under normality
 # Result = nbmatrix object
 
+summary(moran_incidence)
+# Summary of nbmatrix object with Moran's I
 
 CH_covidwave1_growth <- 
   growth(infpan_CH)
@@ -247,7 +249,7 @@ plot(AT_vs_CH)
 COVID19Cases_ZH <-
   COVID19Cases_geoRegion[
     (COVID19Cases_geoRegion$geoRegion == "ZH")
-    & (COVID19Cases_geoRegion$sumTotal > 0),]
+    & (COVID19Cases_geoRegion$entries > 0),]
 # COVID cases for Zurich
 
 
@@ -277,7 +279,7 @@ Rt_BS
 
 
 expgrowth_ZH <- exponential_growth (
-  y = COVID19Cases_ZH$sumTotal[1:28], 
+  y = COVID19Cases_ZH$entries[1:28], 
   t = COVID19Cases_ZH$datum[1:28] 
 )
 # Exponential growth model for the first 4 weeks

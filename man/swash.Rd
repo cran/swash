@@ -3,12 +3,12 @@
 \alias{swash}
 
 \title{
-Swash-Backwash Model for the Single Epidemic Wave
+Swash-Backwash Model of the Single Epidemic Wave
 }
 
 \description{
 Analysis of regional infection/surveillance data stored in \code{infpan} object 
-using the Swash-Backwash Model for the single epidemic wave by Cliff and Haggett (2006).
+using the Swash-Backwash Model of the Single Epidemic Wave by Cliff and Haggett (2006).
 }
 
 \usage{

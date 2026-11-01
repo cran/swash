@@ -13,7 +13,9 @@ Estimation of Hawkes Process models from new infections data
 \usage{
 hawkes_growth(
   y,
+  t = NULL,
   optim_method = "L-BFGS-B",
+  impute_missing_values = FALSE,
   verbose = FALSE
   )
 }
@@ -22,8 +24,14 @@ hawkes_growth(
   \item{y}{
      \code{numeric vector} with new infection cases (e.g., daily, weekly) data over time (e.g., daily infections)
 }
+  \item{t}{
+     \code{vector} of class \code{numeric} or \code{Date} with time points or dates
+}
   \item{optim_method}{
      \code{character} specifying the optimization algorithm, passed to \code{stats::optim}
+}
+  \item{impute_missing_values}{
+     \code{bool} argument which indicates whether missing values have to be imputed via linear imputation
 }
   \item{verbose}{
      \code{bool} argument which indicates whether progress messages are displayed

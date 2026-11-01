@@ -88,7 +88,7 @@ EE: https://www.terviseamet.ee/en/coronavirus/coronavirus-dataset (accessed 2022
 
 EL: \url{https://github.com/Sandbird/covid19-Greece} (accessed 2022-07-02), file "regions"
 
-ES: \url{https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres.csv} (accessed 2022-06-28)
+ES: https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres.csv (accessed 2022-06-28)
 
 FI: \url{https://covid19.who.int/region/euro/country/fi} (accessed 2022-07-01)
 

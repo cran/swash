@@ -14,8 +14,9 @@ is_balanced(
   col_date, 
   col_region, 
   as_balanced = TRUE, 
-  fill_missing = 0,
-  drop_duplicates = TRUE
+  fill_missing = NA,
+  drop_duplicates = TRUE,
+  verbose = FALSE
   )
 }
 \arguments{
@@ -40,10 +41,13 @@ is_balanced(
   \item{drop_duplicates}{
       \code{bool} argument which indicates whether duplicated region/time combinations are removed
 }
+  \item{verbose}{
+     \code{bool} argument which indicates whether progress messages are displayed
+}
 }
 
 \details{
-The Swash-Backwash Model for the Single Epidemic Wave does not necessarily require balanced panel data 
+The Swash-Backwash Model of the Single Epidemic Wave does not necessarily require balanced panel data 
 in order for the calculations to be carried out. 
 However, for a correct estimation it is implicitly assumed that the input data is balanced. 
 The function tests whether the panel data is balanced. 
@@ -65,6 +69,7 @@ Thomas Wieland
 \seealso{
 \code{\link{as_balanced}}
 }
+
 \examples{
 data(COVID19Cases_geoRegion)
 # Get SWISS COVID19 cases at NUTS 3 level

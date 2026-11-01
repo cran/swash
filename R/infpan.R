@@ -5,8 +5,8 @@
 # Author:      Thomas Wieland
 #              ORCID: 0000-0001-5168-9846
 #              mail: geowieland@googlemail.com
-# Version:     2.0.1
-# Last update: 2026-10-17 10:01
+# Version:     2.0.2
+# Last update: 2026-10-31 15:31
 # Copyright (c) 2021-2026 Thomas Wieland
 #---------------------------------------------------------------
 
@@ -328,6 +328,13 @@ setMethod(
     ) {
       stop("Parameter 'k' must be a single positive integer.", call. = FALSE)
     }
+    
+    TP <- object@data_statistics[2]
+    
+    if(TP < k) {
+      stop(paste0("Rolling means with a rolling window of k = ", k, " can not be computed for time series of length ", TP))
+    }
+    
 
     if (is.null(col_name)) {
       col_name <- paste0(col_cases, "_rm")
@@ -354,27 +361,33 @@ setMethod(
       input_data_i <- 
         input_data[input_data[[col_region]] == N_names[i],]
       
-      input_data_i <- input_data_i[order(input_data_i[[col_region]], input_data_i[[col_date]]),]
-      
-      input_data_i_rollmean <- 
-        rollmean(
-          input_data_i[[col_cases]],
-          k = k, 
-          fill = fill,
-          align = align
+      if(nrow(input_data_i) >= k) {
+        
+        input_data_i <- input_data_i[order(input_data_i[[col_region]], input_data_i[[col_date]]),]
+        
+        input_data_i_rollmean <- 
+          rollmean(
+            input_data_i[[col_cases]],
+            k = k, 
+            fill = fill,
+            align = align
+          )
+        
+        data_rollmean_i <- data.frame(
+          input_data_i[[paste0(col_region, "_", col_date)]],
+          input_data_i_rollmean
         )
-      
-      data_rollmean_i <- data.frame(
-        input_data_i[[paste0(col_region, "_", col_date)]],
-        input_data_i_rollmean
-      )
-      colnames(data_rollmean_i) <- colnames(data_rollmean)
-      
-      data_rollmean <- rbind(
-        data_rollmean,
-        data_rollmean_i
-      )
-      
+        colnames(data_rollmean_i) <- colnames(data_rollmean)
+        
+        data_rollmean <- rbind(
+          data_rollmean,
+          data_rollmean_i
+        )
+        
+      } else {
+      warning(paste0("Rolling sums can not be computed for region ", N_names[i], " with a rolling window of k = ", k))
+    }
+
     }
     
     data_rollmean <- data_rollmean[!is.na(data_rollmean[[paste0(col_region, "_", col_date)]]),]
@@ -479,7 +492,7 @@ setMethod(
     
     N <- object@data_statistics[1]
     N_names <- levels(as.factor(input_data[[col_region]]))
-
+    
     if (
       length(k) != 1L ||
       !is.numeric(k) ||
@@ -491,6 +504,13 @@ setMethod(
     ) {
       stop("Parameter 'k' must be a single positive integer.", call. = FALSE)
     }
+    
+    TP <- object@data_statistics[2]
+    
+    if(TP < k) {
+      stop(paste0("Rolling sums with a rolling window of k = ", k, " can not be computed for time series of length ", TP))
+    }
+    
     
     if (is.null(col_name)) {
       col_name <- paste0(col_cases, "_rs")
@@ -517,27 +537,34 @@ setMethod(
       input_data_i <- 
         input_data[input_data[[col_region]] == N_names[i],]
       
-      input_data_i <- input_data_i[order(input_data_i[[col_region]], input_data_i[[col_date]]),]
-      
-      input_data_i_rollsum <- 
-        rollsum(
-          input_data_i[[col_cases]],
-          k = k, 
-          fill = fill,
-          align = align
+      if(nrow(input_data_i) >= k) {
+        
+        input_data_i <- input_data_i[order(input_data_i[[col_region]], input_data_i[[col_date]]),]
+        
+        input_data_i_rollsum <- 
+          rollsum(
+            input_data_i[[col_cases]],
+            k = k, 
+            fill = fill,
+            align = align
+          )
+        
+        data_rollsum_i <- data.frame(
+          input_data_i[[paste0(col_region, "_", col_date)]],
+          input_data_i_rollsum
         )
+        colnames(data_rollsum_i) <- colnames(data_rollsum)
+        
+        data_rollsum <- rbind(
+          data_rollsum,
+          data_rollsum_i
+        )
+        
+      } else {
+        warning(paste0("Rolling sums can not be computed for region ", N_names[i], " with a rolling window of k = ", k))
+      }
       
-      data_rollsum_i <- data.frame(
-        input_data_i[[paste0(col_region, "_", col_date)]],
-        input_data_i_rollsum
-      )
-      colnames(data_rollsum_i) <- colnames(data_rollsum)
-      
-      data_rollsum <- rbind(
-        data_rollsum,
-        data_rollsum_i
-      )
-      
+
     }
     
     data_rollsum <- data_rollsum[!is.na(data_rollsum[[paste0(col_region, "_", col_date)]]),]
@@ -2142,6 +2169,9 @@ load_infections_paneldata <-
     N_withoutcases <- 0
     TP <- nlevels(as.factor(data[[col_date]]))
     TP_t <- levels(as.factor(data[[col_date]]))
+    
+    data[[col_cases]] <- 
+      .check_negative(data[[col_cases]])
     
     data_check_balanced <- 
       is_balanced(
